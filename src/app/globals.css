@@ -1,12 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-red: #A51A1A; /* From Truxo Logo */
-  --color-brand-dark: #333333;
-  --color-brand-gray: #4a4a4a;
-  
-  --color-background: #0f0f11;
-  --color-foreground: #ffffff;
+  --color-brand-red: #A51A1A;
+  --color-brand-dark: #12131A;
+  /* Rich deep charcoal instead of flat black */
+  --color-brand-gray: #1E202C;
+  /* Soft slate grey card background */
+  --color-brand-cream: #F5F2EB;
+  --color-brand-orange: #FF7C00;
+  --color-brand-gold: #C5A059;
+  /* Metallic gold brand color */
+
+  --color-background: #F5F2EB;
+  --color-foreground: #12131A;
+
+  --font-orbitron: var(--font-orbitron), sans-serif;
+  --font-sans: var(--font-outfit), sans-serif;
+  --font-mono: var(--font-mono), monospace;
 }
 
 :root {
@@ -17,17 +27,133 @@
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
   overflow-x: hidden;
+  font-family: var(--font-sans);
 }
 
-/* Premium smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
 
-/* Custom selection */
-::selection {
-  background: var(--color-brand-red);
+/* Premium Glassmorphism Cards */
+.glass-card-light {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(18, 19, 26, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(18, 19, 26, 0.05);
+}
+
+.glass-card-dark {
+  background: rgba(30, 32, 44, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3);
+}
+
+/* Premium Buttons - Luxury Styling */
+.btn-kampr-dark,
+.btn-premium-dark {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2.25rem;
+  border-radius: 9999px;
+  background-color: #12131A;
+  color: #F5F2EB;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.btn-kampr-dark:hover,
+.btn-premium-dark:hover {
+  transform: translateY(-2px);
+  border-color: #C5A059;
+  /* Gold highlight border */
+  color: #C5A059;
+  box-shadow: 0 8px 25px rgba(197, 160, 89, 0.15);
+}
+
+.btn-kampr-accent,
+.btn-premium-gold {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2.25rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #DFBA73 0%, #C5A059 100%);
+  color: #12131A;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 15px rgba(197, 160, 89, 0.25);
+}
+
+.btn-kampr-accent:hover,
+.btn-premium-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(197, 160, 89, 0.4);
+}
+
+.btn-premium-red {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2.25rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #A51A1A 0%, #800020 100%);
   color: white;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(165, 26, 26, 0.2);
+}
+
+.btn-premium-red:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(165, 26, 26, 0.35);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F5F2EB;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C5A059;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #A51A1A;
+}
+
+/* Subtle glow effects */
+.glow-gold {
+  box-shadow: 0 0 30px rgba(197, 160, 89, 0.15);
+}
+
+.glow-red {
+  box-shadow: 0 0 30px rgba(165, 26, 26, 0.15);
 }
