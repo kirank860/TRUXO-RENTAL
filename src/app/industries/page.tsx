@@ -3,67 +3,120 @@
 import React from "react";
 import { industries } from "@/data";
 import { motion } from "framer-motion";
-import { Shield, Building, Construction, Factory, Landmark } from "lucide-react";
+import { Shield, Building, Construction, Factory, Landmark, ArrowDown } from "lucide-react";
+import Image from "next/image";
 
-const icons = [Construction, Factory, Shield, Landmark];
+const icons = [Construction, Factory, Shield, Landmark, Building];
+
+// Hardcoding some images for the industries based on the array length
+const industryImages = [
+  "/images/company_excavator.jpg",
+  "/images/forklift_warehouse.jpg",
+  "/images/heavy_crane.jpg",
+  "/images/hero_loader.jpg",
+  "/images/wheel_shovel.jpg"
+];
 
 export default function IndustriesPage() {
   return (
-    <main className="min-h-screen pt-36 pb-20 bg-[#F5F2EB] text-[#12131A]">
-      <div className="max-w-7xl mx-auto px-6 mb-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
+    <main className="min-h-screen bg-[#050505] text-[#F5F2EB] font-sans pb-24 md:pb-0">
+      
+      {/* 1. Cinematic Dark-Mode Hero */}
+      <section className="relative w-full h-[70vh] min-h-[500px] flex items-center justify-center overflow-hidden border-b-4 border-[#C5A059]">
+        <div className="absolute inset-0 z-0">
+          <Image src="/images/heavy_crane.jpg" alt="Industries We Serve" width={1920} height={1080} priority className="w-full h-full object-cover filter brightness-[0.2]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/50 to-transparent" />
+        </div>
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center lg:text-left"
+          transition={{ duration: 0.8 }}
+          className="relative z-10 text-center px-6 mt-16"
         >
-          <h1 className="text-xs font-black uppercase tracking-widest text-[#A51A1A] font-orbitron mb-3">sectors</h1>
-          <h2 className="text-2xl md:text-4xl lg:text-5xl lg:text-6xl font-black mb-4 text-[#12131A] uppercase tracking-tight font-orbitron">industries we serve</h2>
-          <p className="text-gray-500 text-lg font-semibold max-w-2xl leading-relaxed">
-            Supporting projects of every scale across various sectors in the UAE.
+          <h1 className="text-xs md:text-sm font-black uppercase tracking-[0.3em] text-[#C5A059] font-orbitron mb-4">
+            Global Sectors
+          </h1>
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 text-white uppercase tracking-tight font-orbitron drop-shadow-2xl max-w-4xl mx-auto">
+            Industries We <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DFBA73] to-[#C5A059]">Serve.</span>
+          </h2>
+          <p className="text-gray-400 text-sm md:text-lg font-medium max-w-2xl mx-auto leading-relaxed mb-12">
+            Supporting infrastructure and development projects of every scale across various vital sectors in the UAE.
           </p>
-        </motion.div>
-      </div>
 
-      {/* Industries Grid */}
-      <section className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+          <motion.div 
+            animate={{ y: [0, 10, 0] }} 
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center mx-auto text-white/50"
+          >
+            <ArrowDown className="w-5 h-5" />
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* Immersive Parallax Gallery Layout */}
+      <section className="relative">
         {industries.map((ind, i) => {
           const Icon = icons[i % icons.length];
+          const img = industryImages[i % industryImages.length];
+          
           return (
-            <motion.div
-              key={ind.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="p-12 rounded-3xl bg-white border border-black/5 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex justify-between items-center mb-8">
-                  <span className="text-xs font-black text-gray-400 uppercase tracking-widest font-orbitron">sector 0{i + 1}</span>
-                  <div className="w-11 h-11 rounded-full bg-[#A51A1A]/10 flex items-center justify-center text-[#A51A1A]">
-                    <Icon className="w-5 h-5" />
-                  </div>
-                </div>
-                <h2 className="text-2xl font-black mb-6 text-[#12131A] uppercase tracking-wide font-orbitron">{ind.title}</h2>
-                <p className="text-gray-500 leading-relaxed text-base font-semibold mb-8 lowercase">{ind.desc}</p>
+            <div key={ind.title} className="relative w-full h-screen min-h-[600px] flex items-center sticky top-0 overflow-hidden">
+              
+              {/* Background Parallax Image */}
+              <div className="absolute inset-0 z-0">
+                <Image src={img} alt={ind.title} fill className="object-cover filter brightness-[0.3] contrast-125" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-[#050505]/80" />
               </div>
 
-              {/* Bullet points */}
-              <div className="border-t border-black/5 pt-6 space-y-2.5 text-xs text-gray-500 font-bold">
-                <span className="block text-[10px] uppercase tracking-wider text-[#A51A1A] mb-2 font-orbitron">supported deployments</span>
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059]" />
-                  <span>Heavy earthmoving machinery</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059]" />
-                  <span>Lifting & rigging equipment</span>
-                </div>
+              {/* Content Card */}
+              <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ margin: "-20%" }}
+                  transition={{ duration: 0.6 }}
+                  className="max-w-2xl bg-[#111113]/80 backdrop-blur-2xl p-10 md:p-14 rounded-[3rem] border border-white/10 shadow-2xl"
+                >
+                  <div className="flex items-center gap-6 mb-8">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#DFBA73] to-[#C5A059] flex items-center justify-center text-[#12131A] shadow-[0_0_30px_rgba(197,160,89,0.3)]">
+                      <Icon className="w-8 h-8" />
+                    </div>
+                    <div>
+                      <span className="text-xs font-black text-gray-400 uppercase tracking-widest font-orbitron block mb-1">Sector 0{i + 1}</span>
+                      <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white uppercase tracking-tight font-orbitron">{ind.title}</h2>
+                    </div>
+                  </div>
+
+                  <p className="text-gray-300 leading-relaxed text-base md:text-lg font-medium mb-10">{ind.desc}</p>
+
+                  {/* Bullet points */}
+                  <div className="border-t border-white/10 pt-8">
+                    <span className="block text-[10px] font-black uppercase tracking-widest text-[#C5A059] mb-4 font-orbitron">Supported Deployments</span>
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
+                        <span className="w-2 h-2 rounded-full bg-[#C5A059] shadow-[0_0_10px_rgba(197,160,89,0.8)]" />
+                        <span className="text-sm font-bold text-white">Heavy Earthmoving Machinery</span>
+                      </div>
+                      <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
+                        <span className="w-2 h-2 rounded-full bg-[#C5A059] shadow-[0_0_10px_rgba(197,160,89,0.8)]" />
+                        <span className="text-sm font-bold text-white">Lifting & Rigging Equipment</span>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
               </div>
-            </motion.div>
+            </div>
           );
         })}
       </section>
+
+      {/* Footer spacer since the last sticky item needs room to be scrolled past */}
+      <div className="h-[20vh] bg-[#050505] relative z-10 flex items-center justify-center border-t-2 border-[#C5A059]/20">
+        <h3 className="text-sm md:text-base font-black uppercase tracking-[0.4em] text-gray-500 font-orbitron">
+          End of Sectors
+        </h3>
+      </div>
     </main>
   );
 }
