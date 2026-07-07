@@ -26,7 +26,7 @@ export default function ServicesPage() {
           className="text-center lg:text-left"
         >
           <h1 className="text-xs font-black uppercase tracking-widest text-[#A51A1A] font-orbitron mb-3">our offerings</h1>
-          <h2 className="text-5xl md:text-6xl font-black mb-4 text-[#12131A] uppercase tracking-tight font-orbitron">rental services</h2>
+          <h2 className="text-2xl md:text-4xl lg:text-5xl lg:text-6xl font-black mb-4 text-[#12131A] uppercase tracking-tight font-orbitron">rental services</h2>
           <p className="text-gray-500 text-lg font-semibold max-w-2xl leading-relaxed">
             Reliable and certified heavy machinery solutions tailored for specific industrial tasks.
           </p>
@@ -102,7 +102,7 @@ export default function ServicesPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-24">
             <h2 className="text-xs font-black uppercase tracking-widest text-[#C5A059] font-orbitron mb-3">how it works</h2>
-            <h3 className="text-5xl font-black text-white uppercase tracking-tight font-orbitron">our deployment process</h3>
+            <h3 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tight font-orbitron">our deployment process</h3>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -111,7 +111,7 @@ export default function ServicesPage() {
                 key={idx}
                 className="p-8 rounded-3xl bg-white/5 border border-white/10 relative overflow-hidden shadow-lg hover:shadow-xl transition-all"
               >
-                <div className="text-5xl font-black text-[#C5A059]/10 font-orbitron absolute right-6 top-6">{step.step}</div>
+                <div className="text-3xl md:text-5xl font-black text-[#C5A059]/10 font-orbitron absolute right-6 top-6">{step.step}</div>
                 <h4 className="text-xl font-bold text-white mb-4 uppercase tracking-wider font-orbitron">{step.title}</h4>
                 <p className="text-gray-400 font-semibold text-sm leading-relaxed lowercase">{step.desc}</p>
               </div>

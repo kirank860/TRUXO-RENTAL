@@ -509,7 +509,7 @@ export default function Home() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
-                  className="text-[2.5rem] sm:text-5xl md:text-6xl lg:text-[5.5rem] font-black font-orbitron tracking-tight text-white uppercase leading-[1.05]"
+                  className="text-[2.5rem] sm:text-2xl md:text-4xl lg:text-5xl lg:text-6xl lg:text-[5.5rem] font-black font-orbitron tracking-tight text-white uppercase leading-[1.05]"
                 >
                   TRUXO HEAVY <br />
                   <span className="text-[#A51A1A] drop-shadow-xl sm:whitespace-nowrap block sm:inline mt-1 sm:mt-0">EQUIPMENT RENTAL</span>
@@ -541,271 +541,294 @@ export default function Home() {
             </div>
           </motion.section>
 
-          {/* SECTION 2: Company Profile */}
-          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="bg-[#A51A1A] py-24 text-white border-y-4 border-[#111113]">
-            <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <div className="space-y-8">
-                <h2 className="text-sm font-black uppercase tracking-widest text-[#FF7C00] font-orbitron">ABOUT OUR COMPANY</h2>
-                <h3 className="text-5xl md:text-6xl font-black font-orbitron uppercase leading-none">COMPANY PROFILE</h3>
-                <p className="text-lg font-bold text-gray-200 leading-relaxed lowercase">
-                  {companyProfile.about}
-                </p>
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 font-black text-sm text-[#FF7C00]">
-                  {companyProfile.bullets.map((bullet, idx) => (
-                    <li key={idx} className="flex items-center gap-3">
-                      <span className="w-3 h-3 rounded-full bg-[#FF7C00]" />
-                      <span className="lowercase">{bullet}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="relative rounded-3xl overflow-hidden border-4 border-[#111113] shadow-[8px_8px_0px_#111113]">
-                <Image src="/images/company_excavator.jpg" alt="Tracked excavator" width={1200} height={900} className="w-full h-full object-cover aspect-[4/3]" />
-              </div>
-            </div>
-          </motion.section>
-
-          {/* SECTION 3: Mission & Vision */}
-          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="max-w-7xl mx-auto px-6 space-y-16">
-            <div className="relative h-[300px] w-full rounded-3xl overflow-hidden border-4 border-[#111113] shadow-[8px_8px_0px_#111113]">
-              <Image src="/images/forklift_warehouse.jpg" alt="Forklift inside warehouse" width={1200} height={900} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/55 flex flex-col justify-center items-center text-center p-6">
-                <h2 className="text-xs font-black uppercase tracking-widest text-[#FF7C00] font-orbitron mb-3">Our Core Philosophy</h2>
-                <h3 className="text-5xl md:text-6xl font-black font-orbitron text-white uppercase tracking-tight">MISSION & VISION</h3>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="p-8 rounded-3xl bg-[#A51A1A] text-white border-4 border-[#111113] shadow-[6px_6px_0px_#111113]">
-                <h4 className="text-2xl font-black font-orbitron text-[#FF7C00] uppercase mb-4">OUR VISION</h4>
-                <p className="text-base font-bold leading-relaxed lowercase">{companyProfile.vision}</p>
-              </div>
-              <div className="p-8 rounded-3xl bg-[#A51A1A] text-white border-4 border-[#111113] shadow-[6px_6px_0px_#111113]">
-                <h4 className="text-2xl font-black font-orbitron text-[#FF7C00] uppercase mb-4">OUR MISSION</h4>
-                <p className="text-base font-bold leading-relaxed lowercase">{companyProfile.mission}</p>
-              </div>
-            </div>
-          </motion.section>
-
-          {/* SECTION 4: What is Heavy Equipment? */}
-          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="bg-[#111113] py-24 text-white border-y-4 border-[#111113]">
-            <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <div className="space-y-8">
-                <h2 className="text-sm font-black uppercase tracking-widest text-[#A51A1A] font-orbitron">WHAT IS HEAVY EQUIPMENT?</h2>
-                <h3 className="text-5xl font-black font-orbitron uppercase text-white leading-none">
-                  MACHINES DESIGNED FOR DEMANDING TASKS
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="p-6 rounded-2xl bg-[#A51A1A] text-white border-2 border-[#111113] flex gap-4 items-start">
-                    <Settings className="w-10 h-10 text-[#FF7C00] shrink-0" />
-                    <p className="text-sm font-bold lowercase">Heavy equipment is used for construction and earth-moving work</p>
-                  </div>
-                  <div className="p-6 rounded-2xl bg-[#A51A1A] text-white border-2 border-[#111113] flex gap-4 items-start">
-                    <Wrench className="w-10 h-10 text-[#FF7C00] shrink-0" />
-                    <p className="text-sm font-bold lowercase">They are designed for strength and durability on any terrain</p>
-                  </div>
-                  <div className="p-6 rounded-2xl bg-[#A51A1A] text-white border-2 border-[#111113] flex gap-4 items-start">
-                    <Layers className="w-10 h-10 text-[#FF7C00] shrink-0" />
-                    <p className="text-sm font-bold lowercase">These machines help move soil, rocks, and materials quickly</p>
-                  </div>
-                  <div className="p-6 rounded-2xl bg-[#A51A1A] text-white border-2 border-[#111113] flex gap-4 items-start">
-                    <Shield className="w-10 h-10 text-[#FF7C00] shrink-0" />
-                    <p className="text-sm font-bold lowercase">They are commonly used in large UAE infrastructure projects</p>
-                  </div>
+                    {/* SECTION 2 & 3: Company DNA (Sticky Parallax Editorial) */}
+          <section className="relative w-full bg-[#111113] text-white">
+            <div className="grid grid-cols-1 lg:grid-cols-2">
+              
+              {/* Left Side: Sticky Media */}
+              <div className="h-[50vh] lg:h-screen sticky top-0 lg:top-0 overflow-hidden border-b-4 lg:border-b-0 lg:border-r-4 border-white/10 z-10">
+                <Image 
+                  src="/images/company_excavator.jpg" 
+                  alt="Company DNA" 
+                  width={1920} height={1080} 
+                  className="w-full h-full object-cover filter brightness-[0.6] sepia-[0.3]" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#111113] to-transparent opacity-90" />
+                <div className="absolute bottom-12 left-12">
+                  <h3 className="text-2xl md:text-4xl lg:text-5xl lg:text-6xl lg:text-8xl font-black font-orbitron text-transparent bg-clip-text bg-gradient-to-r from-[#DFBA73] to-[#C5A059]">TRUXO</h3>
+                  <p className="text-xl font-bold tracking-widest uppercase text-white/50">DNA & Heritage</p>
                 </div>
               </div>
-              <div className="relative rounded-3xl overflow-hidden border-4 border-white/20 shadow-[8px_8px_0px_rgba(255,255,255,0.1)]">
-                <Image src="/images/excavator_digging.jpg" alt="Excavator digging gravel" width={1200} height={900} className="w-full h-full object-cover aspect-[4/3]" />
+
+              {/* Right Side: Scrolling Content */}
+              <div className="py-24 px-8 md:px-16 lg:py-48 flex flex-col gap-32">
+                
+                <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }}>
+                  <h2 className="text-xs font-black uppercase tracking-widest text-[#C5A059] mb-6 flex items-center gap-4">
+                    <span className="w-12 h-[1px] bg-[#C5A059]" /> 01 / Who We Are
+                  </h2>
+                  <h3 className="text-2xl md:text-4xl lg:text-5xl lg:text-6xl font-black uppercase leading-[1.1] mb-8 font-orbitron">
+                    The Backbone of <br/> Infrastructure.
+                  </h3>
+                  <p className="text-lg md:text-xl font-medium text-gray-400 leading-relaxed max-w-xl">
+                    {companyProfile.about}
+                  </p>
+                </motion.div>
+
+                <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }}>
+                  <h2 className="text-xs font-black uppercase tracking-widest text-[#C5A059] mb-6 flex items-center gap-4">
+                    <span className="w-12 h-[1px] bg-[#C5A059]" /> 02 / Our Vision
+                  </h2>
+                  <h3 className="text-2xl md:text-4xl lg:text-2xl md:text-4xl lg:text-5xl font-black uppercase leading-[1.1] mb-8 font-orbitron text-white">
+                    Setting The <br/> Industry Standard.
+                  </h3>
+                  <p className="text-lg md:text-xl font-medium text-gray-400 leading-relaxed max-w-xl">
+                    {companyProfile.vision}
+                  </p>
+                </motion.div>
+
+                <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }}>
+                  <h2 className="text-xs font-black uppercase tracking-widest text-[#A51A1A] mb-6 flex items-center gap-4">
+                    <span className="w-12 h-[1px] bg-[#A51A1A]" /> 03 / Our Mission
+                  </h2>
+                  <h3 className="text-2xl md:text-4xl lg:text-2xl md:text-4xl lg:text-5xl font-black uppercase leading-[1.1] mb-8 font-orbitron text-white">
+                    Empowering <br/> Growth & Safety.
+                  </h3>
+                  <p className="text-lg md:text-xl font-medium text-gray-400 leading-relaxed max-w-xl">
+                    {companyProfile.mission}
+                  </p>
+                </motion.div>
+
               </div>
             </div>
-          </motion.section>
+          </section>
 
-          {/* SECTION 5: Common Types */}
-          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="max-w-7xl mx-auto px-6 space-y-16">
-            <div className="text-center">
-              <h2 className="text-sm font-black uppercase tracking-widest text-[#A51A1A] font-orbitron mb-3">COMMON TYPES OF HEAVY EQUIPMENT</h2>
-              <h3 className="text-5xl md:text-6xl font-black font-orbitron uppercase text-[#111113] tracking-tight">OUR FLLET SEGMENTS</h3>
+          {/* SECTION 4 & 5: Interactive Hover Expansion Gallery */}
+          <section className="bg-[#0a0a0c] py-32 overflow-hidden border-t-4 border-white/5">
+            <div className="max-w-7xl mx-auto px-6 mb-16">
+              <h2 className="text-xs font-black uppercase tracking-widest text-[#C5A059] mb-4 text-center">Equipment Arsenal</h2>
+              <h3 className="text-2xl md:text-4xl lg:text-5xl lg:text-7xl font-black font-orbitron uppercase text-white tracking-tight text-center">
+                Our Fleet Segments
+              </h3>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            <div className="flex flex-col lg:flex-row h-[80vh] w-full px-6 gap-4">
               {columnsData.map((col, idx) => (
-                <div
+                <div 
                   key={idx}
-                  className="group relative rounded-3xl overflow-hidden border-4 border-[#111113] shadow-[4px_4px_0px_#111113] aspect-[2/3] flex flex-col justify-end"
+                  className="group relative flex-1 hover:flex-[3] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden rounded-3xl border border-white/10 cursor-pointer min-h-[100px] lg:min-h-full"
                 >
-                  <Image src={col.img} alt={col.title} width={1200} height={900} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 z-0" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
-                  <div className="relative z-20 p-6 text-white space-y-3">
-                    <h4 className="text-xl font-black font-orbitron text-[#FF7C00] uppercase border-b border-white/20 pb-2">{col.title}</h4>
-                    <p className="text-xs font-bold leading-relaxed lowercase text-gray-200 line-clamp-4">{col.desc}</p>
+                  <Image 
+                    src={col.img} 
+                    alt={col.title} 
+                    width={1920} height={1080} 
+                    className="absolute inset-0 w-full h-full object-cover filter brightness-[0.4] group-hover:brightness-100 transition-all duration-700 scale-125 group-hover:scale-100" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-700" />
+                  
+                  <div className="absolute bottom-0 left-0 w-full p-8 lg:p-12 flex flex-col justify-end h-full">
+                    <div className="flex items-center gap-6 mb-4">
+                      <span className="text-4xl font-black font-orbitron text-[#C5A059] opacity-50 group-hover:opacity-100 transition-opacity duration-700">
+                        0{idx + 1}
+                      </span>
+                      <h4 className="text-2xl md:text-4xl font-black font-orbitron text-white uppercase whitespace-nowrap lg:-rotate-90 lg:origin-left lg:absolute lg:left-12 lg:bottom-12 group-hover:lg:rotate-0 group-hover:lg:relative group-hover:lg:left-auto group-hover:lg:bottom-auto transition-all duration-700">
+                        {col.title}
+                      </h4>
+                    </div>
+                    
+                    <div className="opacity-0 translate-y-10 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-700 delay-100 hidden lg:block">
+                      <p className="text-gray-200 font-medium mb-8 max-w-md leading-relaxed line-clamp-3">
+                        {col.desc}
+                      </p>
+                      <Link href="/fleet" className="inline-block px-8 py-4 rounded-full bg-[#C5A059] text-[#111113] font-bold text-xs uppercase tracking-widest hover:bg-white transition-colors">
+                        View Inventory
+                      </Link>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
-          </motion.section>
+          </section>
 
-          {/* SECTION 6: Why Heavy Equipment Matters */}
-          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="relative py-32 px-6 overflow-hidden border-y-4 border-[#111113]">
-            <div className="absolute inset-0 z-0">
-              <Image src="/images/heavy_crane.jpg" alt="Crane backdrop" width={1200} height={900} className="w-full h-full object-cover filter brightness-[0.3]" />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#A51A1A]/80 to-transparent" />
-            </div>
-            <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center text-white">
+          {/* --- NEW SECTION 6: Performance Telemetry Dashboard (Merges 6 & 7) --- */}
+          <section className="bg-[#050505] py-32 text-white relative overflow-hidden border-t-4 border-[#111113]">
+            {/* Background Grid Pattern */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+            <div className="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div className="space-y-8">
-                <h2 className="text-sm font-black uppercase tracking-widest text-[#FF7C00] font-orbitron">SPEED & EFFICIENCY</h2>
-                <h3 className="text-5xl md:text-6xl font-black font-orbitron uppercase leading-none">WHY HEAVY EQUIPMENT MATTERS</h3>
-                <p className="text-lg font-bold leading-relaxed lowercase text-gray-200">
-                  Heavy equipment plays an important role in construction projects. Without these machines, many tasks would take much longer to complete. Large equipment can move huge amounts of soil and materials in a short time. This helps construction teams work faster and complete projects more efficiently.
+                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/20 text-[#A51A1A]">
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                  <span className="text-xs font-black uppercase tracking-widest font-orbitron">Live Telemetry</span>
+                </div>
+                <h3 className="text-2xl md:text-4xl lg:text-5xl lg:text-6xl font-black font-orbitron uppercase leading-[1.1] text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">
+                  Speed & Capacity Metrics
+                </h3>
+                <p className="text-lg text-gray-400 font-medium leading-relaxed max-w-lg">
+                  Heavy equipment plays an important role in construction projects. Without these machines, many tasks would take much longer to complete. Large equipment can move huge amounts of soil and materials in a short time, helping teams complete projects more efficiently.
                 </p>
-              </div>
-            </div>
-          </motion.section>
-
-          {/* SECTION 7: Productivity Comparison */}
-          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8">
-              <h2 className="text-sm font-black uppercase tracking-widest text-[#A51A1A] font-orbitron">CAPACITY METRICS</h2>
-              <h3 className="text-5xl font-black font-orbitron uppercase text-[#111113]">PRODUCTIVITY COMPARISON</h3>
-              <p className="text-lg text-gray-500 font-bold lowercase">
-                How utilizing heavy machinery increases output speed over traditional manual labor.
-              </p>
-              <ProductivityChart />
-            </div>
-            <div className="relative rounded-3xl overflow-hidden border-4 border-[#111113] shadow-[8px_8px_0px_#111113]">
-              <Image src="/images/wheel_shovel.jpg" alt="Front wheel shovel loader" width={1200} height={900} className="w-full h-full object-cover aspect-[4/3]" />
-            </div>
-          </motion.section>
-
-          {/* SECTION 8: Heavy Equipment Usage in Projects */}
-          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="bg-[#111113] py-24 text-white border-y-4 border-[#111113]">
-            <div className="max-w-7xl mx-auto px-6 space-y-16">
-              <div className="text-center">
-                <h2 className="text-sm font-black uppercase tracking-widest text-[#FF7C00] font-orbitron mb-3">OPERATIONAL INTEGRATION</h2>
-                <h3 className="text-5xl font-black font-orbitron uppercase tracking-tight text-white">USAGE IN PROJECTS</h3>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="p-6 rounded-3xl bg-[#A51A1A] text-white border-4 border-[#111113] shadow-[6px_6px_0px_rgba(255,255,255,0.15)] flex items-center gap-6">
-                  <span className="w-6 h-6 rounded-full bg-white shrink-0" />
-                  <span className="font-orbitron font-black text-lg uppercase">Excavators are used for digging and trenching</span>
-                </div>
-                <div className="p-6 rounded-3xl bg-white text-[#111113] border-4 border-[#111113] shadow-[6px_6px_0px_rgba(0,0,0,0.15)] flex items-center gap-6">
-                  <span className="w-6 h-6 rounded-full bg-[#A51A1A] shrink-0" />
-                  <span className="font-orbitron font-black text-lg uppercase">Wheel loaders move heavy materials</span>
-                </div>
-                <div className="p-6 rounded-3xl bg-[#A51A1A] text-white border-4 border-[#111113] shadow-[6px_6px_0px_rgba(255,255,255,0.15)] flex items-center gap-6">
-                  <span className="w-6 h-6 rounded-full bg-white shrink-0" />
-                  <span className="font-orbitron font-black text-lg uppercase">Bulldozers clear and level site land</span>
-                </div>
-                <div className="p-6 rounded-3xl bg-white text-[#111113] border-4 border-[#111113] shadow-[6px_6px_0px_rgba(0,0,0,0.15)] flex items-center gap-6">
-                  <span className="w-6 h-6 rounded-full bg-[#A51A1A] shrink-0" />
-                  <span className="font-orbitron font-black text-lg uppercase">UD Trucks transport machinery & aggregates</span>
+                
+                <div className="grid grid-cols-2 gap-6 pt-8 border-t border-white/10">
+                  <div>
+                    <span className="block text-4xl font-black font-orbitron text-[#C5A059] mb-1">40x</span>
+                    <span className="text-xs font-bold uppercase tracking-widest text-gray-500">Faster Output</span>
+                  </div>
+                  <div>
+                    <span className="block text-4xl font-black font-orbitron text-[#A51A1A] mb-1">24/7</span>
+                    <span className="text-xs font-bold uppercase tracking-widest text-gray-500">Continuous Ops</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.section>
 
-          {/* SECTION 9: Types of Work Done */}
-          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8">
-              <h2 className="text-sm font-black uppercase tracking-widest text-[#A51A1A] font-orbitron">WORK BREAKDOWN</h2>
-              <h3 className="text-5xl font-black font-orbitron uppercase text-[#111113]">TYPES OF WORK DONE</h3>
-              <p className="text-lg text-gray-500 font-bold lowercase">
-                A simple breakdown of construction activities and core tasks done by heavy equipment.
-              </p>
-              <div className="p-8 rounded-3xl bg-[#A51A1A] text-white border-4 border-[#111113] shadow-[8px_8px_0px_#111113] font-bold text-sm leading-relaxed lowercase">
-                Heavy equipment is essential for construction tasks such as excavating, transporting materials, and demolishing structures. Key machines like bulldozers, excavators, cranes, loaders, and dump trucks improve efficiency and organization on sites, crucial for paving roads, building bridges, and erecting structures safely and effectively.
-              </div>
-            </div>
-            <div className="flex justify-center">
-              <WorkBreakdownChart />
-            </div>
-          </motion.section>
-
-          {/* SECTION 10: Operation Trends */}
-          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="bg-[#111113] py-24 text-white border-y-4 border-[#111113]">
-            <div className="max-w-5xl mx-auto px-6 space-y-12">
-              <div className="text-center">
-                <h2 className="text-sm font-black uppercase tracking-widest text-[#FF7C00] font-orbitron mb-3">ACTIVITY PHASES</h2>
-                <h3 className="text-5xl font-black font-orbitron uppercase tracking-tight text-white">OPERATION TRENDS</h3>
-              </div>
-              <OperationTrendsChart dark={true} />
-            </div>
-          </motion.section>
-
-          {/* SECTION 11: The Future of Heavy Equipment */}
-          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8">
-              <h2 className="text-sm font-black uppercase tracking-widest text-[#A51A1A] font-orbitron">THE FUTURE OF HEAVY EQUIPMENT</h2>
-              <h3 className="text-5xl font-black font-orbitron uppercase text-[#111113]">SMARTER MACHINES FOR BETTER BUILD</h3>
-              <p className="text-lg font-bold text-gray-600 leading-relaxed lowercase">
-                Heavy equipment will continue to evolve in the future. New technologies are making machines safer, more efficient, and easier to operate. Modern equipment can help reduce fuel usage, improve safety, and support faster project completion. As construction projects grow larger, advanced machines will become even more important.
-              </p>
-
-              <div className="space-y-4 font-bold text-[#111113]">
-                <div className="flex items-center gap-3">
-                  <Check className="w-6 h-6 text-[#A51A1A] stroke-[3]" />
-                  <span>Autonomous navigation and sensor safety</span>
+              {/* Glowing Chart Dashboard */}
+              <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} className="relative">
+                <div className="absolute -inset-1 bg-gradient-to-r from-[#C5A059] to-[#A51A1A] rounded-3xl blur opacity-20" />
+                <div className="relative bg-[#111113]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-4 sm:p-8 shadow-2xl">
+                  <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+                    <span className="text-xs font-bold uppercase tracking-widest text-gray-400">Productivity Analysis</span>
+                    <Maximize2 className="w-4 h-4 text-gray-600" />
+                  </div>
+                  <ProductivityChart />
                 </div>
-                <div className="flex items-center gap-3">
-                  <Check className="w-6 h-6 text-[#A51A1A] stroke-[3]" />
-                  <span>Hybrid and electric clean power platforms</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="w-6 h-6 text-[#A51A1A] stroke-[3]" />
-                  <span>Live telemetry and fleet diagnostic monitoring</span>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* --- NEW SECTION 7: Interactive Workflow Timeline (Merges 8 & 9) --- */}
+          <section className="bg-[#111113] py-32 text-white relative border-t-4 border-white/5">
+            <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16">
+              
+              <div className="lg:col-span-5 space-y-12">
+                <div className="sticky top-32">
+                  <h2 className="text-xs font-black uppercase tracking-widest text-[#C5A059] mb-4">Operational Flow</h2>
+                  <h3 className="text-2xl md:text-4xl lg:text-5xl font-black font-orbitron uppercase leading-[1.1] mb-6">
+                    Work Breakdown <br/> & Integration
+                  </h3>
+                  <p className="text-gray-400 font-medium leading-relaxed mb-12">
+                    Heavy equipment is essential for excavating, transporting, and demolishing. Key machines improve efficiency and organization on sites, crucial for paving roads, building bridges, and erecting structures safely.
+                  </p>
+                  
+                  {/* Floating Chart Card */}
+                  <div className="bg-[#050505] p-6 rounded-3xl border border-white/10 shadow-2xl">
+                    <WorkBreakdownChart />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="relative rounded-3xl overflow-hidden border-4 border-[#111113] shadow-[8px_8px_0px_#111113]">
-              <Image src="/images/loader_future.jpg" alt="Autonomous hybrid wheel loader" width={1200} height={900} className="w-full h-full object-cover aspect-[4/3]" />
-            </div>
-          </motion.section>
+              <div className="lg:col-span-7 relative">
+                {/* Vertical Line */}
+                <div className="absolute left-[27px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-[#C5A059] via-[#A51A1A] to-transparent hidden md:block" />
+                
+                <div className="space-y-16 md:pl-16">
+                  {[
+                    { title: "Excavators", desc: "Used for digging, trenching, and massive earth-moving tasks.", icon: <Settings className="w-6 h-6 text-[#111113]" /> },
+                    { title: "Wheel Loaders", desc: "Efficiently move heavy materials and aggregates across the site.", icon: <Wrench className="w-6 h-6 text-[#111113]" /> },
+                    { title: "Bulldozers", desc: "Clear and level site land, preparing the foundation.", icon: <Layers className="w-6 h-6 text-[#111113]" /> },
+                    { title: "UD Trucks", desc: "Transport massive machinery and materials to and from the site.", icon: <Shield className="w-6 h-6 text-[#111113]" /> }
+                  ].map((item, idx) => (
+                    <motion.div 
+                      key={idx}
+                      initial={{ opacity: 0, x: 50 }} 
+                      whileInView={{ opacity: 1, x: 0 }} 
+                      viewport={{ once: false, margin: "-100px" }}
+                      transition={{ delay: idx * 0.1 }}
+                      className="relative bg-[#1A1A1D] p-8 rounded-3xl border border-white/5 hover:border-[#C5A059]/50 transition-colors group"
+                    >
+                      <div className="absolute -left-[53px] top-8 w-14 h-14 rounded-full bg-[#C5A059] flex items-center justify-center border-4 border-[#111113] shadow-[0_0_15px_rgba(197,160,89,0.5)] group-hover:scale-110 transition-transform hidden md:flex">
+                        {item.icon}
+                      </div>
+                      <h4 className="text-2xl font-black font-orbitron uppercase text-white mb-3">{item.title}</h4>
+                      <p className="text-gray-400 font-medium">{item.desc}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
 
-          {/* SECTION 12: Thank You / Contact details */}
-          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="relative py-32 px-6 overflow-hidden border-t-4 border-[#111113]">
+            </div>
+          </section>
+
+          {/* --- NEW SECTION 8: Next-Gen Operations (Merges 10 & 11) --- */}
+          <section className="relative py-32 overflow-hidden border-t-4 border-[#C5A059]">
             <div className="absolute inset-0 z-0">
-              <Image src="/images/loader_thankyou.jpg" alt="Loader at sunset" width={1200} height={900} className="w-full h-full object-cover filter brightness-[0.3]" />
+              <Image src="/images/loader_future.jpg" alt="Autonomous Loader" width={1920} height={1080} className="w-full h-full object-cover filter brightness-[0.25]" />
             </div>
+            
+            <div className="relative z-10 max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              
+              <div className="bg-[#111113]/90 backdrop-blur-xl border border-white/10 rounded-3xl p-4 sm:p-8 shadow-2xl">
+                <div className="text-center mb-8">
+                  <h2 className="text-xs font-black uppercase tracking-widest text-[#FF7C00] font-orbitron mb-2">Operation Trends</h2>
+                  <h3 className="text-3xl font-black font-orbitron uppercase text-white">Activity Phases</h3>
+                </div>
+                <OperationTrendsChart dark={true} />
+              </div>
 
-            <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center text-white">
-              <div className="space-y-8">
-                <h2 className="text-5xl md:text-6xl font-black font-orbitron uppercase text-[#FF7C00]">
-                  THANK YOU FOR YOUR ATTENTION
-                </h2>
-                <p className="text-xl font-bold lowercase text-gray-300 leading-relaxed">
-                  We look forward to partnering with you on your next UAE build. Contact our support team today for rental rates and mobilization schedules.
+              <div className="space-y-10">
+                <h2 className="text-xs font-black uppercase tracking-widest text-[#C5A059]">The Future of Heavy Equipment</h2>
+                <h3 className="text-2xl md:text-4xl lg:text-5xl lg:text-6xl font-black font-orbitron uppercase text-white leading-none">
+                  Smarter Machines <br/> Better Build.
+                </h3>
+                <p className="text-lg font-medium text-gray-300 leading-relaxed">
+                  Heavy equipment will continue to evolve. New technologies are making machines safer, more efficient, and easier to operate, reducing fuel usage and supporting faster project completion.
                 </p>
 
-                <div className="p-8 rounded-3xl bg-[#A51A1A] border-4 border-[#111113] shadow-[8px_8px_0px_#111113] grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                  <div className="flex items-center gap-3 font-bold">
-                    <Mail className="w-6 h-6 text-[#FF7C00]" />
-                    <span>alghazi478@gmail.com</span>
-                  </div>
-                  <div className="flex items-center gap-3 font-bold">
-                    <Globe className="w-6 h-6 text-[#FF7C00]" />
-                    <span>www.truxorental.com</span>
-                  </div>
-                  <div className="flex items-center gap-3 font-bold">
-                    <Phone className="w-6 h-6 text-[#FF7C00]" />
-                    <span>+971 50 675 8759</span>
-                  </div>
-                  <div className="flex items-center gap-3 font-bold">
-                    <MapPin className="w-6 h-6 text-[#FF7C00]" />
-                    <span>Al Ghail, Ras Al Khaimah, UAE</span>
-                  </div>
-                </div>
-
-                <div>
-                  <Link href="/contact" className="btn-kampr-accent">
-                    Contact Us Now
-                  </Link>
+                <div className="flex flex-wrap gap-4">
+                  {[
+                    "Autonomous Navigation",
+                    "Sensor Safety Systems",
+                    "Hybrid Clean Power",
+                    "Live Telemetry",
+                    "Fleet Diagnostics"
+                  ].map((tech, idx) => (
+                    <span key={idx} className="px-4 py-2 rounded-full border border-white/20 bg-white/5 backdrop-blur-md text-white text-xs font-bold tracking-widest uppercase hover:bg-[#C5A059] hover:text-black hover:border-[#C5A059] transition-all cursor-default">
+                      {tech}
+                    </span>
+                  ))}
                 </div>
               </div>
+
             </div>
-          </motion.section>
+          </section>
+
+          {/* --- NEW SECTION 9: Cinematic Finale (Replaces 12) --- */}
+          <section className="relative h-screen min-h-[800px] w-full flex items-center justify-center overflow-hidden border-t-4 border-[#111113]">
+            <div className="absolute inset-0 z-0">
+              <Image src="/images/loader_thankyou.jpg" alt="Sunset Loader" width={1920} height={1080} className="w-full h-full object-cover filter brightness-[0.4] scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#111113] via-transparent to-[#111113]/50" />
+            </div>
+
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }} 
+              whileInView={{ opacity: 1, scale: 1 }} 
+              transition={{ duration: 1 }}
+              className="relative z-10 w-full max-w-4xl mx-auto px-6 text-center"
+            >
+              <h2 className="text-2xl md:text-4xl lg:text-5xl lg:text-6xl lg:text-8xl font-black font-orbitron uppercase text-white tracking-tight mb-8 drop-shadow-2xl">
+                Ready To <span className="text-[#C5A059]">Build?</span>
+              </h2>
+              <p className="text-xl md:text-2xl font-medium text-gray-200 mb-12 max-w-2xl mx-auto leading-relaxed drop-shadow-lg">
+                We look forward to partnering with you on your next UAE build. Contact our support team today for rental rates and mobilization schedules.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+                {[
+                  { icon: <Mail className="w-5 h-5" />, text: "alghazi478@gmail.com" },
+                  { icon: <Globe className="w-5 h-5" />, text: "truxorental.com" },
+                  { icon: <Phone className="w-5 h-5" />, text: "+971 50 675 8759" },
+                  { icon: <MapPin className="w-5 h-5" />, text: "Ras Al Khaimah, UAE" },
+                ].map((info, idx) => (
+                  <div key={idx} className="bg-black/40 backdrop-blur-md border border-white/10 p-6 rounded-2xl flex flex-col items-center justify-center gap-3 hover:bg-white/10 transition-colors">
+                    <div className="text-[#C5A059]">{info.icon}</div>
+                    <span className="text-white text-xs font-bold tracking-widest uppercase text-center">{info.text}</span>
+                  </div>
+                ))}
+              </div>
+
+              <Link href="/contact" className="inline-block px-12 py-5 rounded-full bg-white text-[#111113] font-black text-sm uppercase tracking-widest hover:bg-[#C5A059] hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(255,255,255,0.3)]">
+                Contact Us Now
+              </Link>
+            </motion.div>
+          </section>
+
 
         </div>
       )}

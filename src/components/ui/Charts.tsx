@@ -7,13 +7,13 @@ import { motion } from "framer-motion";
 // Slide 7: Table Style Comparison - Premium Luxury Re-design
 export function ProductivityChart() {
   return (
-    <div className="w-full overflow-hidden rounded-2xl border border-black/5 bg-white shadow-xl">
-      <table className="w-full border-collapse text-left font-sans">
+    <div className="w-full overflow-x-auto rounded-2xl border border-black/5 bg-white shadow-xl">
+      <table className="w-full border-collapse text-left font-sans min-w-[300px]">
         <thead>
           <tr className="bg-gradient-to-r from-[#12131A] to-[#1E202C] text-[#F5F2EB]">
-            <th className="p-5 font-orbitron uppercase text-xs tracking-wider">Task</th>
-            <th className="p-5 font-orbitron uppercase text-xs tracking-wider border-l border-white/5">Manual Work</th>
-            <th className="p-5 font-orbitron uppercase text-xs tracking-wider border-l border-white/5 text-[#C5A059]">Heavy Equipment</th>
+            <th className="p-3 sm:p-5 font-orbitron uppercase text-[10px] sm:text-xs tracking-wider">Task</th>
+            <th className="p-3 sm:p-5 font-orbitron uppercase text-[10px] sm:text-xs tracking-wider border-l border-white/5 whitespace-nowrap">Manual Work</th>
+            <th className="p-3 sm:p-5 font-orbitron uppercase text-[10px] sm:text-xs tracking-wider border-l border-white/5 text-[#C5A059] whitespace-nowrap">Heavy Equipment</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-black/5 font-semibold text-[#12131A]">
@@ -26,13 +26,13 @@ export function ProductivityChart() {
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
             >
-              <td className="p-5 lowercase text-base font-bold text-[#12131A]">{item.task}</td>
-              <td className="p-5 border-l border-black/5 text-gray-400 text-base">
+              <td className="p-3 sm:p-5 lowercase text-xs sm:text-base font-bold text-[#12131A]">{item.task}</td>
+              <td className="p-3 sm:p-5 border-l border-black/5 text-gray-400 text-xs sm:text-base whitespace-nowrap">
                 {item.manual} {item.unit}
               </td>
-              <td className="p-5 border-l border-black/5 text-[#A51A1A] text-lg font-extrabold bg-[#C5A059]/5">
+              <td className="p-3 sm:p-5 border-l border-black/5 text-[#A51A1A] text-sm sm:text-lg font-extrabold bg-[#C5A059]/5 whitespace-nowrap">
                 {item.heavy} {item.unit}
-                <span className="block text-[10px] font-black text-[#C5A059] uppercase tracking-wider mt-1">
+                <span className="block text-[8px] sm:text-[10px] font-black text-[#C5A059] uppercase tracking-wider mt-1">
                   ({Math.round(item.heavy / item.manual)}x faster)
                 </span>
               </td>

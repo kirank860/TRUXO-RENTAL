@@ -17,7 +17,7 @@ export default function IndustriesPage() {
           className="text-center lg:text-left"
         >
           <h1 className="text-xs font-black uppercase tracking-widest text-[#A51A1A] font-orbitron mb-3">sectors</h1>
-          <h2 className="text-5xl md:text-6xl font-black mb-4 text-[#12131A] uppercase tracking-tight font-orbitron">industries we serve</h2>
+          <h2 className="text-2xl md:text-4xl lg:text-5xl lg:text-6xl font-black mb-4 text-[#12131A] uppercase tracking-tight font-orbitron">industries we serve</h2>
           <p className="text-gray-500 text-lg font-semibold max-w-2xl leading-relaxed">
             Supporting projects of every scale across various sectors in the UAE.
           </p>
