@@ -8,24 +8,17 @@ import {
   ChevronLeft,
   Layers,
   Shield,
-  HardHat,
   Settings,
   Wrench,
-  Check,
   Phone,
   Mail,
   Globe,
   MapPin,
-  Play,
   Maximize2,
-  Minimize2,
-  Info,
-  Calendar,
-  Compass,
   X
 } from "lucide-react";
 import Link from "next/link";
-import { companyProfile, whyChooseUs } from "@/data";
+import { companyProfile } from "@/data";
 import { ProductivityChart, OperationTrendsChart, WorkBreakdownChart } from "@/components/ui/Charts";
 
 export default function Home() {
@@ -36,13 +29,14 @@ export default function Home() {
 
   // Presentation Mode Triggers & Keyboard Nav
   useEffect(() => {
-    // Check URL
+    // Check if we should auto-launch presentation mode from query param
     if (typeof window !== "undefined") {
       if (window.location.search.includes("mode=presentation")) {
-        setViewMode("presentation");
-        setCurrentSlide(0);
-        // Clean URL
-        window.history.replaceState({}, "", "/");
+        setTimeout(() => {
+          setViewMode("presentation");
+          setCurrentSlide(0);
+          window.history.replaceState({}, "", "/");
+        }, 0);
       }
     }
 
@@ -81,12 +75,12 @@ export default function Home() {
     },
     {
       title: "Forklifts",
-      img: "/images/forklift_warehouse.jpg",
+      img: "/images/Forklift.webp",
       desc: "Our forklifts are designed for efficient material handling, loading, unloading, stacking, and transportation of goods in warehouses, factories, logistics centers, and construction sites.",
     },
     {
       title: "Wheel Shovels",
-      img: "/images/wheel_shovel.jpg",
+      img: "/images/Revealing The Profitability Of Used Wheel Excavators.jpeg",
       desc: "Our wheel shovels (front-end loaders) are built for efficient loading, transporting, and stockpiling of materials such as sand, gravel, soil, and aggregates.",
     },
     {
@@ -96,7 +90,7 @@ export default function Home() {
     },
     {
       title: "UD Trucks",
-      img: "/images/ud_truck.jpg",
+      img: "/images/_.jpeg",
       desc: "Our UD trucks provide reliable and efficient transportation solutions for construction, industrial, and logistics operations. Built for durability and high performance.",
     }
   ];
@@ -118,21 +112,21 @@ export default function Home() {
         /* ========================================================================= */
         <div className="relative h-[82vh] max-w-7xl mx-auto px-6 flex items-center justify-center">
           {/* Main Slide Card Container */}
-          <div className="w-full h-full max-h-[700px] bg-white border-4 border-[#111113] rounded-[32px] shadow-[12px_12px_0px_#111113] overflow-hidden relative flex flex-col justify-between">
+          <div className="w-full h-full max-h-[700px] bg-[#111113]/90 backdrop-blur-3xl border border-white/10 rounded-[32px] shadow-[0_0_50px_rgba(197,160,89,0.15)] overflow-hidden relative flex flex-col justify-between">
 
             {/* Header Area of the Slides */}
-            <div className="p-6 border-b-2 border-[#111113] bg-[#F5F2EB]/50 flex justify-between items-center z-10 shrink-0">
+            <div className="p-6 border-b border-white/10 bg-[#1A1A1D]/80 flex justify-between items-center z-10 shrink-0">
               <div className="flex items-center gap-3">
-                <img src="/logo.jpeg" alt="TRUXO Logo" className="h-8 object-contain" />
-                <span className="font-orbitron font-black text-lg tracking-tighter text-[#111113]">TRUXO RENTAL</span>
+                <img src="/logo.jpeg" alt="TRUXO Logo" className="h-8 object-contain rounded-full border border-[#C5A059]" />
+                <span className="font-orbitron font-black text-lg tracking-tighter text-white">TRUXO RENTAL</span>
               </div>
               <div className="flex items-center gap-4">
-                <div className="hidden sm:block px-4 py-1.5 rounded-full bg-[#111113] text-white font-orbitron font-bold text-xs uppercase tracking-wider">
+                <div className="hidden sm:block px-4 py-1.5 rounded-full border border-[#C5A059] bg-[#C5A059]/10 text-[#C5A059] font-orbitron font-bold text-xs uppercase tracking-wider">
                   Slide {currentSlide + 1} of {totalSlides}
                 </div>
                 <button
                   onClick={() => setViewMode("website")}
-                  className="p-2 rounded-full bg-white border-2 border-[#111113] text-[#111113] hover:bg-[#A51A1A] hover:text-white hover:border-[#A51A1A] transition-colors shadow-sm"
+                  className="p-2 rounded-full bg-white/5 border border-white/10 text-gray-300 hover:bg-[#C5A059] hover:text-black hover:border-[#C5A059] transition-colors shadow-sm"
                   title="Exit Presentation"
                 >
                   <X className="w-5 h-5" />
@@ -141,7 +135,7 @@ export default function Home() {
             </div>
 
             {/* Slide Body */}
-            <div className="flex-grow overflow-y-auto overflow-x-hidden relative bg-[#F5F2EB]/20">
+            <div className="flex-grow overflow-y-auto overflow-x-hidden relative bg-transparent">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentSlide}
@@ -155,33 +149,30 @@ export default function Home() {
                   {currentSlide === 0 && (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
                       <div className="space-y-6">
-                        <div className="relative p-6 rounded-2xl bg-[#A51A1A]/10 border-l-8 border-[#A51A1A]">
-                          <h1 className="text-3xl md:text-4xl font-black font-orbitron tracking-wide text-[#111113] uppercase leading-tight">
+                        <div className="relative p-6 rounded-2xl bg-[#C5A059]/10 border-l-4 border-[#C5A059]">
+                          <h1 className="text-3xl md:text-4xl font-black font-orbitron tracking-wide text-white uppercase leading-tight">
                             TRUXO HEAVY <br />
-                            <span className="text-[#A51A1A]">EQUIPMENT RENTAL</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DFBA73] to-[#C5A059]">EQUIPMENT RENTAL</span>
                           </h1>
                         </div>
-                        <p className="text-base font-bold text-[#111113]/85 lowercase leading-relaxed">
+                        <p className="text-base font-bold text-gray-300 lowercase leading-relaxed">
                           Reliable Heavy Equipment Solutions for Construction, Industrial and Infrastructure Projects
                         </p>
-                        <button className="btn-kampr-dark font-orbitron text-xs">
+                        <button className="px-6 py-3 rounded-full bg-transparent border border-white/20 text-white hover:border-[#C5A059] hover:text-[#C5A059] transition-colors font-orbitron text-xs font-bold uppercase tracking-widest">
                           United Arab Emirates
                         </button>
                       </div>
-                      <div className="h-full min-h-[250px] relative rounded-2xl overflow-hidden border-4 border-[#111113] shadow-[4px_4px_0px_#111113]">
+                      <div className="h-full min-h-[250px] relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
                         <video
                           autoPlay
                           loop
                           muted
                           playsInline
                           preload="auto"
-                          poster="/logo.jpeg"
-                          className="w-full h-full object-cover"
+                          poster="/images/company_excavator.jpg"
+                          className="w-full h-full object-cover filter brightness-[0.7]"
                         >
-                          <source
-                            src="/truck.mp4"
-                            type="video/mp4"
-                          />
+                          <source src="/truck.mp4" type="video/mp4" />
                         </video>
                       </div>
                     </div>
@@ -190,22 +181,22 @@ export default function Home() {
                   {/* SLIDE 2: Company Profile */}
                   {currentSlide === 1 && (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
-                      <div className="p-8 rounded-3xl bg-[#A51A1A] text-white space-y-6 border-4 border-[#111113] shadow-[4px_4px_0px_#111113]">
-                        <h2 className="text-3xl font-black font-orbitron uppercase text-[#FF7C00]">COMPANY PROFILE</h2>
-                        <p className="font-bold text-sm leading-relaxed lowercase">
+                      <div className="p-8 rounded-3xl bg-[#1A1A1D]/80 backdrop-blur-xl border border-white/10 text-white space-y-6 shadow-2xl">
+                        <h2 className="text-3xl font-black font-orbitron uppercase text-[#C5A059]">COMPANY PROFILE</h2>
+                        <p className="font-medium text-sm leading-relaxed lowercase text-gray-300">
                           {companyProfile.about}
                         </p>
-                        <ul className="space-y-3 font-black text-sm text-[#FF7C00]">
+                        <ul className="space-y-3 font-bold text-sm text-white">
                           {companyProfile.bullets.map((bullet, idx) => (
-                            <li key={idx} className="flex items-center gap-2">
-                              <span className="w-2 h-2 rounded-full bg-[#FF7C00]" />
+                            <li key={idx} className="flex items-center gap-3">
+                              <span className="w-2 h-2 rounded-full bg-[#C5A059] shadow-[0_0_10px_#C5A059]" />
                               <span className="lowercase">{bullet}</span>
                             </li>
                           ))}
                         </ul>
                       </div>
-                      <div className="h-full min-h-[250px] relative rounded-2xl overflow-hidden border-4 border-[#111113] shadow-[4px_4px_0px_#111113]">
-                        <Image src="/images/company_excavator.jpg" alt="Excavator stormy sky" width={1200} height={900} className="w-full h-full object-cover" />
+                      <div className="h-full min-h-[250px] relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+                        <Image src="/images/company_excavator.jpg" alt="Excavator stormy sky" width={1200} height={900} className="w-full h-full object-cover filter brightness-[0.7]" />
                       </div>
                     </div>
                   )}
@@ -213,20 +204,20 @@ export default function Home() {
                   {/* SLIDE 3: Mission & Vision */}
                   {currentSlide === 2 && (
                     <div className="flex flex-col gap-6 justify-between h-full">
-                      <div className="h-[180px] w-full rounded-2xl overflow-hidden border-4 border-[#111113] relative">
-                        <Image src="/images/forklift_warehouse.jpg" alt="Warehouse forklift" width={1200} height={900} className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <div className="h-[180px] w-full rounded-2xl overflow-hidden border border-white/10 relative shadow-2xl">
+                        <Image src="/images/forklift_warehouse.jpg" alt="Warehouse forklift" width={1200} height={900} className="w-full h-full object-cover filter brightness-[0.5]" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-8">
                           <h2 className="text-4xl font-black font-orbitron text-white tracking-widest uppercase">MISSION & VISION</h2>
                         </div>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="p-6 rounded-2xl bg-[#A51A1A] text-white border-4 border-[#111113] shadow-[4px_4px_0px_#111113]">
-                          <h3 className="text-lg font-black font-orbitron text-[#FF7C00] uppercase mb-2">OUR VISION</h3>
-                          <p className="text-xs font-bold leading-relaxed lowercase">{companyProfile.vision}</p>
+                        <div className="p-6 rounded-2xl bg-[#1A1A1D]/80 backdrop-blur-xl border border-white/10 text-white shadow-2xl transition-transform hover:-translate-y-2">
+                          <h3 className="text-lg font-black font-orbitron text-[#C5A059] uppercase mb-3">OUR VISION</h3>
+                          <p className="text-sm font-medium text-gray-300 leading-relaxed lowercase">{companyProfile.vision}</p>
                         </div>
-                        <div className="p-6 rounded-2xl bg-[#A51A1A] text-white border-4 border-[#111113] shadow-[4px_4px_0px_#111113]">
-                          <h3 className="text-lg font-black font-orbitron text-[#FF7C00] uppercase mb-2">OUR MISSION</h3>
-                          <p className="text-xs font-bold leading-relaxed lowercase">{companyProfile.mission}</p>
+                        <div className="p-6 rounded-2xl bg-[#1A1A1D]/80 backdrop-blur-xl border border-white/10 text-white shadow-2xl transition-transform hover:-translate-y-2">
+                          <h3 className="text-lg font-black font-orbitron text-[#C5A059] uppercase mb-3">OUR MISSION</h3>
+                          <p className="text-sm font-medium text-gray-300 leading-relaxed lowercase">{companyProfile.mission}</p>
                         </div>
                       </div>
                     </div>
@@ -237,31 +228,31 @@ export default function Home() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
                       <div className="space-y-6">
                         <div>
-                          <h2 className="text-3xl font-black font-orbitron uppercase text-[#A51A1A]">WHAT IS HEAVY EQUIPMENT?</h2>
-                          <p className="text-sm font-bold text-gray-500 lowercase mt-1">Machines designed to handle large and demanding tasks</p>
+                          <h2 className="text-3xl font-black font-orbitron uppercase text-[#C5A059]">WHAT IS HEAVY EQUIPMENT?</h2>
+                          <p className="text-sm font-bold text-gray-400 lowercase mt-1">Machines designed to handle large and demanding tasks</p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="p-4 rounded-xl bg-[#A51A1A] text-white border-2 border-[#111113] flex gap-3 items-start">
-                            <Settings className="w-8 h-8 text-[#FF7C00] shrink-0" />
-                            <p className="text-xs font-bold lowercase">Heavy equipment is used for construction and earth-moving work</p>
+                          <div className="p-4 rounded-xl bg-[#1A1A1D]/80 backdrop-blur-xl border border-white/10 text-white shadow-lg flex gap-3 items-start transition-colors hover:border-[#C5A059]/50">
+                            <Settings className="w-8 h-8 text-[#C5A059] shrink-0" />
+                            <p className="text-xs font-bold lowercase text-gray-300">Heavy equipment is used for construction and earth-moving work</p>
                           </div>
-                          <div className="p-4 rounded-xl bg-[#A51A1A] text-white border-2 border-[#111113] flex gap-3 items-start">
-                            <Wrench className="w-8 h-8 text-[#FF7C00] shrink-0" />
-                            <p className="text-xs font-bold lowercase">They are designed for strength and durability on any terrain</p>
+                          <div className="p-4 rounded-xl bg-[#1A1A1D]/80 backdrop-blur-xl border border-white/10 text-white shadow-lg flex gap-3 items-start transition-colors hover:border-[#C5A059]/50">
+                            <Wrench className="w-8 h-8 text-[#C5A059] shrink-0" />
+                            <p className="text-xs font-bold lowercase text-gray-300">They are designed for strength and durability on any terrain</p>
                           </div>
-                          <div className="p-4 rounded-xl bg-[#A51A1A] text-white border-2 border-[#111113] flex gap-3 items-start">
-                            <Layers className="w-8 h-8 text-[#FF7C00] shrink-0" />
-                            <p className="text-xs font-bold lowercase">These machines help move soil, rocks, and materials quickly</p>
+                          <div className="p-4 rounded-xl bg-[#1A1A1D]/80 backdrop-blur-xl border border-white/10 text-white shadow-lg flex gap-3 items-start transition-colors hover:border-[#C5A059]/50">
+                            <Layers className="w-8 h-8 text-[#C5A059] shrink-0" />
+                            <p className="text-xs font-bold lowercase text-gray-300">These machines help move soil, rocks, and materials quickly</p>
                           </div>
-                          <div className="p-4 rounded-xl bg-[#A51A1A] text-white border-2 border-[#111113] flex gap-3 items-start">
-                            <Shield className="w-8 h-8 text-[#FF7C00] shrink-0" />
-                            <p className="text-xs font-bold lowercase">They are commonly used in large UAE infrastructure projects</p>
+                          <div className="p-4 rounded-xl bg-[#1A1A1D]/80 backdrop-blur-xl border border-white/10 text-white shadow-lg flex gap-3 items-start transition-colors hover:border-[#C5A059]/50">
+                            <Shield className="w-8 h-8 text-[#C5A059] shrink-0" />
+                            <p className="text-xs font-bold lowercase text-gray-300">They are commonly used in large UAE infrastructure projects</p>
                           </div>
                         </div>
                       </div>
-                      <div className="h-full min-h-[250px] relative rounded-2xl overflow-hidden border-4 border-[#111113] shadow-[4px_4px_0px_#111113]">
-                        <Image src="/images/excavator_digging.jpg" alt="Excavator digging" width={1200} height={900} className="w-full h-full object-cover" />
+                      <div className="h-full min-h-[250px] relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+                        <Image src="/images/excavator_digging.jpg" alt="Excavator digging" width={1200} height={900} className="w-full h-full object-cover filter brightness-[0.8]" />
                       </div>
                     </div>
                   )}
@@ -270,19 +261,19 @@ export default function Home() {
                   {currentSlide === 4 && (
                     <div className="flex flex-col justify-between h-full gap-4">
                       <div className="text-center">
-                        <h2 className="text-2xl font-black font-orbitron uppercase text-[#A51A1A]">COMMON TYPES OF HEAVY EQUIPMENT</h2>
-                        <p className="text-xs font-bold text-gray-500 lowercase">Different machines serve different construction tasks</p>
+                        <h2 className="text-2xl font-black font-orbitron uppercase text-[#C5A059]">COMMON TYPES OF HEAVY EQUIPMENT</h2>
+                        <p className="text-xs font-bold text-gray-400 lowercase">Different machines serve different construction tasks</p>
                       </div>
                       <div className="grid grid-cols-5 gap-3 flex-grow min-h-[280px]">
                         {columnsData.map((col, idx) => (
                           <div
                             key={idx}
-                            className="group relative rounded-xl overflow-hidden border-2 border-[#111113] flex flex-col justify-between"
+                            className="group relative rounded-xl overflow-hidden border border-white/10 flex flex-col justify-between shadow-lg hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] transition-all"
                           >
-                            <Image src={col.img} alt={col.title} width={1200} height={900} className="absolute inset-0 w-full h-full object-cover z-0" />
-                            <div className="absolute inset-0 bg-[#A51A1A]/85 z-10 p-3 flex flex-col justify-between text-white transition-opacity duration-300">
-                              <h3 className="text-sm font-black font-orbitron uppercase tracking-wider text-[#FF7C00] border-b border-white/20 pb-1">{col.title}</h3>
-                              <p className="text-[10px] font-bold leading-relaxed lowercase overflow-y-auto max-h-[160px] pr-1">{col.desc}</p>
+                            <Image src={col.img} alt={col.title} width={1200} height={900} className="absolute inset-0 w-full h-full object-cover z-0 filter brightness-[0.7]" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#111113]/90 to-transparent z-10 p-3 flex flex-col justify-end text-white transition-opacity duration-300">
+                              <h3 className="text-sm font-black font-orbitron uppercase tracking-wider text-[#C5A059] border-b border-white/10 pb-1 mb-2">{col.title}</h3>
+                              <p className="text-[10px] font-medium leading-relaxed lowercase text-gray-300">{col.desc}</p>
                             </div>
                           </div>
                         ))}
@@ -295,15 +286,15 @@ export default function Home() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
                       <div className="space-y-6">
                         <div>
-                          <h2 className="text-3xl font-black font-orbitron uppercase text-[#A51A1A]">WHY HEAVY EQUIPMENT MATTERS</h2>
-                          <p className="text-sm font-bold text-gray-500 lowercase mt-1">Machines that increase speed and efficiency</p>
+                          <h2 className="text-3xl font-black font-orbitron uppercase text-[#C5A059]">WHY HEAVY EQUIPMENT MATTERS</h2>
+                          <p className="text-sm font-bold text-gray-400 lowercase mt-1">Machines that increase speed and efficiency</p>
                         </div>
-                        <div className="p-6 rounded-2xl bg-white border-4 border-[#111113] shadow-[4px_4px_0px_#111113] text-gray-700 font-bold leading-relaxed text-sm lowercase">
+                        <div className="p-6 rounded-2xl bg-[#1A1A1D]/80 backdrop-blur-xl border border-white/10 shadow-2xl text-gray-300 font-medium leading-relaxed text-sm lowercase">
                           Heavy equipment plays an important role in construction projects. Without these machines, many tasks would take much longer to complete. Large equipment can move huge amounts of soil and materials in a short time. This helps construction teams work faster and complete projects more efficiently.
                         </div>
                       </div>
-                      <div className="h-full min-h-[250px] relative rounded-2xl overflow-hidden border-4 border-[#111113] shadow-[4px_4px_0px_#111113]">
-                        <Image src="/images/heavy_crane.jpg" alt="Heavy telescopic crane" width={1200} height={900} className="w-full h-full object-cover" />
+                      <div className="h-full min-h-[250px] relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+                        <Image src="/images/heavy_crane.jpg" alt="Heavy telescopic crane" width={1200} height={900} className="w-full h-full object-cover filter brightness-[0.8]" />
                       </div>
                     </div>
                   )}
@@ -313,13 +304,13 @@ export default function Home() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
                       <div className="space-y-6">
                         <div>
-                          <h2 className="text-3xl font-black font-orbitron uppercase text-[#A51A1A]">PRODUCTIVITY COMPARISON</h2>
-                          <p className="text-sm font-bold text-gray-500 lowercase mt-1">Machines dramatically increase work efficiency</p>
+                          <h2 className="text-3xl font-black font-orbitron uppercase text-[#C5A059]">PRODUCTIVITY COMPARISON</h2>
+                          <p className="text-sm font-bold text-gray-400 lowercase mt-1">Machines dramatically increase work efficiency</p>
                         </div>
                         <ProductivityChart />
                       </div>
-                      <div className="h-full min-h-[250px] relative rounded-2xl overflow-hidden border-4 border-[#111113] shadow-[4px_4px_0px_#111113]">
-                        <Image src="/images/wheel_shovel.jpg" alt="Wheel shovel working" width={1200} height={900} className="w-full h-full object-cover" />
+                      <div className="h-full min-h-[250px] relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+                        <Image src="/images/wheel_shovel.jpg" alt="Wheel shovel working" width={1200} height={900} className="w-full h-full object-cover filter brightness-[0.8]" />
                       </div>
                     </div>
                   )}
@@ -328,25 +319,25 @@ export default function Home() {
                   {currentSlide === 7 && (
                     <div className="flex flex-col justify-between h-full gap-6">
                       <div className="text-center">
-                        <h2 className="text-2xl font-black font-orbitron uppercase text-[#111113]">HEAVY EQUIPMENT USAGE IN PROJECTS</h2>
-                        <p className="text-xs font-bold text-gray-500 lowercase">Different machines are used for different tasks</p>
+                        <h2 className="text-2xl font-black font-orbitron uppercase text-white">HEAVY EQUIPMENT USAGE IN PROJECTS</h2>
+                        <p className="text-xs font-bold text-gray-400 lowercase">Different machines are used for different tasks</p>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-grow items-center">
-                        <div className="p-4 rounded-xl bg-[#A51A1A] text-white border-2 border-[#111113] flex items-center gap-4">
-                          <span className="w-5 h-5 rounded-full bg-white shrink-0" />
-                          <span className="font-orbitron font-black text-sm uppercase">Excavators are used for digging and trenching</span>
+                        <div className="p-4 rounded-xl bg-[#1A1A1D]/80 backdrop-blur-xl text-white border border-white/10 flex items-center gap-4 shadow-lg transition-transform hover:-translate-y-1">
+                          <span className="w-5 h-5 rounded-full bg-[#C5A059] shrink-0 shadow-[0_0_10px_#C5A059]" />
+                          <span className="font-orbitron font-black text-sm uppercase text-gray-200">Excavators are used for digging and trenching</span>
                         </div>
-                        <div className="p-4 rounded-xl bg-white text-[#111113] border-2 border-[#111113] flex items-center gap-4">
-                          <span className="w-5 h-5 rounded-full bg-[#A51A1A] shrink-0" />
-                          <span className="font-orbitron font-black text-sm uppercase">Wheel loaders move heavy materials</span>
+                        <div className="p-4 rounded-xl bg-white/5 backdrop-blur-xl text-white border border-white/10 flex items-center gap-4 shadow-lg transition-transform hover:-translate-y-1">
+                          <span className="w-5 h-5 rounded-full border-2 border-[#C5A059] shrink-0" />
+                          <span className="font-orbitron font-black text-sm uppercase text-gray-200">Wheel loaders move heavy materials</span>
                         </div>
-                        <div className="p-4 rounded-xl bg-[#A51A1A] text-white border-2 border-[#111113] flex items-center gap-4">
-                          <span className="w-5 h-5 rounded-full bg-white shrink-0" />
-                          <span className="font-orbitron font-black text-sm uppercase">Bulldozers clear and level site land</span>
+                        <div className="p-4 rounded-xl bg-[#1A1A1D]/80 backdrop-blur-xl text-white border border-white/10 flex items-center gap-4 shadow-lg transition-transform hover:-translate-y-1">
+                          <span className="w-5 h-5 rounded-full bg-[#C5A059] shrink-0 shadow-[0_0_10px_#C5A059]" />
+                          <span className="font-orbitron font-black text-sm uppercase text-gray-200">Bulldozers clear and level site land</span>
                         </div>
-                        <div className="p-4 rounded-xl bg-white text-[#111113] border-2 border-[#111113] flex items-center gap-4">
-                          <span className="w-5 h-5 rounded-full bg-[#A51A1A] shrink-0" />
-                          <span className="font-orbitron font-black text-sm uppercase">UD Trucks transport machinery & aggregates</span>
+                        <div className="p-4 rounded-xl bg-white/5 backdrop-blur-xl text-white border border-white/10 flex items-center gap-4 shadow-lg transition-transform hover:-translate-y-1">
+                          <span className="w-5 h-5 rounded-full border-2 border-[#C5A059] shrink-0" />
+                          <span className="font-orbitron font-black text-sm uppercase text-gray-200">UD Trucks transport machinery & aggregates</span>
                         </div>
                       </div>
                     </div>
@@ -356,8 +347,8 @@ export default function Home() {
                   {currentSlide === 8 && (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
                       <div className="space-y-4">
-                        <h2 className="text-2xl font-black font-orbitron uppercase text-[#A51A1A]">TYPES OF WORK DONE BY HEAVY EQUIPMENT</h2>
-                        <div className="p-6 rounded-2xl bg-[#A51A1A] text-white border-4 border-[#111113] shadow-[4px_4px_0px_#111113] font-bold text-xs leading-relaxed lowercase">
+                        <h2 className="text-2xl font-black font-orbitron uppercase text-[#C5A059]">TYPES OF WORK DONE BY HEAVY EQUIPMENT</h2>
+                        <div className="p-6 rounded-2xl bg-[#1A1A1D]/80 backdrop-blur-xl text-gray-300 border border-white/10 shadow-2xl font-medium text-xs leading-relaxed lowercase">
                           Heavy equipment is essential for construction tasks such as excavating, transporting materials, and demolishing structures. Key machines like bulldozers, excavators, cranes, loaders, and dump trucks improve efficiency and organization on sites, crucial for paving roads, building bridges, and erecting structures safely and effectively.
                         </div>
                       </div>
@@ -371,10 +362,10 @@ export default function Home() {
                   {currentSlide === 9 && (
                     <div className="flex flex-col justify-between h-full gap-4">
                       <div className="text-center">
-                        <h2 className="text-2xl font-black font-orbitron uppercase text-[#111113]">HEAVY EQUIPMENT OPERATION TRENDS</h2>
+                        <h2 className="text-2xl font-black font-orbitron uppercase text-white">HEAVY EQUIPMENT OPERATION TRENDS</h2>
                       </div>
                       <div className="flex-grow flex items-center justify-center">
-                        <OperationTrendsChart dark={false} />
+                        <OperationTrendsChart dark={true} />
                       </div>
                     </div>
                   )}
@@ -384,15 +375,15 @@ export default function Home() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
                       <div className="space-y-6">
                         <div>
-                          <h2 className="text-3xl font-black font-orbitron uppercase text-[#111113]">THE FUTURE OF HEAVY EQUIPMENT</h2>
-                          <p className="text-sm font-bold text-gray-500 lowercase mt-1">Smarter machines for better construction</p>
+                          <h2 className="text-3xl font-black font-orbitron uppercase text-white">THE FUTURE OF HEAVY EQUIPMENT</h2>
+                          <p className="text-sm font-bold text-gray-400 lowercase mt-1">Smarter machines for better construction</p>
                         </div>
-                        <p className="text-gray-700 font-bold text-sm leading-relaxed lowercase">
+                        <p className="text-gray-300 font-medium text-sm leading-relaxed lowercase">
                           Heavy equipment will continue to evolve in the future. New technologies are making machines safer, more efficient, and easier to operate. Modern equipment can help reduce fuel usage, improve safety, and support faster project completion. As construction projects grow larger, advanced machines will become even more important.
                         </p>
                       </div>
-                      <div className="h-full min-h-[250px] relative rounded-2xl overflow-hidden border-4 border-[#111113] shadow-[4px_4px_0px_#111113]">
-                        <Image src="/images/loader_future.jpg" alt="Futuristic autonomous loader" width={1200} height={900} className="w-full h-full object-cover" />
+                      <div className="h-full min-h-[250px] relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+                        <Image src="/images/loader_future.jpg" alt="Futuristic autonomous loader" width={1200} height={900} className="w-full h-full object-cover filter brightness-[0.7]" />
                       </div>
                     </div>
                   )}
@@ -401,30 +392,30 @@ export default function Home() {
                   {currentSlide === 11 && (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full relative">
                       <div className="space-y-6 z-10">
-                        <h2 className="text-4xl font-black font-orbitron uppercase text-[#A51A1A]">THANK YOU FOR YOUR ATTENTION</h2>
+                        <h2 className="text-4xl font-black font-orbitron uppercase text-[#C5A059]">THANK YOU FOR YOUR ATTENTION</h2>
 
-                        <div className="p-6 rounded-2xl bg-[#A51A1A] text-white border-4 border-[#111113] shadow-[4px_4px_0px_#111113] space-y-4">
-                          <div className="flex items-center gap-3 font-bold text-sm">
-                            <Mail className="w-5 h-5 text-[#FF7C00]" />
+                        <div className="p-6 rounded-2xl bg-[#1A1A1D]/80 backdrop-blur-xl text-white border border-white/10 shadow-2xl space-y-4">
+                          <div className="flex items-center gap-3 font-medium text-sm text-gray-300 hover:text-white transition-colors">
+                            <Mail className="w-5 h-5 text-[#C5A059]" />
                             <span>alghazi478@gmail.com</span>
                           </div>
-                          <div className="flex items-center gap-3 font-bold text-sm">
-                            <Globe className="w-5 h-5 text-[#FF7C00]" />
+                          <div className="flex items-center gap-3 font-medium text-sm text-gray-300 hover:text-white transition-colors">
+                            <Globe className="w-5 h-5 text-[#C5A059]" />
                             <span>www.truxorental.com</span>
                           </div>
-                          <div className="flex items-center gap-3 font-bold text-sm">
-                            <Phone className="w-5 h-5 text-[#FF7C00]" />
+                          <div className="flex items-center gap-3 font-medium text-sm text-gray-300 hover:text-white transition-colors">
+                            <Phone className="w-5 h-5 text-[#C5A059]" />
                             <span>+971 50 675 8759</span>
                           </div>
-                          <div className="flex items-center gap-3 font-bold text-sm">
-                            <MapPin className="w-5 h-5 text-[#FF7C00]" />
+                          <div className="flex items-center gap-3 font-medium text-sm text-gray-300 hover:text-white transition-colors">
+                            <MapPin className="w-5 h-5 text-[#C5A059]" />
                             <span>Ras Al Khaimah, UAE</span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="h-full min-h-[250px] relative rounded-2xl overflow-hidden border-4 border-[#111113] shadow-[4px_4px_0px_#111113]">
-                        <Image src="/images/loader_thankyou.jpg" alt="Loader at sunset" width={1200} height={900} className="w-full h-full object-cover" />
+                      <div className="h-full min-h-[250px] relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+                        <Image src="/images/loader_thankyou.jpg" alt="Loader at sunset" width={1200} height={900} className="w-full h-full object-cover filter brightness-[0.7]" />
                       </div>
                     </div>
                   )}
@@ -434,22 +425,22 @@ export default function Home() {
             </div>
 
             {/* Slide Navigation Area */}
-            <div className="p-6 border-t-2 border-[#111113] bg-[#F5F2EB]/50 flex justify-between items-center shrink-0">
+            <div className="p-6 border-t border-white/10 bg-[#1A1A1D]/80 flex justify-between items-center shrink-0">
               <button
                 onClick={prevSlide}
                 disabled={currentSlide === 0}
-                className="btn-kampr-dark px-4 py-2 text-xs flex items-center gap-2 disabled:opacity-40"
+                className="px-6 py-2 rounded-full border border-white/10 text-white hover:bg-white/5 disabled:opacity-40 transition-colors font-orbitron text-xs flex items-center gap-2"
               >
                 <ChevronLeft className="w-4 h-4" /> Previous
               </button>
 
               {/* Dots Progress Indicator */}
-              <div className="hidden md:flex gap-2">
+              <div className="hidden md:flex gap-3">
                 {Array.from({ length: totalSlides }).map((_, idx) => (
                   <button
                     key={idx}
                     onClick={() => setCurrentSlide(idx)}
-                    className={`w-3.5 h-3.5 rounded-full border border-[#111113] transition-all ${currentSlide === idx ? "bg-[#A51A1A] scale-125" : "bg-white hover:bg-gray-200"
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${currentSlide === idx ? "bg-[#C5A059] scale-125 shadow-[0_0_10px_#C5A059]" : "bg-white/20 hover:bg-white/40"
                       }`}
                   />
                 ))}
@@ -458,7 +449,7 @@ export default function Home() {
               <button
                 onClick={nextSlide}
                 disabled={currentSlide === totalSlides - 1}
-                className="btn-kampr-dark px-4 py-2 text-xs flex items-center gap-2 disabled:opacity-40"
+                className="px-6 py-2 rounded-full border border-white/10 bg-[#C5A059] text-black hover:bg-[#DFBA73] font-bold disabled:opacity-40 transition-colors font-orbitron text-xs flex items-center gap-2"
               >
                 Next <ChevronRight className="w-4 h-4" />
               </button>
@@ -482,7 +473,7 @@ export default function Home() {
                 muted
                 playsInline
                 preload="auto"
-                poster="/logo.jpeg"
+                poster="/images/company_excavator.jpg"
                 className="w-full h-full object-cover filter brightness-[0.35]"
               >
                 <source
@@ -506,20 +497,27 @@ export default function Home() {
                 </motion.div>
 
                 <motion.h1
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
+                  initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
                   className="text-[2.5rem] sm:text-2xl md:text-4xl lg:text-5xl lg:text-6xl lg:text-[5.5rem] font-black font-orbitron tracking-tight text-white uppercase leading-[1.05]"
                 >
                   TRUXO HEAVY <br />
-                  <span className="text-[#A51A1A] drop-shadow-xl sm:whitespace-nowrap block sm:inline mt-1 sm:mt-0">EQUIPMENT RENTAL</span>
+                  <motion.span 
+                    initial={{ opacity: 0, x: -30, filter: "blur(10px)" }}
+                    animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
+                    className="text-transparent bg-clip-text bg-gradient-to-r from-[#DFBA73] to-[#C5A059] drop-shadow-xl sm:whitespace-nowrap block sm:inline mt-1 sm:mt-0"
+                  >
+                    EQUIPMENT RENTAL
+                  </motion.span>
                 </motion.h1>
 
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="text-base sm:text-lg md:text-xl text-gray-200 font-semibold leading-relaxed max-w-xl"
+                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.8 }}
+                  className="text-base sm:text-lg md:text-xl text-gray-300 font-medium leading-relaxed max-w-xl"
                 >
                   Reliable heavy equipment solutions for construction, industrial, and infrastructure projects across the UAE.
                 </motion.p>
@@ -588,8 +586,8 @@ export default function Home() {
                 </motion.div>
 
                 <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }}>
-                  <h2 className="text-xs font-black uppercase tracking-widest text-[#A51A1A] mb-6 flex items-center gap-4">
-                    <span className="w-12 h-[1px] bg-[#A51A1A]" /> 03 / Our Mission
+                  <h2 className="text-xs font-black uppercase tracking-widest text-[#C5A059] mb-6 flex items-center gap-4">
+                    <span className="w-12 h-[1px] bg-[#C5A059]" /> 03 / Our Mission
                   </h2>
                   <h3 className="text-2xl md:text-4xl lg:text-2xl md:text-4xl lg:text-5xl font-black uppercase leading-[1.1] mb-8 font-orbitron text-white">
                     Empowering <br/> Growth & Safety.
@@ -656,8 +654,8 @@ export default function Home() {
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
             <div className="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div className="space-y-8">
-                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/20 text-[#A51A1A]">
-                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-[#C5A059]">
+                  <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
                   <span className="text-xs font-black uppercase tracking-widest font-orbitron">Live Telemetry</span>
                 </div>
                 <h3 className="text-2xl md:text-4xl lg:text-5xl lg:text-6xl font-black font-orbitron uppercase leading-[1.1] text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">
@@ -673,7 +671,7 @@ export default function Home() {
                     <span className="text-xs font-bold uppercase tracking-widest text-gray-500">Faster Output</span>
                   </div>
                   <div>
-                    <span className="block text-4xl font-black font-orbitron text-[#A51A1A] mb-1">24/7</span>
+                    <span className="block text-4xl font-black font-orbitron text-[#C5A059] mb-1">24/7</span>
                     <span className="text-xs font-bold uppercase tracking-widest text-gray-500">Continuous Ops</span>
                   </div>
                 </div>
@@ -681,7 +679,7 @@ export default function Home() {
 
               {/* Glowing Chart Dashboard */}
               <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-[#C5A059] to-[#A51A1A] rounded-3xl blur opacity-20" />
+                <div className="absolute -inset-1 bg-gradient-to-r from-[#C5A059] to-[#DFBA73] rounded-3xl blur opacity-20" />
                 <div className="relative bg-[#111113]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-4 sm:p-8 shadow-2xl">
                   <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
                     <span className="text-xs font-bold uppercase tracking-widest text-gray-400">Productivity Analysis</span>
@@ -716,7 +714,7 @@ export default function Home() {
 
               <div className="lg:col-span-7 relative">
                 {/* Vertical Line */}
-                <div className="absolute left-[27px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-[#C5A059] via-[#A51A1A] to-transparent hidden md:block" />
+                <div className="absolute left-[27px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-[#C5A059] via-[#DFBA73] to-transparent hidden md:block" />
                 
                 <div className="space-y-16 md:pl-16">
                   {[

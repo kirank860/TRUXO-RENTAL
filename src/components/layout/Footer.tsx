@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Shield, Mail, Phone, MapPin, Globe } from "lucide-react";
+import { Shield, Mail, Phone, MapPin } from "lucide-react";
 
 export default function Footer() {
   return (

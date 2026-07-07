@@ -11,15 +11,44 @@ const getVehicleImage = (category: string, type: string) => {
   const c = category.toLowerCase();
   const t = type.toLowerCase();
 
-  if (c.includes("forklift")) return "/images/forklift_warehouse.jpg";
-  if (t.includes("wheel excavator") || c.includes("jcb")) return "/images/wheel_shovel.jpg";
+  if (c.includes("forklift")) return "/images/Forklift.webp";
+  if (t.includes("wheel excavator") || c.includes("develon")) return "/images/Revealing The Profitability Of Used Wheel Excavators.jpeg";
+  if (c.includes("jcb")) return "/images/JCB 520X Hydraulic Excavator.jpeg";
+  if (c.includes("hyundai") || t.includes("truck")) return "/images/_.jpeg";
   if (t.includes("excavator")) return "/images/company_excavator.jpg";
-  return "/images/heavy_crane.jpg";
+  return "/images/Trucks.jpeg"; // Default fallback
+};
+
+// Description mapping helper based on category
+const getVehicleDescription = (category: string, type: string) => {
+  const c = category.toLowerCase();
+  const t = type.toLowerCase();
+
+  if (c.includes("forklift")) return "Ideal for warehouses, logistics centers, and industrial facilities, our forklifts offer exceptional maneuverability for lifting, stacking, and transporting heavy pallets and materials with precision and safety.";
+  if (t.includes("wheel excavator") || c.includes("develon")) return "Designed for mobility and power, wheel excavators are perfect for road construction, utility work, and urban environments where driving between tasks without damaging pavement is essential.";
+  if (c.includes("jcb") || t.includes("excavator")) return "A powerhouse for earthmoving, this excavator delivers maximum breakout force and stability. Perfect for deep trenching, heavy lifting, and large-scale site preparation across demanding terrains.";
+  if (c.includes("hyundai") || t.includes("truck")) return "Built for heavy-duty hauling, these transport trucks ensure reliable delivery of aggregates, soil, and debris. They form the critical backbone of site logistics, keeping your project moving on schedule.";
+  return "A versatile and robust piece of heavy machinery, engineered to deliver consistent performance, durability, and efficiency across a wide range of demanding construction and industrial applications.";
 };
 
 type Props = {
   params: Promise<{ id: string }>;
 };
+
+import type { Metadata } from "next";
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const vehicleId = parseInt(id, 10);
+  const vehicle = fleetInventory.find((v) => v.id === vehicleId);
+  
+  if (!vehicle) return { title: "Equipment Not Found" };
+  
+  return {
+    title: `${vehicle.brand} ${vehicle.type}`,
+    description: `Rent the ${vehicle.year} ${vehicle.brand} ${vehicle.type}. ${getVehicleDescription(vehicle.category, vehicle.type)} Available in ${vehicle.location}.`,
+  };
+}
 
 export default async function FleetSpecPage({ params }: Props) {
   const { id } = await params;
@@ -32,6 +61,7 @@ export default async function FleetSpecPage({ params }: Props) {
   }
 
   const imageSrc = getVehicleImage(vehicle.category, vehicle.type);
+  const vehicleDesc = getVehicleDescription(vehicle.category, vehicle.type);
 
   // Get other fleet recommendations (excluding current)
   const recommendations = fleetInventory.filter((v) => v.id !== vehicleId).slice(0, 3);
@@ -93,6 +123,13 @@ export default async function FleetSpecPage({ params }: Props) {
           {/* Main Specs Column */}
           <div className="lg:col-span-8 xl:col-span-8 space-y-16">
             
+            <section className="bg-[#111113]/40 backdrop-blur-xl border border-white/5 p-8 md:p-10 rounded-[2rem] shadow-xl">
+              <h2 className="text-xl font-black text-white uppercase font-orbitron mb-4">Equipment Overview</h2>
+              <p className="text-gray-300 font-medium leading-relaxed text-sm md:text-base">
+                {vehicleDesc}
+              </p>
+            </section>
+
             <section>
               <h2 className="text-sm font-black text-[#C5A059] uppercase tracking-[0.3em] font-orbitron mb-8 flex items-center gap-4">
                 Technical Data

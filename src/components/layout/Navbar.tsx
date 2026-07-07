@@ -51,8 +51,11 @@ export default function Navbar() {
                   alt="TRUXO Logo" 
                   className="w-full h-full object-contain" 
                   onError={(e) => {
-                    (e.target as any).style.display = 'none';
-                    (e.target as any).nextSibling.style.display = 'block';
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    if (target.nextElementSibling) {
+                      (target.nextElementSibling as HTMLElement).style.display = 'block';
+                    }
                   }} 
                 />
                 <Shield className="hidden w-6 h-6 text-[#A51A1A]" />

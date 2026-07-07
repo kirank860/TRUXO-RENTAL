@@ -233,13 +233,13 @@ export function WorkBreakdownChart() {
   // Premium colors to match slide 9
   const colors = ["#A51A1A", "#C5A059", "#1E202C", "#8A1515"];
 
-  let accumulatedPercentage = 0;
-
   const segments = workBreakdown.map((item, idx) => {
     const percentage = item.percentage;
     const strokeDashoffset = circumference - (percentage / 100) * circumference;
-    const rotationAngle = (accumulatedPercentage / 100) * 360;
-    accumulatedPercentage += percentage;
+    
+    // Calculate accumulated percentage dynamically without mutating a variable
+    const currentAccumulated = workBreakdown.slice(0, idx).reduce((acc, curr) => acc + curr.percentage, 0);
+    const rotationAngle = (currentAccumulated / 100) * 360;
 
     return {
       ...item,

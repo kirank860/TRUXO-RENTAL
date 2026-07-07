@@ -24,7 +24,7 @@ export default function ServicesPage() {
       {/* 1. Cinematic Dark-Mode Hero */}
       <section className="relative w-full h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0">
-          <Image src="/images/heavy_crane.jpg" alt="Services Header" width={1920} height={1080} priority className="w-full h-full object-cover filter brightness-[0.2]" />
+          <Image src="/images/Reliable Industrial Transportation Services in Saudi Arabia _ 3M International.jpeg" alt="Services Header" width={1920} height={1080} priority className="w-full h-full object-cover filter brightness-[0.2]" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/50 to-transparent" />
         </div>
         

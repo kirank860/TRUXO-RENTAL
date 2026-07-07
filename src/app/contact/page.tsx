@@ -26,7 +26,7 @@ export default function ContactPage() {
             Get In Touch
           </h1>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 text-white uppercase tracking-tight font-orbitron drop-shadow-2xl">
-            Let's <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DFBA73] to-[#C5A059]">Build.</span>
+            Let&apos;s <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DFBA73] to-[#C5A059]">Build.</span>
           </h2>
           <p className="text-gray-400 text-sm md:text-lg font-medium max-w-2xl mx-auto leading-relaxed">
             Your trusted partner for reliable heavy equipment and material handling solutions across the UAE. Reach out today for mobilization schedules and rates.

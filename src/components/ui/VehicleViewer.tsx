@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React from "react";
 import Image from "next/image";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { Maximize2, MousePointer2 } from "lucide-react";

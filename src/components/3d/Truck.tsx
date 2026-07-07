@@ -5,7 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import { Box, Cylinder } from "@react-three/drei";
 import * as THREE from "three";
 
-export function StylizedExcavator(props: any) {
+export function StylizedExcavator(props: React.ComponentProps<'group'>) {
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {

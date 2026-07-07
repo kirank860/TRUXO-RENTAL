@@ -10,11 +10,11 @@ const icons = [Construction, Factory, Shield, Landmark, Building];
 
 // Hardcoding some images for the industries based on the array length
 const industryImages = [
-  "/images/company_excavator.jpg",
-  "/images/forklift_warehouse.jpg",
+  "/images/Civil Construction Services By AVID Energy Canada.jpeg",
+  "/images/Trucks.jpeg",
   "/images/heavy_crane.jpg",
-  "/images/hero_loader.jpg",
-  "/images/wheel_shovel.jpg"
+  "/images/Forklift.webp",
+  "/images/Revealing The Profitability Of Used Wheel Excavators.jpeg"
 ];
 
 export default function IndustriesPage() {

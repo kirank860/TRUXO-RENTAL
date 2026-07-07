@@ -11,10 +11,12 @@ const getVehicleImage = (category: string, type: string) => {
   const c = category.toLowerCase();
   const t = type.toLowerCase();
 
-  if (c.includes("forklift")) return "/images/forklift_warehouse.jpg";
-  if (t.includes("wheel excavator") || c.includes("jcb")) return "/images/wheel_shovel.jpg";
+  if (c.includes("forklift")) return "/images/Forklift.webp";
+  if (t.includes("wheel excavator") || c.includes("develon")) return "/images/Revealing The Profitability Of Used Wheel Excavators.jpeg";
+  if (c.includes("jcb")) return "/images/JCB 520X Hydraulic Excavator.jpeg";
+  if (c.includes("hyundai") || t.includes("truck")) return "/images/_.jpeg";
   if (t.includes("excavator")) return "/images/company_excavator.jpg";
-  return "/images/heavy_crane.jpg"; // Default fallback
+  return "/images/Trucks.jpeg"; // Default fallback
 };
 
 export default function FleetPage() {
