@@ -110,7 +110,7 @@ export default function Navbar() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-40 bg-[#111113] text-white pt-32 px-8 pb-8 overflow-y-auto"
+            className="fixed inset-0 z-40 bg-[#111113] text-white pt-32 px-8 pb-8 overflow-y-auto lg:hidden"
           >
             <div className="flex flex-col gap-8 font-orbitron text-2xl font-black uppercase tracking-wide">
               {links.map((link) => (

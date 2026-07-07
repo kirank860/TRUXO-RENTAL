@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BottomTabNavigation from "@/components/layout/BottomTabNavigation";
 import FAB from "@/components/layout/FAB";
+import SmoothScroller from "@/components/layout/SmoothScroller";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,13 +37,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
+    <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning className={`${inter.variable} ${montserrat.variable} ${jetbrainsMono.variable} font-sans bg-[#F5F2EB] text-[#111113] antialiased pb-24 md:pb-0`}>
-        <Navbar />
-        {children}
-        <FAB />
-        <BottomTabNavigation />
-        <Footer />
+        <SmoothScroller>
+          <Navbar />
+          {children}
+          <FAB />
+          <BottomTabNavigation />
+          <Footer />
+        </SmoothScroller>
       </body>
     </html>
   );

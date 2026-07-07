@@ -473,7 +473,7 @@ export default function Home() {
         <div className="space-y-36 pb-24">
 
           {/* SECTION 1: Hero */}
-          <section className="relative w-full min-h-[85vh] py-24 flex items-center overflow-hidden border-b-4 border-[#111113]">
+          <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2 }} className="relative w-full min-h-[85vh] py-24 flex items-center overflow-hidden border-b-4 border-[#111113]">
             {/* Background Video */}
             <div className="absolute inset-0 z-0">
               <video
@@ -539,10 +539,10 @@ export default function Home() {
                 </motion.div>
               </div>
             </div>
-          </section>
+          </motion.section>
 
           {/* SECTION 2: Company Profile */}
-          <section className="bg-[#A51A1A] py-24 text-white border-y-4 border-[#111113]">
+          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="bg-[#A51A1A] py-24 text-white border-y-4 border-[#111113]">
             <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div className="space-y-8">
                 <h2 className="text-sm font-black uppercase tracking-widest text-[#FF7C00] font-orbitron">ABOUT OUR COMPANY</h2>
@@ -563,10 +563,10 @@ export default function Home() {
                 <Image src="/images/company_excavator.jpg" alt="Tracked excavator" width={1200} height={900} className="w-full h-full object-cover aspect-[4/3]" />
               </div>
             </div>
-          </section>
+          </motion.section>
 
           {/* SECTION 3: Mission & Vision */}
-          <section className="max-w-7xl mx-auto px-6 space-y-16">
+          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="max-w-7xl mx-auto px-6 space-y-16">
             <div className="relative h-[300px] w-full rounded-3xl overflow-hidden border-4 border-[#111113] shadow-[8px_8px_0px_#111113]">
               <Image src="/images/forklift_warehouse.jpg" alt="Forklift inside warehouse" width={1200} height={900} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-black/55 flex flex-col justify-center items-center text-center p-6">
@@ -585,10 +585,10 @@ export default function Home() {
                 <p className="text-base font-bold leading-relaxed lowercase">{companyProfile.mission}</p>
               </div>
             </div>
-          </section>
+          </motion.section>
 
           {/* SECTION 4: What is Heavy Equipment? */}
-          <section className="bg-[#111113] py-24 text-white border-y-4 border-[#111113]">
+          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="bg-[#111113] py-24 text-white border-y-4 border-[#111113]">
             <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div className="space-y-8">
                 <h2 className="text-sm font-black uppercase tracking-widest text-[#A51A1A] font-orbitron">WHAT IS HEAVY EQUIPMENT?</h2>
@@ -619,10 +619,10 @@ export default function Home() {
                 <Image src="/images/excavator_digging.jpg" alt="Excavator digging gravel" width={1200} height={900} className="w-full h-full object-cover aspect-[4/3]" />
               </div>
             </div>
-          </section>
+          </motion.section>
 
           {/* SECTION 5: Common Types */}
-          <section className="max-w-7xl mx-auto px-6 space-y-16">
+          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="max-w-7xl mx-auto px-6 space-y-16">
             <div className="text-center">
               <h2 className="text-sm font-black uppercase tracking-widest text-[#A51A1A] font-orbitron mb-3">COMMON TYPES OF HEAVY EQUIPMENT</h2>
               <h3 className="text-5xl md:text-6xl font-black font-orbitron uppercase text-[#111113] tracking-tight">OUR FLLET SEGMENTS</h3>
@@ -643,10 +643,10 @@ export default function Home() {
                 </div>
               ))}
             </div>
-          </section>
+          </motion.section>
 
           {/* SECTION 6: Why Heavy Equipment Matters */}
-          <section className="relative py-32 px-6 overflow-hidden border-y-4 border-[#111113]">
+          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="relative py-32 px-6 overflow-hidden border-y-4 border-[#111113]">
             <div className="absolute inset-0 z-0">
               <Image src="/images/heavy_crane.jpg" alt="Crane backdrop" width={1200} height={900} className="w-full h-full object-cover filter brightness-[0.3]" />
               <div className="absolute inset-0 bg-gradient-to-r from-[#A51A1A]/80 to-transparent" />
@@ -660,10 +660,10 @@ export default function Home() {
                 </p>
               </div>
             </div>
-          </section>
+          </motion.section>
 
           {/* SECTION 7: Productivity Comparison */}
-          <section className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
               <h2 className="text-sm font-black uppercase tracking-widest text-[#A51A1A] font-orbitron">CAPACITY METRICS</h2>
               <h3 className="text-5xl font-black font-orbitron uppercase text-[#111113]">PRODUCTIVITY COMPARISON</h3>
@@ -675,10 +675,10 @@ export default function Home() {
             <div className="relative rounded-3xl overflow-hidden border-4 border-[#111113] shadow-[8px_8px_0px_#111113]">
               <Image src="/images/wheel_shovel.jpg" alt="Front wheel shovel loader" width={1200} height={900} className="w-full h-full object-cover aspect-[4/3]" />
             </div>
-          </section>
+          </motion.section>
 
           {/* SECTION 8: Heavy Equipment Usage in Projects */}
-          <section className="bg-[#111113] py-24 text-white border-y-4 border-[#111113]">
+          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="bg-[#111113] py-24 text-white border-y-4 border-[#111113]">
             <div className="max-w-7xl mx-auto px-6 space-y-16">
               <div className="text-center">
                 <h2 className="text-sm font-black uppercase tracking-widest text-[#FF7C00] font-orbitron mb-3">OPERATIONAL INTEGRATION</h2>
@@ -704,10 +704,10 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          </section>
+          </motion.section>
 
           {/* SECTION 9: Types of Work Done */}
-          <section className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
               <h2 className="text-sm font-black uppercase tracking-widest text-[#A51A1A] font-orbitron">WORK BREAKDOWN</h2>
               <h3 className="text-5xl font-black font-orbitron uppercase text-[#111113]">TYPES OF WORK DONE</h3>
@@ -721,10 +721,10 @@ export default function Home() {
             <div className="flex justify-center">
               <WorkBreakdownChart />
             </div>
-          </section>
+          </motion.section>
 
           {/* SECTION 10: Operation Trends */}
-          <section className="bg-[#111113] py-24 text-white border-y-4 border-[#111113]">
+          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="bg-[#111113] py-24 text-white border-y-4 border-[#111113]">
             <div className="max-w-5xl mx-auto px-6 space-y-12">
               <div className="text-center">
                 <h2 className="text-sm font-black uppercase tracking-widest text-[#FF7C00] font-orbitron mb-3">ACTIVITY PHASES</h2>
@@ -732,10 +732,10 @@ export default function Home() {
               </div>
               <OperationTrendsChart dark={true} />
             </div>
-          </section>
+          </motion.section>
 
           {/* SECTION 11: The Future of Heavy Equipment */}
-          <section className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
               <h2 className="text-sm font-black uppercase tracking-widest text-[#A51A1A] font-orbitron">THE FUTURE OF HEAVY EQUIPMENT</h2>
               <h3 className="text-5xl font-black font-orbitron uppercase text-[#111113]">SMARTER MACHINES FOR BETTER BUILD</h3>
@@ -762,10 +762,10 @@ export default function Home() {
             <div className="relative rounded-3xl overflow-hidden border-4 border-[#111113] shadow-[8px_8px_0px_#111113]">
               <Image src="/images/loader_future.jpg" alt="Autonomous hybrid wheel loader" width={1200} height={900} className="w-full h-full object-cover aspect-[4/3]" />
             </div>
-          </section>
+          </motion.section>
 
           {/* SECTION 12: Thank You / Contact details */}
-          <section className="relative py-32 px-6 overflow-hidden border-t-4 border-[#111113]">
+          <motion.section initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }} className="relative py-32 px-6 overflow-hidden border-t-4 border-[#111113]">
             <div className="absolute inset-0 z-0">
               <Image src="/images/loader_thankyou.jpg" alt="Loader at sunset" width={1200} height={900} className="w-full h-full object-cover filter brightness-[0.3]" />
             </div>
@@ -805,7 +805,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          </section>
+          </motion.section>
 
         </div>
       )}
