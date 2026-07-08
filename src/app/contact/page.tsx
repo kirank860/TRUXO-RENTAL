@@ -1,11 +1,44 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Clock, ArrowRight } from "lucide-react";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mail, Phone, MapPin, Clock, ArrowRight, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import Image from "next/image";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function ContactPage() {
+  const [formStatus, setFormStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    equipmentRequired: ""
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormStatus("loading");
+    
+    try {
+      const { error } = await supabase
+        .from('contact_requests')
+        .insert([
+          { 
+            first_name: formData.firstName, 
+            last_name: formData.lastName, 
+            email: formData.email, 
+            equipment_required: formData.equipmentRequired 
+          }
+        ]);
+        
+      if (error) throw error;
+      setFormStatus("success");
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setFormStatus("error");
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[#050505] text-[#F5F2EB] font-sans pb-24 md:pb-0">
       
@@ -121,28 +154,65 @@ export default function ContactPage() {
                 <Clock className="w-10 h-10 text-gray-700 hidden md:block" />
               </div>
 
-              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">First Name</label>
-                    <input type="text" placeholder="John" className="w-full bg-[#050505]/50 border border-white/10 rounded-xl px-5 py-4 text-white font-semibold focus:outline-none focus:border-[#C5A059] focus:bg-[#050505] transition-all placeholder:text-gray-700" />
+                    <input required disabled={formStatus === "loading" || formStatus === "success"} value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} type="text" placeholder="John" className="w-full bg-[#050505]/50 border border-white/10 rounded-xl px-5 py-4 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-[#C5A059]/50 focus:border-[#C5A059] focus:bg-[#050505] transition-all placeholder:text-gray-700 disabled:opacity-50" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">Last Name</label>
-                    <input type="text" placeholder="Doe" className="w-full bg-[#050505]/50 border border-white/10 rounded-xl px-5 py-4 text-white font-semibold focus:outline-none focus:border-[#C5A059] focus:bg-[#050505] transition-all placeholder:text-gray-700" />
+                    <input required disabled={formStatus === "loading" || formStatus === "success"} value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} type="text" placeholder="Doe" className="w-full bg-[#050505]/50 border border-white/10 rounded-xl px-5 py-4 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-[#C5A059]/50 focus:border-[#C5A059] focus:bg-[#050505] transition-all placeholder:text-gray-700 disabled:opacity-50" />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">Email Address</label>
-                  <input type="email" placeholder="john@construction.com" className="w-full bg-[#050505]/50 border border-white/10 rounded-xl px-5 py-4 text-white font-semibold focus:outline-none focus:border-[#C5A059] focus:bg-[#050505] transition-all placeholder:text-gray-700" />
+                  <input required disabled={formStatus === "loading" || formStatus === "success"} value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} type="email" placeholder="john@construction.com" className="w-full bg-[#050505]/50 border border-white/10 rounded-xl px-5 py-4 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-[#C5A059]/50 focus:border-[#C5A059] focus:bg-[#050505] transition-all placeholder:text-gray-700 disabled:opacity-50" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">Equipment Required & Timeline</label>
-                  <textarea rows={5} placeholder="e.g. Need 2x 20-ton Excavators for 3 months starting next week..." className="w-full bg-[#050505]/50 border border-white/10 rounded-xl px-5 py-4 text-white font-semibold focus:outline-none focus:border-[#C5A059] focus:bg-[#050505] transition-all placeholder:text-gray-700 resize-none" />
+                  <textarea required disabled={formStatus === "loading" || formStatus === "success"} value={formData.equipmentRequired} onChange={e => setFormData({...formData, equipmentRequired: e.target.value})} rows={5} placeholder="e.g. Need 2x 20-ton Excavators for 3 months starting next week..." className="w-full bg-[#050505]/50 border border-white/10 rounded-xl px-5 py-4 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-[#C5A059]/50 focus:border-[#C5A059] focus:bg-[#050505] transition-all placeholder:text-gray-700 resize-none disabled:opacity-50" />
                 </div>
-                <button type="submit" className="w-full mt-4 py-5 rounded-xl bg-gradient-to-r from-[#DFBA73] to-[#C5A059] text-[#12131A] font-black text-sm uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(197,160,89,0.3)] hover:shadow-[0_0_40px_rgba(197,160,89,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all">
-                  Submit Request
-                </button>
+                
+                <AnimatePresence mode="wait">
+                  {formStatus === "success" ? (
+                    <motion.div
+                      key="success"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="w-full py-5 rounded-xl bg-[#25D366]/20 border border-[#25D366]/50 text-[#25D366] font-black text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3"
+                    >
+                      <CheckCircle2 className="w-5 h-5" /> Request Received
+                    </motion.div>
+                  ) : formStatus === "error" ? (
+                    <motion.div
+                      key="error"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="w-full flex flex-col gap-3"
+                    >
+                      <div className="w-full py-5 rounded-xl bg-[#A51A1A]/20 border border-[#A51A1A]/50 text-[#A51A1A] font-black text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3">
+                        <AlertCircle className="w-5 h-5" /> Submission Failed
+                      </div>
+                      <button 
+                        type="button"
+                        onClick={() => setFormStatus("idle")}
+                        className="text-xs text-gray-400 hover:text-white uppercase tracking-widest font-bold underline"
+                      >
+                        Try Again
+                      </button>
+                    </motion.div>
+                  ) : (
+                    <motion.button 
+                      whileTap={{ scale: 0.95 }}
+                      disabled={formStatus === "loading"}
+                      type="submit" 
+                      className="w-full mt-4 py-5 rounded-xl bg-gradient-to-r from-[#DFBA73] to-[#C5A059] text-[#12131A] font-black text-sm uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(197,160,89,0.3)] hover:shadow-[0_0_40px_rgba(197,160,89,0.5)] transition-all flex items-center justify-center disabled:opacity-70"
+                    >
+                      {formStatus === "loading" ? <Loader2 className="w-5 h-5 animate-spin" /> : "Submit Request"}
+                    </motion.button>
+                  )}
+                </AnimatePresence>
               </form>
 
             </div>

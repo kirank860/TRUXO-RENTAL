@@ -18,6 +18,7 @@ export default function FAB() {
         href="https://wa.me/971506758759"
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="Contact us on WhatsApp"
         className="w-14 h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-transform border border-white/10"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
@@ -28,7 +29,8 @@ export default function FAB() {
       {/* Call Quick Action */}
       <a
         href="tel:+971506758759"
-        className="w-14 h-14 rounded-full bg-[#A51A1A] text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-transform border border-white/10"
+        aria-label="Call us via phone"
+        className="w-14 h-14 rounded-full bg-[#050505]/80 backdrop-blur-xl text-[#C5A059] flex items-center justify-center shadow-[0_0_15px_rgba(197,160,89,0.3)] hover:scale-110 active:scale-95 transition-transform border border-white/5"
       >
         <Phone className="w-6 h-6" />
       </a>

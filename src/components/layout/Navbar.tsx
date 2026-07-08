@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X, Play, Shield } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -46,9 +47,11 @@ export default function Navbar() {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3">
               <div className="w-10 h-10 flex items-center justify-center rounded-full bg-white p-1">
-                <img 
+                <Image 
                   src="/logo.jpeg" 
                   alt="TRUXO Logo" 
+                  width={40}
+                  height={40}
                   className="w-full h-full object-contain" 
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;

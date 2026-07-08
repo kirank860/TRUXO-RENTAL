@@ -2,7 +2,7 @@
 
 import React from "react";
 import { industries } from "@/data";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Shield, Building, Construction, Factory, Landmark, ArrowDown } from "lucide-react";
 import Image from "next/image";
 
@@ -18,15 +18,19 @@ const industryImages = [
 ];
 
 export default function IndustriesPage() {
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 800], ["0%", "30%"]);
+  const arrowOpacity = useTransform(scrollY, [0, 200], [1, 0]);
+
   return (
     <main className="min-h-screen bg-[#050505] text-[#F5F2EB] font-sans pb-24 md:pb-0">
       
       {/* 1. Cinematic Dark-Mode Hero */}
       <section className="relative w-full h-[70vh] min-h-[500px] flex items-center justify-center overflow-hidden border-b-4 border-[#C5A059]">
-        <div className="absolute inset-0 z-0">
+        <motion.div className="absolute inset-0 z-0" style={{ y: heroY }}>
           <Image src="/images/heavy_crane.jpg" alt="Industries We Serve" width={1920} height={1080} priority className="w-full h-full object-cover filter brightness-[0.2]" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/50 to-transparent" />
-        </div>
+        </motion.div>
         
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
@@ -45,6 +49,7 @@ export default function IndustriesPage() {
           </p>
 
           <motion.div 
+            style={{ opacity: arrowOpacity }}
             animate={{ y: [0, 10, 0] }} 
             transition={{ repeat: Infinity, duration: 2 }}
             className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center mx-auto text-white/50"
@@ -76,9 +81,12 @@ export default function IndustriesPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ margin: "-20%" }}
                   transition={{ duration: 0.6 }}
-                  className="max-w-2xl bg-[#111113]/80 backdrop-blur-2xl p-10 md:p-14 rounded-[3rem] border border-white/10 shadow-2xl"
+                  className="max-w-2xl bg-[#111113]/80 backdrop-blur-3xl p-10 md:p-14 rounded-[3rem] border border-white/10 shadow-2xl relative overflow-hidden group"
                 >
-                  <div className="flex items-center gap-6 mb-8">
+                  {/* Subtle hover gradient background */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#C5A059]/0 to-[#C5A059]/0 group-hover:from-[#C5A059]/5 transition-colors duration-500 pointer-events-none" />
+                  
+                  <div className="flex items-center gap-6 mb-8 relative z-10">
                     <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#DFBA73] to-[#C5A059] flex items-center justify-center text-[#12131A] shadow-[0_0_30px_rgba(197,160,89,0.3)]">
                       <Icon className="w-8 h-8" />
                     </div>
@@ -88,16 +96,16 @@ export default function IndustriesPage() {
                     </div>
                   </div>
 
-                  <p className="text-gray-300 leading-relaxed text-base md:text-lg font-medium mb-10">{ind.desc}</p>
+                  <p className="text-gray-300 leading-relaxed text-base md:text-lg font-medium mb-10 relative z-10">{ind.desc}</p>
 
                   {/* Bullet points */}
-                  <div className="border-t border-white/10 pt-8">
+                  <div className="border-t border-white/10 pt-8 relative z-10">
                     <span className="block text-[10px] font-black uppercase tracking-widest text-[#C5A059] mb-4 font-orbitron">Supported Deployments</span>
                     <div className="space-y-4">
-                      <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
+                      <motion.div whileHover={{ scale: 1.02, x: 10 }} className="flex items-center gap-4 bg-white/5 hover:bg-white/10 transition-colors p-4 rounded-2xl border border-white/5 cursor-default">
                         <span className="w-2 h-2 rounded-full bg-[#C5A059] shadow-[0_0_10px_rgba(197,160,89,0.8)]" />
                         <span className="text-sm font-bold text-white">Heavy Earthmoving Machinery</span>
-                      </div>
+                      </motion.div>
                       <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
                         <span className="w-2 h-2 rounded-full bg-[#C5A059] shadow-[0_0_10px_rgba(197,160,89,0.8)]" />
                         <span className="text-sm font-bold text-white">Lifting & Rigging Equipment</span>

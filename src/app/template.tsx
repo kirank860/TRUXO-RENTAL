@@ -11,6 +11,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   // Reset and trigger loading sequence on every route change
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     // Give it a fast 600ms premium feel
     const timer = setTimeout(() => {

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { services } from "@/data";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { Truck, HardHat, Settings, Shield, Check, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -18,15 +18,18 @@ const steps = [
 export default function ServicesPage() {
   const [activeTab, setActiveTab] = useState(0);
 
+  const { scrollY } = useScroll();
+  const heroVideoY = useTransform(scrollY, [0, 800], ["0%", "30%"]);
+
   return (
     <main className="min-h-screen bg-[#050505] text-[#F5F2EB] font-sans pb-24 md:pb-0">
       
       {/* 1. Cinematic Dark-Mode Hero */}
       <section className="relative w-full h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden border-b border-white/5">
-        <div className="absolute inset-0 z-0">
+        <motion.div className="absolute inset-0 z-0" style={{ y: heroVideoY }}>
           <Image src="/images/Reliable Industrial Transportation Services in Saudi Arabia _ 3M International.jpeg" alt="Services Header" width={1920} height={1080} priority className="w-full h-full object-cover filter brightness-[0.2]" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/50 to-transparent" />
-        </div>
+        </motion.div>
         
         <motion.div 
           initial={{ opacity: 0, y: 30 }}

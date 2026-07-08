@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import {
   ChevronRight,
   ChevronLeft,
@@ -24,6 +24,9 @@ import { ProductivityChart, OperationTrendsChart, WorkBreakdownChart } from "@/c
 export default function Home() {
   const [viewMode, setViewMode] = useState<"website" | "presentation">("website");
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  const { scrollY } = useScroll();
+  const heroVideoY = useTransform(scrollY, [0, 1000], ["0%", "30%"]);
 
   const totalSlides = 12;
 
@@ -461,12 +464,12 @@ export default function Home() {
         /* ========================================================================= */
         /* STANDARD SCROLL VIEW                                                      */
         /* ========================================================================= */
-        <div className="space-y-36 pb-24">
+        <div className="bg-[#050505]">
 
           {/* SECTION 1: Hero */}
-          <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2 }} className="relative w-full min-h-[85vh] py-24 flex items-center overflow-hidden border-b-4 border-[#111113]">
-            {/* Background Video */}
-            <div className="absolute inset-0 z-0">
+          <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2 }} className="sticky top-0 relative w-full h-[100vh] flex items-center overflow-hidden border-b border-white/5 z-0">
+            {/* Background Video Parallax */}
+            <motion.div className="absolute inset-0 z-0" style={{ y: heroVideoY }}>
               <video
                 autoPlay
                 loop
@@ -481,8 +484,9 @@ export default function Home() {
                   type="video/mp4"
                 />
               </video>
-              <div className="absolute inset-0 bg-gradient-to-r from-[#111113] via-[#111113]/80 to-transparent" />
-            </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/40 to-transparent" />
+            </motion.div>
 
             {/* Hero Content */}
             <div className="relative z-10 max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -507,7 +511,7 @@ export default function Home() {
                     initial={{ opacity: 0, x: -30, filter: "blur(10px)" }}
                     animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
                     transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
-                    className="text-transparent bg-clip-text bg-gradient-to-r from-[#DFBA73] to-[#C5A059] drop-shadow-xl sm:whitespace-nowrap block sm:inline mt-1 sm:mt-0"
+                    className="text-transparent bg-clip-text bg-gradient-to-r from-[#DFBA73] to-[#C5A059] drop-shadow-[0_0_15px_rgba(197,160,89,0.3)] sm:whitespace-nowrap block sm:inline mt-1 sm:mt-0"
                   >
                     EQUIPMENT RENTAL
                   </motion.span>
@@ -528,11 +532,15 @@ export default function Home() {
                   transition={{ delay: 0.3 }}
                   className="flex flex-col sm:flex-row flex-wrap gap-4 md:gap-5 pt-4 w-full sm:w-auto"
                 >
-                  <Link href="/fleet" className="btn-kampr-accent px-6 py-4 md:px-8 md:py-4 text-sm md:text-base shadow-[0_0_20px_rgba(255,124,0,0.3)] w-full sm:w-auto flex justify-center items-center">
-                    Explore Fleet <ChevronRight className="w-5 h-5 ml-1 inline" />
+                  <Link href="/fleet" className="w-full sm:w-auto">
+                    <motion.div whileTap={{ scale: 0.95 }} className="btn-kampr-accent px-6 py-4 md:px-8 md:py-4 text-sm md:text-base shadow-[0_0_20px_rgba(197,160,89,0.3)] w-full flex justify-center items-center">
+                      Explore Fleet <ChevronRight className="w-5 h-5 ml-1 inline" />
+                    </motion.div>
                   </Link>
-                  <Link href="/contact" className="px-6 py-4 md:px-8 md:py-4 rounded-full font-black border-2 border-white/50 text-white hover:bg-white hover:text-[#111113] transition-all duration-300 text-xs md:text-sm uppercase tracking-widest backdrop-blur-sm w-full sm:w-auto text-center flex justify-center items-center">
-                    Request Quote
+                  <Link href="/contact" className="w-full sm:w-auto">
+                    <motion.div whileTap={{ scale: 0.95 }} className="px-6 py-4 md:px-8 md:py-4 rounded-full font-black border-2 border-white/20 text-white hover:bg-white hover:text-[#050505] transition-all duration-300 text-xs md:text-sm uppercase tracking-widest backdrop-blur-md w-full flex justify-center items-center">
+                      Request Quote
+                    </motion.div>
                   </Link>
                 </motion.div>
               </div>
@@ -540,7 +548,7 @@ export default function Home() {
           </motion.section>
 
                     {/* SECTION 2 & 3: Company DNA (Sticky Parallax Editorial) */}
-          <section className="relative w-full bg-[#111113] text-white">
+          <section className="sticky top-0 w-full min-h-screen bg-[#050505] text-white z-[10] border-t border-white/5">
             <div className="grid grid-cols-1 lg:grid-cols-2">
               
               {/* Left Side: Sticky Media */}
@@ -602,7 +610,7 @@ export default function Home() {
           </section>
 
           {/* SECTION 4 & 5: Interactive Hover Expansion Gallery */}
-          <section className="bg-[#0a0a0c] py-32 overflow-hidden border-t-4 border-white/5">
+          <section className="sticky top-0 w-full min-h-screen bg-[#050505] py-32 overflow-hidden z-[20] border-t border-white/5">
             <div className="max-w-7xl mx-auto px-6 mb-16">
               <h2 className="text-xs font-black uppercase tracking-widest text-[#C5A059] mb-4 text-center">Equipment Arsenal</h2>
               <h3 className="text-2xl md:text-4xl lg:text-5xl lg:text-7xl font-black font-orbitron uppercase text-white tracking-tight text-center">
@@ -649,7 +657,7 @@ export default function Home() {
           </section>
 
           {/* --- NEW SECTION 6: Performance Telemetry Dashboard (Merges 6 & 7) --- */}
-          <section className="bg-[#050505] py-32 text-white relative overflow-hidden border-t-4 border-[#111113]">
+          <section className="sticky top-0 w-full min-h-screen bg-[#050505] py-32 text-white overflow-hidden z-[30] border-t border-white/5">
             {/* Background Grid Pattern */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
             <div className="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
