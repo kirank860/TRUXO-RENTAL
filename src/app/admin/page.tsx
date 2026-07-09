@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Lock, LogOut, Search, Loader2, Calendar, User, Mail, Wrench, 
   Inbox, LayoutDashboard, Truck, Settings, Bell, Filter, 
-  MoreVertical, CheckCircle2, TrendingUp, Users, Activity, Clock
+  MoreVertical, CheckCircle2, TrendingUp, Users, Activity, Clock, Trash2
 } from "lucide-react";
 
 type ContactRequest = {
@@ -15,6 +15,7 @@ type ContactRequest = {
   email: string;
   equipment_required: string;
   created_at: string;
+  status?: string;
 };
 
 export default function AdminDashboard() {
@@ -26,6 +27,48 @@ export default function AdminDashboard() {
   const [requests, setRequests] = useState<ContactRequest[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
+
+  const handleDelete = async (id: number) => {
+    try {
+      const res = await fetch("/api/admin/requests", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password, id })
+      });
+      if (res.ok) {
+        setRequests(prev => prev.filter(req => req.id !== id));
+      } else {
+        const errData = await res.json();
+        alert("Server Error: " + errData.error);
+      }
+    } catch (err: any) {
+      alert("Network Error: " + err.message);
+      console.error("Failed to delete request");
+    } finally {
+      setActiveDropdown(null);
+    }
+  };
+
+  const handleApprove = async (id: number) => {
+    try {
+      const res = await fetch("/api/admin/requests", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password, id, status: 'Approved' })
+      });
+      if (res.ok) {
+        setRequests(prev => prev.map(req => req.id === id ? { ...req, status: 'Approved' } : req));
+      } else {
+        const errData = await res.json();
+        alert("Server Error (You might need to add a 'status' column in Supabase!): " + errData.error);
+      }
+    } catch (err: any) {
+      alert("Network Error: " + err.message);
+    } finally {
+      setActiveDropdown(null);
+    }
+  };
 
   const fetchRequests = async (pass: string) => {
     setIsLoggingIn(true);
@@ -286,15 +329,46 @@ export default function AdminDashboard() {
                             {req.equipment_required}
                           </td>
                           <td className="p-6 whitespace-nowrap">
-                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#C5A059]/10 border border-[#C5A059]/20 w-fit">
-                              <span className="w-2 h-2 rounded-full bg-[#C5A059] animate-pulse" />
-                              <span className="text-[10px] font-black uppercase tracking-widest text-[#C5A059]">Pending</span>
+                            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border w-fit ${req.status === 'Approved' ? 'bg-[#25D366]/10 border-[#25D366]/20' : 'bg-[#C5A059]/10 border-[#C5A059]/20'}`}>
+                              <span className={`w-2 h-2 rounded-full ${req.status === 'Approved' ? 'bg-[#25D366]' : 'bg-[#C5A059] animate-pulse'}`} />
+                              <span className={`text-[10px] font-black uppercase tracking-widest ${req.status === 'Approved' ? 'text-[#25D366]' : 'text-[#C5A059]'}`}>
+                                {req.status || 'Pending'}
+                              </span>
                             </div>
                           </td>
-                          <td className="p-6 whitespace-nowrap text-right">
-                            <button className="p-2 rounded-lg text-gray-500 hover:bg-white/10 hover:text-white transition-colors">
+                          <td className="p-6 whitespace-nowrap text-right relative">
+                            <button 
+                              onClick={() => setActiveDropdown(activeDropdown === req.id ? null : req.id)}
+                              className="p-2 rounded-lg text-gray-500 hover:bg-white/10 hover:text-white transition-colors"
+                            >
                               <MoreVertical className="w-5 h-5" />
                             </button>
+                            
+                            <AnimatePresence>
+                              {activeDropdown === req.id && (
+                                <motion.div 
+                                  initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                                  exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                                  className="absolute right-12 top-10 bg-[#111113] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50 min-w-[160px]"
+                                >
+                                  {req.status !== 'Approved' && (
+                                    <button 
+                                      onClick={() => handleApprove(req.id)}
+                                      className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-[#25D366] hover:bg-[#25D366]/10 transition-colors border-b border-white/5"
+                                    >
+                                      <CheckCircle2 className="w-4 h-4" /> Approve
+                                    </button>
+                                  )}
+                                  <button 
+                                    onClick={() => handleDelete(req.id)}
+                                    className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-[#A51A1A] hover:bg-[#A51A1A]/10 transition-colors"
+                                  >
+                                    <Trash2 className="w-4 h-4" /> Delete
+                                  </button>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
                           </td>
                         </motion.tr>
                       ))
