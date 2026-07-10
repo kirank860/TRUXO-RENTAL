@@ -26,7 +26,6 @@ export default function AdminDashboard() {
   
   const [requests, setRequests] = useState<ContactRequest[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
 
   const handleDelete = async (id: number) => {
@@ -42,8 +41,8 @@ export default function AdminDashboard() {
         const errData = await res.json();
         alert("Server Error: " + errData.error);
       }
-    } catch (err: any) {
-      alert("Network Error: " + err.message);
+    } catch (err: unknown) {
+      alert("Network Error: " + (err instanceof Error ? err.message : String(err)));
       console.error("Failed to delete request");
     } finally {
       setActiveDropdown(null);
@@ -63,8 +62,8 @@ export default function AdminDashboard() {
         const errData = await res.json();
         alert("Server Error (You might need to add a 'status' column in Supabase!): " + errData.error);
       }
-    } catch (err: any) {
-      alert("Network Error: " + err.message);
+    } catch (err: unknown) {
+      alert("Network Error: " + (err instanceof Error ? err.message : String(err)));
     } finally {
       setActiveDropdown(null);
     }
@@ -90,8 +89,8 @@ export default function AdminDashboard() {
       setRequests(data.requests);
       setIsAuthenticated(true);
       sessionStorage.setItem("admin_token", pass);
-    } catch (err: any) {
-      setLoginError(err.message);
+    } catch (err: unknown) {
+      setLoginError(err instanceof Error ? err.message : String(err));
       sessionStorage.removeItem("admin_token");
     } finally {
       setIsLoggingIn(false);
@@ -101,6 +100,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const savedPassword = sessionStorage.getItem("admin_token");
     if (savedPassword) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPassword(savedPassword);
       fetchRequests(savedPassword);
     }
