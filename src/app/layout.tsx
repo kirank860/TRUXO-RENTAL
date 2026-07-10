@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "TRUXO Heavy Equipment Rental",
     description: "Reliable Heavy Equipment Solutions for Construction, Industrial and Infrastructure Projects across the UAE.",
-    url: "https://www.truxorental.com",
+    url: "https://truxo.ae",
     siteName: "TRUXO",
     images: [{ url: "/logo.jpeg", width: 800, height: 600, alt: "TRUXO Logo" }],
     locale: "en_AE",
