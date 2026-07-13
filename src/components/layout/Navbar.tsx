@@ -26,6 +26,7 @@ export default function Navbar() {
     { href: "/fleet", label: "Our Fleet" },
     { href: "/services", label: "Services" },
     { href: "/industries", label: "Industries" },
+    { href: "/insights", label: "News & Insights" },
     { href: "/contact", label: "Contact Us" },
   ];
 

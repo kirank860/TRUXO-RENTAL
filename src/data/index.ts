@@ -38,8 +38,8 @@ export const services = [
     desc: "We provide a comprehensive fleet of cranes ranging from 5-ton to 100-ton lifting capacity, including mobile cranes for versatile lifting operations.",
   },
   {
-    title: "UD Trucks",
-    desc: "Our UD trucks provide reliable and efficient transportation solutions for construction, industrial, and logistics operations. Built for durability and high performance.",
+    title: "Trucks",
+    desc: "Our trucks provide reliable and efficient transportation solutions for construction, industrial, and logistics operations. Built for durability and high performance.",
   }
 ];
 

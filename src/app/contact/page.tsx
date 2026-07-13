@@ -90,8 +90,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-[10px] text-gray-500 mb-1 uppercase tracking-widest font-black">Call Us (24/7)</p>
-                  <p className="text-xl md:text-2xl font-black text-white font-orbitron mb-2">+971 50 675 8759</p>
-                  <p className="text-gray-400 text-xs font-bold">055 598 2149 | 055 854 7497</p>
+                  <p className="text-xl md:text-2xl font-black text-white font-orbitron mb-2">+971 54 305 8358</p>
+                  <p className="text-gray-400 text-xs font-bold"></p>
                 </div>
               </div>
             </motion.a>
@@ -128,8 +128,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-[10px] text-gray-500 mb-1 uppercase tracking-widest font-black">Headquarters</p>
-                  <p className="text-sm md:text-lg font-black text-white font-orbitron leading-snug mb-2">Shop No. 05, Sheikh Mohammed Bin Zayed St.</p>
-                  <p className="text-gray-400 text-xs font-bold">Al Ghail, Ras Al Khaimah, UAE</p>
+                  <p className="text-sm md:text-lg font-black text-white font-orbitron leading-snug mb-2">Dubai</p>
+                  <p className="text-gray-400 text-xs font-bold">United Arab Emirates</p>
                 </div>
               </div>
             </motion.div>

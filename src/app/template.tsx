@@ -3,7 +3,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Shield } from "lucide-react";
+import Image from "next/image";
+
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
@@ -39,11 +40,11 @@ export default function Template({ children }: { children: React.ReactNode }) {
               {/* Premium Gold Spinner with Logo */}
               <div className="relative flex items-center justify-center">
                 <div className="absolute inset-0 rounded-full border-4 border-white/5" />
-                <div className="w-20 h-20 rounded-full border-4 border-transparent border-t-[#C5A059] border-r-[#C5A059] animate-spin" />
-                <Shield className="absolute w-8 h-8 text-[#C5A059]" />
+                <div className="w-40 h-40 rounded-full border-4 border-transparent border-t-[#C5A059] border-r-[#C5A059] animate-spin" />
+                <Image src="/logo.jpeg" width={96} height={96} alt="Truxo Logo" className="absolute w-24 h-24 object-contain rounded-full border border-white/10" />
               </div>
-              <span className="font-orbitron font-black text-white text-xs tracking-[0.3em] uppercase animate-pulse">
-                Truxo Rental
+              <span className="font-orbitron font-black text-white text-sm tracking-[0.3em] uppercase animate-pulse">
+                {/* Truxo */}
               </span>
             </motion.div>
           </motion.div>

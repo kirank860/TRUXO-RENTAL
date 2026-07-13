@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { companyProfile } from "@/data";
-import { ProductivityChart, OperationTrendsChart, WorkBreakdownChart } from "@/components/ui/Charts";
+import { ProductivityChart, OperationTrendsChart } from "@/components/ui/Charts";
 
 export default function Home() {
   const [viewMode, setViewMode] = useState<"website" | "presentation">("website");
@@ -92,9 +92,9 @@ export default function Home() {
       desc: "We provide a comprehensive fleet of cranes ranging from 5-ton to 100-ton lifting capacity, including mobile cranes for versatile lifting operations.",
     },
     {
-      title: "UD Trucks",
+      title: "Trucks",
       img: "/images/_.jpeg",
-      desc: "Our UD trucks provide reliable and efficient transportation solutions for construction, industrial, and logistics operations. Built for durability and high performance.",
+      desc: "Our trucks provide reliable and efficient transportation solutions for construction, industrial, and logistics operations. Built for durability and high performance.",
     }
   ];
 
@@ -120,7 +120,7 @@ export default function Home() {
             {/* Header Area of the Slides */}
             <div className="p-6 border-b border-white/10 bg-[#1A1A1D]/80 flex justify-between items-center z-10 shrink-0">
               <div className="flex items-center gap-3">
-                <img src="/logo.jpeg" alt="TRUXO Logo" className="h-8 object-contain rounded-full border border-[#C5A059]" />
+                <Image src="/logo.jpeg" alt="TRUXO Logo" width={32} height={32} className="h-8 w-8 object-contain rounded-full border border-[#C5A059]" />
                 <span className="font-orbitron font-black text-lg tracking-tighter text-white">TRUXO RENTAL</span>
               </div>
               <div className="flex items-center gap-4">
@@ -340,7 +340,7 @@ export default function Home() {
                         </div>
                         <div className="p-4 rounded-xl bg-white/5 backdrop-blur-xl text-white border border-white/10 flex items-center gap-4 shadow-lg transition-transform hover:-translate-y-1">
                           <span className="w-5 h-5 rounded-full border-2 border-[#C5A059] shrink-0" />
-                          <span className="font-orbitron font-black text-sm uppercase text-gray-200">UD Trucks transport machinery & aggregates</span>
+                          <span className="font-orbitron font-black text-sm uppercase text-gray-200">Dumpers & Low Beds transport machinery & aggregates</span>
                         </div>
                       </div>
                     </div>
@@ -356,7 +356,7 @@ export default function Home() {
                         </div>
                       </div>
                       <div className="flex justify-center items-center">
-                        <WorkBreakdownChart />
+                        {/* <WorkBreakdownChart /> */}
                       </div>
                     </div>
                   )}
@@ -408,11 +408,11 @@ export default function Home() {
                           </div>
                           <div className="flex items-center gap-3 font-medium text-sm text-gray-300 hover:text-white transition-colors">
                             <Phone className="w-5 h-5 text-[#C5A059]" />
-                            <span>+971 50 675 8759</span>
+                            <span>+971 54 305 8358</span>
                           </div>
                           <div className="flex items-center gap-3 font-medium text-sm text-gray-300 hover:text-white transition-colors">
                             <MapPin className="w-5 h-5 text-[#C5A059]" />
-                            <span>Ras Al Khaimah, UAE</span>
+                            <span>Dubai, UAE</span>
                           </div>
                         </div>
                       </div>
@@ -507,7 +507,7 @@ export default function Home() {
                   className="text-[2.5rem] sm:text-2xl md:text-4xl lg:text-5xl lg:text-6xl lg:text-[5.5rem] font-black font-orbitron tracking-tight text-white uppercase leading-[1.05]"
                 >
                   TRUXO HEAVY <br />
-                  <motion.span 
+                  <motion.span
                     initial={{ opacity: 0, x: -30, filter: "blur(10px)" }}
                     animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
                     transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
@@ -547,17 +547,17 @@ export default function Home() {
             </div>
           </motion.section>
 
-                    {/* SECTION 2 & 3: Company DNA (Sticky Parallax Editorial) */}
+          {/* SECTION 2 & 3: Company DNA (Sticky Parallax Editorial) */}
           <section className="sticky top-0 w-full min-h-screen bg-[#050505] text-white z-[10] border-t border-white/5">
             <div className="grid grid-cols-1 lg:grid-cols-2">
-              
+
               {/* Left Side: Sticky Media */}
               <div className="h-[50vh] lg:h-screen sticky top-0 lg:top-0 overflow-hidden border-b-4 lg:border-b-0 lg:border-r-4 border-white/10 z-10">
-                <Image 
-                  src="/images/company_excavator.jpg" 
-                  alt="Company DNA" 
-                  width={1920} height={1080} 
-                  className="w-full h-full object-cover filter brightness-[0.6] sepia-[0.3]" 
+                <Image
+                  src="/images/company_excavator.jpg"
+                  alt="Company DNA"
+                  width={1920} height={1080}
+                  className="w-full h-full object-cover filter brightness-[0.6] sepia-[0.3]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#111113] to-transparent opacity-90" />
                 <div className="absolute bottom-12 left-12">
@@ -568,13 +568,13 @@ export default function Home() {
 
               {/* Right Side: Scrolling Content */}
               <div className="py-24 px-8 md:px-16 lg:py-48 flex flex-col gap-32">
-                
+
                 <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }}>
                   <h2 className="text-xs font-black uppercase tracking-widest text-[#C5A059] mb-6 flex items-center gap-4">
                     <span className="w-12 h-[1px] bg-[#C5A059]" /> 01 / Who We Are
                   </h2>
                   <h3 className="text-2xl md:text-4xl lg:text-5xl lg:text-6xl font-black uppercase leading-[1.1] mb-8 font-orbitron">
-                    The Backbone of <br/> Infrastructure.
+                    The Backbone of <br /> Infrastructure.
                   </h3>
                   <p className="text-lg md:text-xl font-medium text-gray-400 leading-relaxed max-w-xl">
                     {companyProfile.about}
@@ -586,7 +586,7 @@ export default function Home() {
                     <span className="w-12 h-[1px] bg-[#C5A059]" /> 02 / Our Vision
                   </h2>
                   <h3 className="text-2xl md:text-4xl lg:text-2xl md:text-4xl lg:text-5xl font-black uppercase leading-[1.1] mb-8 font-orbitron text-white">
-                    Setting The <br/> Industry Standard.
+                    Setting The <br /> Industry Standard.
                   </h3>
                   <p className="text-lg md:text-xl font-medium text-gray-400 leading-relaxed max-w-xl">
                     {companyProfile.vision}
@@ -598,7 +598,7 @@ export default function Home() {
                     <span className="w-12 h-[1px] bg-[#C5A059]" /> 03 / Our Mission
                   </h2>
                   <h3 className="text-2xl md:text-4xl lg:text-2xl md:text-4xl lg:text-5xl font-black uppercase leading-[1.1] mb-8 font-orbitron text-white">
-                    Empowering <br/> Growth & Safety.
+                    Empowering <br /> Growth & Safety.
                   </h3>
                   <p className="text-lg md:text-xl font-medium text-gray-400 leading-relaxed max-w-xl">
                     {companyProfile.mission}
@@ -620,18 +620,18 @@ export default function Home() {
 
             <div className="flex flex-col lg:flex-row h-[80vh] w-full px-6 gap-4">
               {columnsData.map((col, idx) => (
-                <div 
+                <div
                   key={idx}
                   className="group relative flex-1 hover:flex-[3] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden rounded-3xl border border-white/10 cursor-pointer min-h-[100px] lg:min-h-full"
                 >
-                  <Image 
-                    src={col.img} 
-                    alt={col.title} 
-                    width={1920} height={1080} 
-                    className="absolute inset-0 w-full h-full object-cover filter brightness-[0.4] group-hover:brightness-100 transition-all duration-700 scale-125 group-hover:scale-100" 
+                  <Image
+                    src={col.img}
+                    alt={col.title}
+                    width={1920} height={1080}
+                    className="absolute inset-0 w-full h-full object-cover filter brightness-[0.4] group-hover:brightness-100 transition-all duration-700 scale-125 group-hover:scale-100"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-700" />
-                  
+
                   <div className="absolute bottom-0 left-0 w-full p-8 lg:p-12 flex flex-col justify-end h-full">
                     <div className="flex items-center gap-6 mb-4">
                       <span className="text-4xl font-black font-orbitron text-[#C5A059] opacity-50 group-hover:opacity-100 transition-opacity duration-700">
@@ -641,7 +641,7 @@ export default function Home() {
                         {col.title}
                       </h4>
                     </div>
-                    
+
                     <div className="opacity-0 translate-y-10 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-700 delay-100 hidden lg:block">
                       <p className="text-gray-200 font-medium mb-8 max-w-md leading-relaxed line-clamp-3">
                         {col.desc}
@@ -664,7 +664,7 @@ export default function Home() {
               <div className="space-y-8">
                 <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-[#C5A059]">
                   <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                  <span className="text-xs font-black uppercase tracking-widest font-orbitron">Live Telemetry</span>
+                  <span className="text-xs font-black uppercase tracking-widest font-orbitron">Job Tracking</span>
                 </div>
                 <h3 className="text-2xl md:text-4xl lg:text-5xl lg:text-6xl font-black font-orbitron uppercase leading-[1.1] text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">
                   Speed & Capacity Metrics
@@ -672,7 +672,7 @@ export default function Home() {
                 <p className="text-lg text-gray-400 font-medium leading-relaxed max-w-lg">
                   Heavy equipment plays an important role in construction projects. Without these machines, many tasks would take much longer to complete. Large equipment can move huge amounts of soil and materials in a short time, helping teams complete projects more efficiently.
                 </p>
-                
+
                 <div className="grid grid-cols-2 gap-6 pt-8 border-t border-white/10">
                   <div>
                     <span className="block text-4xl font-black font-orbitron text-[#C5A059] mb-1">40x</span>
@@ -702,20 +702,20 @@ export default function Home() {
           {/* --- NEW SECTION 7: Interactive Workflow Timeline (Merges 8 & 9) --- */}
           <section className="bg-[#111113] py-32 text-white relative border-t-4 border-white/5">
             <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16">
-              
+
               <div className="lg:col-span-5 space-y-12">
                 <div className="sticky top-32">
                   <h2 className="text-xs font-black uppercase tracking-widest text-[#C5A059] mb-4">Operational Flow</h2>
                   <h3 className="text-2xl md:text-4xl lg:text-5xl font-black font-orbitron uppercase leading-[1.1] mb-6">
-                    Work Breakdown <br/> & Integration
+                    Operations <br /> & Integration
                   </h3>
                   <p className="text-gray-400 font-medium leading-relaxed mb-12">
                     Heavy equipment is essential for excavating, transporting, and demolishing. Key machines improve efficiency and organization on sites, crucial for paving roads, building bridges, and erecting structures safely.
                   </p>
-                  
+
                   {/* Floating Chart Card */}
                   <div className="bg-[#050505] p-6 rounded-3xl border border-white/10 shadow-2xl">
-                    <WorkBreakdownChart />
+                    {/* <WorkBreakdownChart /> */}
                   </div>
                 </div>
               </div>
@@ -723,18 +723,18 @@ export default function Home() {
               <div className="lg:col-span-7 relative">
                 {/* Vertical Line */}
                 <div className="absolute left-[27px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-[#C5A059] via-[#DFBA73] to-transparent hidden md:block" />
-                
+
                 <div className="space-y-16 md:pl-16">
                   {[
                     { title: "Excavators", desc: "Used for digging, trenching, and massive earth-moving tasks.", icon: <Settings className="w-6 h-6 text-[#111113]" /> },
                     { title: "Wheel Loaders", desc: "Efficiently move heavy materials and aggregates across the site.", icon: <Wrench className="w-6 h-6 text-[#111113]" /> },
                     { title: "Bulldozers", desc: "Clear and level site land, preparing the foundation.", icon: <Layers className="w-6 h-6 text-[#111113]" /> },
-                    { title: "UD Trucks", desc: "Transport massive machinery and materials to and from the site.", icon: <Shield className="w-6 h-6 text-[#111113]" /> }
+                    { title: "Trucks", desc: "Transport massive machinery and materials to and from the site.", icon: <Shield className="w-6 h-6 text-[#111113]" /> }
                   ].map((item, idx) => (
-                    <motion.div 
+                    <motion.div
                       key={idx}
-                      initial={{ opacity: 0, x: 50 }} 
-                      whileInView={{ opacity: 1, x: 0 }} 
+                      initial={{ opacity: 0, x: 50 }}
+                      whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: false, margin: "-100px" }}
                       transition={{ delay: idx * 0.1 }}
                       className="relative bg-[#1A1A1D] p-8 rounded-3xl border border-white/5 hover:border-[#C5A059]/50 transition-colors group"
@@ -757,9 +757,9 @@ export default function Home() {
             <div className="absolute inset-0 z-0">
               <Image src="/images/loader_future.jpg" alt="Autonomous Loader" width={1920} height={1080} className="w-full h-full object-cover filter brightness-[0.25]" />
             </div>
-            
+
             <div className="relative z-10 max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              
+
               <div className="bg-[#111113]/90 backdrop-blur-xl border border-white/10 rounded-3xl p-4 sm:p-8 shadow-2xl">
                 <div className="text-center mb-8">
                   <h2 className="text-xs font-black uppercase tracking-widest text-[#FF7C00] font-orbitron mb-2">Operation Trends</h2>
@@ -771,7 +771,7 @@ export default function Home() {
               <div className="space-y-10">
                 <h2 className="text-xs font-black uppercase tracking-widest text-[#C5A059]">The Future of Heavy Equipment</h2>
                 <h3 className="text-2xl md:text-4xl lg:text-5xl lg:text-6xl font-black font-orbitron uppercase text-white leading-none">
-                  Smarter Machines <br/> Better Build.
+                  Smarter Machines <br /> Better Build.
                 </h3>
                 <p className="text-lg font-medium text-gray-300 leading-relaxed">
                   Heavy equipment will continue to evolve. New technologies are making machines safer, more efficient, and easier to operate, reducing fuel usage and supporting faster project completion.
@@ -782,7 +782,7 @@ export default function Home() {
                     "Autonomous Navigation",
                     "Sensor Safety Systems",
                     "Hybrid Clean Power",
-                    "Live Telemetry",
+                    "Job Tracking",
                     "Fleet Diagnostics"
                   ].map((tech, idx) => (
                     <span key={idx} className="px-4 py-2 rounded-full border border-white/20 bg-white/5 backdrop-blur-md text-white text-xs font-bold tracking-widest uppercase hover:bg-[#C5A059] hover:text-black hover:border-[#C5A059] transition-all cursor-default">
@@ -802,9 +802,9 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#111113] via-transparent to-[#111113]/50" />
             </div>
 
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }} 
-              whileInView={{ opacity: 1, scale: 1 }} 
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1 }}
               className="relative z-10 w-full max-w-4xl mx-auto px-6 text-center"
             >
@@ -819,8 +819,8 @@ export default function Home() {
                 {[
                   { icon: <Mail className="w-5 h-5" />, text: "alghazi478@gmail.com" },
                   { icon: <Globe className="w-5 h-5" />, text: "truxorental.com" },
-                  { icon: <Phone className="w-5 h-5" />, text: "+971 50 675 8759" },
-                  { icon: <MapPin className="w-5 h-5" />, text: "Ras Al Khaimah, UAE" },
+                  { icon: <Phone className="w-5 h-5" />, text: "+971 54 305 8358" },
+                  { icon: <MapPin className="w-5 h-5" />, text: "Dubai, UAE" },
                 ].map((info, idx) => (
                   <div key={idx} className="bg-black/40 backdrop-blur-md border border-white/10 p-6 rounded-2xl flex flex-col items-center justify-center gap-3 hover:bg-white/10 transition-colors">
                     <div className="text-[#C5A059]">{info.icon}</div>
