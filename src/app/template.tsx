@@ -40,8 +40,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
               {/* Premium Gold Spinner with Logo */}
               <div className="relative flex items-center justify-center">
                 <div className="absolute inset-0 rounded-full border-4 border-white/5" />
-                <div className="w-40 h-40 rounded-full border-4 border-transparent border-t-[#C5A059] border-r-[#C5A059] animate-spin" />
-                <Image src="/logo.jpeg" width={96} height={96} alt="Truxo Logo" className="absolute w-24 h-24 object-contain rounded-full border border-white/10" />
+                <div className="w-28 h-28 md:w-40 md:h-40 rounded-full border-4 border-transparent border-t-[#C5A059] border-r-[#C5A059] animate-spin" />
+                <Image src="/logo.jpeg" width={96} height={96} alt="Truxo Logo" className="absolute w-16 h-16 md:w-24 md:h-24 object-contain rounded-full border border-white/10" />
               </div>
               <span className="font-orbitron font-black text-white text-sm tracking-[0.3em] uppercase animate-pulse">
                 {/* Truxo */}

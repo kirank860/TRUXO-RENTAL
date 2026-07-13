@@ -27,6 +27,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://truxo.ae"),
   title: {
     template: "%s | TRUXO Heavy Equipment Rental",
     default: "TRUXO Heavy Equipment Rental - UAE's Premier Rental Service"
@@ -52,6 +53,27 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning className={`${inter.variable} ${montserrat.variable} ${jetbrainsMono.variable} font-sans bg-[#F5F2EB] text-[#111113] antialiased pb-24 md:pb-0`}>
+        {/* Google Structured Data for Zero-Click & Rich Snippets */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              "name": "TRUXO Heavy Equipment Rental",
+              "image": "https://truxo.ae/logo.jpeg",
+              "@id": "https://truxo.ae",
+              "url": "https://truxo.ae",
+              "telephone": "+971 54 305 8358",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Dubai",
+                "addressCountry": "AE"
+              },
+              "description": "Reliable Heavy Equipment Solutions for Construction, Industrial and Infrastructure Projects across the UAE."
+            })
+          }}
+        />
         <SmoothScroller>
           <Navbar />
           {children}
