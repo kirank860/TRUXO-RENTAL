@@ -55,13 +55,13 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning className={`${inter.variable} ${montserrat.variable} ${jetbrainsMono.variable} font-sans bg-[#F5F2EB] text-[#111113] antialiased pb-24 md:pb-0`}>
         {/* Google Analytics */}
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-KGYX8P199Y" strategy="afterInteractive" />
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-6GF5KLJ8B1" strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-KGYX8P199Y');
+            gtag('config', 'G-6GF5KLJ8B1');
           `}
         </Script>
         {/* Google Structured Data for Zero-Click & Rich Snippets */}
