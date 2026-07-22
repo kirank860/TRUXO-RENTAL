@@ -46,7 +46,7 @@ export default function Footer() {
           <p className="text-sm text-gray-400 leading-relaxed font-bold lowercase flex items-start gap-2">
             <MapPin className="w-5 h-5 text-[#A51A1A] shrink-0" />
             <span>
-              Dubai, UAE
+              DUBAI, UAE
             </span>
           </p>
         </div>
