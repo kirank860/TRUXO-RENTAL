@@ -64,7 +64,7 @@ export default function RootLayout({
             gtag('config', 'G-6GF5KLJ8B1');
           `}
         </Script>
-        {/* Google Structured Data for Zero-Click & Rich Snippets */}
+        {/* Google Structured Data for Zero-Click & Rich Snnippets */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
