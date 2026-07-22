@@ -1,12 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Lock, LogOut, Search, Loader2, Calendar, User, Mail, Wrench, 
   Inbox, LayoutDashboard, Truck, Settings, Bell, Filter, 
-  MoreVertical, CheckCircle2, TrendingUp, Users, Activity, Clock, Trash2
+  MoreVertical, CheckCircle2, TrendingUp, Users, Activity, Clock, Trash2, Home, X, BarChart3
 } from "lucide-react";
+import FleetTracking from "./components/FleetTracking";
+import ClientDirectory from "./components/ClientDirectory";
+import Analytics from "./components/Analytics";
 
 type ContactRequest = {
   id: number;
@@ -27,6 +31,13 @@ export default function AdminDashboard() {
   const [requests, setRequests] = useState<ContactRequest[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<"dispatch" | "fleet" | "clients" | "analytics" | "settings">("dispatch");
+  const [fleetAssetId, setFleetAssetId] = useState<string | null>(null);
+
+  const handleTrackAsset = (assetId: string) => {
+    setActiveTab("fleet");
+    setFleetAssetId(assetId);
+  };
 
   const handleDelete = async (id: number) => {
     try {
@@ -61,6 +72,26 @@ export default function AdminDashboard() {
       } else {
         const errData = await res.json();
         alert("Server Error (You might need to add a 'status' column in Supabase!): " + errData.error);
+      }
+    } catch (err: unknown) {
+      alert("Network Error: " + (err instanceof Error ? err.message : String(err)));
+    } finally {
+      setActiveDropdown(null);
+    }
+  };
+
+  const handleReject = async (id: number) => {
+    try {
+      const res = await fetch("/api/admin/requests", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password, id, status: 'Rejected' })
+      });
+      if (res.ok) {
+        setRequests(prev => prev.map(req => req.id === id ? { ...req, status: 'Rejected' } : req));
+      } else {
+        const errData = await res.json();
+        alert("Server Error: " + errData.error);
       }
     } catch (err: unknown) {
       alert("Network Error: " + (err instanceof Error ? err.message : String(err)));
@@ -173,18 +204,21 @@ export default function AdminDashboard() {
           </h1>
         </div>
         <nav className="flex-1 p-4 space-y-2">
-          <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#1A1C23]/50 text-[#C5A059] border border-[#C5A059]/20 font-bold text-sm transition-colors">
+          <button onClick={() => setActiveTab("dispatch")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-colors ${activeTab === "dispatch" ? "bg-[#1A1C23]/50 text-[#C5A059] border border-[#C5A059]/20" : "text-gray-500 hover:text-gray-300 hover:bg-white/5"}`}>
             <LayoutDashboard className="w-5 h-5" /> Dispatch Console
-          </a>
-          <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:text-gray-300 hover:bg-white/5 font-bold text-sm transition-colors">
+          </button>
+          <button onClick={() => setActiveTab("fleet")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-colors ${activeTab === "fleet" ? "bg-[#1A1C23]/50 text-[#C5A059] border border-[#C5A059]/20" : "text-gray-500 hover:text-gray-300 hover:bg-white/5"}`}>
             <Truck className="w-5 h-5" /> Fleet Tracking
-          </a>
-          <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:text-gray-300 hover:bg-white/5 font-bold text-sm transition-colors">
+          </button>
+          <button onClick={() => setActiveTab("clients")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-colors ${activeTab === "clients" ? "bg-[#1A1C23]/50 text-[#C5A059] border border-[#C5A059]/20" : "text-gray-500 hover:text-gray-300 hover:bg-white/5"}`}>
             <Users className="w-5 h-5" /> Clients
-          </a>
-          <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:text-gray-300 hover:bg-white/5 font-bold text-sm transition-colors">
+          </button>
+          <button onClick={() => setActiveTab("analytics")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-colors ${activeTab === "analytics" ? "bg-[#1A1C23]/50 text-[#C5A059] border border-[#C5A059]/20" : "text-gray-500 hover:text-gray-300 hover:bg-white/5"}`}>
+            <BarChart3 className="w-5 h-5" /> Analytics
+          </button>
+          <button onClick={() => setActiveTab("settings")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-colors ${activeTab === "settings" ? "bg-[#1A1C23]/50 text-[#C5A059] border border-[#C5A059]/20" : "text-gray-500 hover:text-gray-300 hover:bg-white/5"}`}>
             <Settings className="w-5 h-5" /> Settings
-          </a>
+          </button>
         </nav>
         <div className="p-4 border-t border-white/5">
           <button 
@@ -229,6 +263,8 @@ export default function AdminDashboard() {
 
         <div className="p-8 max-w-7xl mx-auto w-full">
           
+          {activeTab === "dispatch" && (
+            <>
           <div className="mb-10">
             <h2 className="text-3xl font-black text-white font-orbitron uppercase tracking-tight mb-2">Network Operations</h2>
             <p className="text-gray-400 font-medium">Real-time overview of active deployment requests.</p>
@@ -329,9 +365,9 @@ export default function AdminDashboard() {
                             {req.equipment_required}
                           </td>
                           <td className="p-6 whitespace-nowrap">
-                            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border w-fit ${req.status === 'Approved' ? 'bg-[#25D366]/10 border-[#25D366]/20' : 'bg-[#C5A059]/10 border-[#C5A059]/20'}`}>
-                              <span className={`w-2 h-2 rounded-full ${req.status === 'Approved' ? 'bg-[#25D366]' : 'bg-[#C5A059] animate-pulse'}`} />
-                              <span className={`text-[10px] font-black uppercase tracking-widest ${req.status === 'Approved' ? 'text-[#25D366]' : 'text-[#C5A059]'}`}>
+                            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border w-fit ${req.status === 'Approved' ? 'bg-[#25D366]/10 border-[#25D366]/20' : req.status === 'Rejected' ? 'bg-[#A51A1A]/10 border-[#A51A1A]/20' : 'bg-[#C5A059]/10 border-[#C5A059]/20'}`}>
+                              <span className={`w-2 h-2 rounded-full ${req.status === 'Approved' ? 'bg-[#25D366]' : req.status === 'Rejected' ? 'bg-[#A51A1A]' : 'bg-[#C5A059] animate-pulse'}`} />
+                              <span className={`text-[10px] font-black uppercase tracking-widest ${req.status === 'Approved' ? 'text-[#25D366]' : req.status === 'Rejected' ? 'text-[#A51A1A]' : 'text-[#C5A059]'}`}>
                                 {req.status || 'Pending'}
                               </span>
                             </div>
@@ -352,13 +388,21 @@ export default function AdminDashboard() {
                                   exit={{ opacity: 0, scale: 0.95, y: -10 }}
                                   className="absolute right-12 top-10 bg-[#111113] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50 min-w-[160px]"
                                 >
-                                  {req.status !== 'Approved' && (
-                                    <button 
-                                      onClick={() => handleApprove(req.id)}
-                                      className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-[#25D366] hover:bg-[#25D366]/10 transition-colors border-b border-white/5"
-                                    >
-                                      <CheckCircle2 className="w-4 h-4" /> Approve
-                                    </button>
+                                  {req.status !== 'Approved' && req.status !== 'Rejected' && (
+                                    <>
+                                      <button 
+                                        onClick={() => handleApprove(req.id)}
+                                        className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-[#25D366] hover:bg-[#25D366]/10 transition-colors border-b border-white/5"
+                                      >
+                                        <CheckCircle2 className="w-4 h-4" /> Approve
+                                      </button>
+                                      <button 
+                                        onClick={() => handleReject(req.id)}
+                                        className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-[#FF8C00] hover:bg-[#FF8C00]/10 transition-colors border-b border-white/5"
+                                      >
+                                        <X className="w-4 h-4" /> Reject
+                                      </button>
+                                    </>
                                   )}
                                   <button 
                                     onClick={() => handleDelete(req.id)}
@@ -379,6 +423,41 @@ export default function AdminDashboard() {
             </div>
           </motion.div>
 
+            </>
+          )}
+
+          {activeTab === "fleet" && <FleetTracking activeAssetId={fleetAssetId} setActiveAssetId={setFleetAssetId} />}
+          {activeTab === "clients" && <ClientDirectory onTrackAsset={handleTrackAsset} />}
+          {activeTab === "analytics" && <Analytics />}
+          {activeTab === "settings" && (
+            <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+              <Settings className="w-12 h-12 mb-4 opacity-50" />
+              <p className="text-xl font-bold font-orbitron uppercase tracking-widest">Settings Integration Pending</p>
+            </div>
+          )}
+
+        </div>
+      </div>
+
+      {/* Admin Mobile Bottom Navigation */}
+      <div className="lg:hidden fixed bottom-0 left-0 w-full z-50">
+        <div className="bg-[#111113]/95 backdrop-blur-xl border-t border-white/10 pt-3 pb-8 px-6 flex justify-around items-center shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+          <Link href="/" className="flex flex-col items-center gap-1.5 group">
+            <Home className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+            <span className="text-[9px] font-black tracking-wider uppercase text-gray-400 group-hover:text-white transition-colors">Home</span>
+          </Link>
+          <button onClick={() => setActiveTab('dispatch')} className="flex flex-col items-center gap-1.5 group">
+            <LayoutDashboard className={`w-5 h-5 transition-all ${activeTab === 'dispatch' ? 'text-[#C5A059] scale-110' : 'text-gray-400 group-hover:text-white'}`} />
+            <span className={`text-[9px] font-black tracking-wider uppercase transition-colors ${activeTab === 'dispatch' ? 'text-[#C5A059]' : 'text-gray-400 group-hover:text-white'}`}>Dispatch</span>
+          </button>
+          <button onClick={() => setActiveTab('fleet')} className="flex flex-col items-center gap-1.5 group">
+            <Truck className={`w-5 h-5 transition-all ${activeTab === 'fleet' ? 'text-[#C5A059] scale-110' : 'text-gray-400 group-hover:text-white'}`} />
+            <span className={`text-[9px] font-black tracking-wider uppercase transition-colors ${activeTab === 'fleet' ? 'text-[#C5A059]' : 'text-gray-400 group-hover:text-white'}`}>Fleet</span>
+          </button>
+          <button onClick={() => setActiveTab('clients')} className="flex flex-col items-center gap-1.5 group">
+            <Users className={`w-5 h-5 transition-all ${activeTab === 'clients' ? 'text-[#C5A059] scale-110' : 'text-gray-400 group-hover:text-white'}`} />
+            <span className={`text-[9px] font-black tracking-wider uppercase transition-colors ${activeTab === 'clients' ? 'text-[#C5A059]' : 'text-gray-400 group-hover:text-white'}`}>Clients</span>
+          </button>
         </div>
       </div>
     </main>

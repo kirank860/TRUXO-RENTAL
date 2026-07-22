@@ -87,13 +87,38 @@ export async function PATCH(request: Request) {
 
     const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
 
-    const { error } = await supabaseAdmin
+    const { data: requestData, error } = await supabaseAdmin
       .from('contact_requests')
       .update({ status })
-      .eq('id', id);
+      .eq('id', id)
+      .select()
+      .single();
 
     if (error) {
       throw error;
+    }
+
+    // Auto-create client if approved
+    if (status === 'Approved' && requestData) {
+      // Check if client already exists by email
+      const { data: existingClient } = await supabaseAdmin
+        .from('clients')
+        .select('id')
+        .eq('email', requestData.email)
+        .maybeSingle();
+        
+      if (!existingClient) {
+        const clientId = `CL-${Math.floor(100 + Math.random() * 900)}`;
+        const clientName = `${requestData.first_name} ${requestData.last_name}`;
+        
+        await supabaseAdmin.from('clients').insert({
+          client_id: clientId,
+          name: clientName, 
+          contact: clientName,
+          email: requestData.email,
+          phone: requestData.phone_number || '',
+        });
+      }
     }
 
     return NextResponse.json({ success: true });

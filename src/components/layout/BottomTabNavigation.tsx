@@ -8,6 +8,10 @@ import { Home, Truck, ShieldAlert, PhoneCall } from "lucide-react";
 export default function BottomTabNavigation() {
   const pathname = usePathname();
 
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
+
   const tabs = [
     { href: "/", label: "home", icon: Home },
     { href: "/fleet", label: "fleet", icon: Truck },
