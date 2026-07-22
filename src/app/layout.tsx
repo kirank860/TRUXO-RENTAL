@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import BottomTabNavigation from "@/components/layout/BottomTabNavigation";
 import FAB from "@/components/layout/FAB";
 import SmoothScroller from "@/components/layout/SmoothScroller";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -81,6 +82,7 @@ export default function RootLayout({
           <BottomTabNavigation />
           <Footer />
         </SmoothScroller>
+        <Analytics />
       </body>
     </html>
   );
