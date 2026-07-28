@@ -26,14 +26,23 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://truxo.ae"),
   title: {
-    template: "%s | TRUXO Heavy Equipment Rental",
-    default: "TRUXO Heavy Equipment Rental - UAE's Premier Rental Service"
+    template: "%s | TRUXO Heavy Equipment Rental Dubai",
+    default: "TRUXO Dubai | Heavy Equipment Rental UAE"
   },
-  description: "Reliable Heavy Equipment Solutions for Construction, Industrial and Infrastructure Projects across the UAE. Excavators, Forklifts, Trucks, and more.",
-  keywords: ["heavy equipment rental", "construction machinery UAE", "excavator rental", "forklift rental Dubai", "TRUXO rental", "industrial equipment UAE"],
+  description: "TRUXO provides reliable heavy equipment rental solutions in Dubai and across the UAE. Excavators, forklifts, loaders, and construction machinery.",
+  keywords: [
+    "TRUXO", 
+    "TRUXO Dubai", 
+    "heavy equipment rental Dubai", 
+    "construction machinery UAE", 
+    "excavator rental Dubai", 
+    "forklift rental UAE", 
+    "TRUXO equipment rental", 
+    "industrial equipment rental"
+  ],
   openGraph: {
-    title: "TRUXO Heavy Equipment Rental",
-    description: "Reliable Heavy Equipment Solutions for Construction, Industrial and Infrastructure Projects across the UAE.",
+    title: "TRUXO Dubai | Heavy Equipment Rental",
+    description: "TRUXO provides reliable heavy equipment rental solutions in Dubai and across the UAE. Excavators, forklifts, loaders, and construction machinery.",
     url: "https://truxo.ae",
     siteName: "TRUXO",
     images: [{ url: "/logo.jpeg", width: 800, height: 600, alt: "TRUXO Logo" }],
