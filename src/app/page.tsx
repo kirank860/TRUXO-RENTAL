@@ -620,7 +620,7 @@ export default function Home() {
           </div>
 
           {/* SECTION 2 & 3: Company DNA (Sticky Parallax Editorial) */}
-          <section className="relative w-full min-h-screen bg-[#050505] text-white z-[10] border-t border-white/5 overflow-hidden">
+          <section className="relative w-full min-h-screen bg-[#050505] text-white z-[10] border-t border-white/5">
             <div className="grid grid-cols-1 lg:grid-cols-2">
 
               {/* Left Side: Sticky Media */}
