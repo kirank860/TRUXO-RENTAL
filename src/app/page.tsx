@@ -620,7 +620,7 @@ export default function Home() {
           </div>
 
           {/* SECTION 2 & 3: Company DNA (Sticky Parallax Editorial) */}
-          <section className="relative w-full min-h-screen bg-[#050505] text-white z-[10] border-t border-white/5">
+          <section className="relative w-full min-h-screen bg-[#050505] text-white z-[10] border-t border-white/5 overflow-hidden">
             <div className="grid grid-cols-1 lg:grid-cols-2">
 
               {/* Left Side: Sticky Media */}
@@ -775,7 +775,7 @@ export default function Home() {
           </section>
 
           {/* --- NEW SECTION 7: Interactive Workflow Timeline (Merges 8 & 9) --- */}
-          <section className="bg-[#111113] py-32 text-white relative border-t-4 border-white/5">
+          <section className="bg-[#111113] py-32 text-white relative border-t-4 border-white/5 overflow-hidden">
             <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16">
 
               <div className="lg:col-span-5 space-y-12">

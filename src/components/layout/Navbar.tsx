@@ -43,7 +43,7 @@ export default function Navbar() {
     <>
       <nav className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "py-2 lg:py-4" : "py-4 lg:py-6"}`}>
         <div className="mx-auto px-4 lg:px-6 max-w-7xl">
-          <div className="flex items-center justify-between transition-all duration-300 rounded-full px-4 lg:px-6 py-2.5 lg:py-3.5 bg-[#111113]/90 backdrop-blur-md shadow-2xl border border-white/10">
+          <div className={`flex items-center justify-between transition-all duration-300 rounded-full px-4 lg:px-6 py-2.5 lg:py-3.5 ${scrolled ? "bg-[#111113]/90 backdrop-blur-md shadow-2xl border border-white/10" : "bg-white/90 backdrop-blur-md border border-black/5 shadow-sm"}`}>
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 lg:gap-3">
@@ -65,7 +65,7 @@ export default function Navbar() {
                   }}
                 />
               </div>
-              <span id="navbar-logo-text" className="font-orbitron font-black text-lg lg:text-xl tracking-tight text-white">TRUXO</span>
+              <span id="navbar-logo-text" className={`font-orbitron font-black text-lg lg:text-xl tracking-tight ${scrolled ? "text-white" : "text-[#111113]"}`}>TRUXO</span>
             </Link>
 
             {/* Desktop Links */}
@@ -76,7 +76,7 @@ export default function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`${isActive ? "text-[#C5A059]" : "text-gray-300 hover:text-white"} transition-colors relative group`}
+                    className={`${isActive ? "text-[#C5A059]" : (scrolled ? "text-gray-300 hover:text-white" : "text-[#111113] hover:text-[#C5A059]")} transition-colors relative group`}
                   >
                     {link.label}
                     {isActive && (
@@ -89,7 +89,7 @@ export default function Navbar() {
 
             {/* Actions */}
             <div className="hidden lg:flex items-center gap-4">
-              <button onClick={triggerPresentation} className="flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider transition-all border border-white/20 text-white hover:bg-white/10">
+              <button onClick={triggerPresentation} className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider transition-all border ${scrolled ? "border-white/20 text-white hover:bg-white/10" : "border-black/10 text-[#111113] hover:bg-black/5"}`}>
                 <Play className="w-3.5 h-3.5" /> Presentation
               </button>
               <Link
@@ -102,7 +102,7 @@ export default function Navbar() {
 
             {/* Mobile Hamburger */}
             <button
-              className="lg:hidden p-2 rounded-full text-white hover:bg-white/10"
+              className={`lg:hidden p-2 rounded-full ${scrolled ? "text-white hover:bg-white/10" : "text-[#111113] hover:bg-black/5"}`}
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
