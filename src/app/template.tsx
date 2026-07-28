@@ -14,10 +14,10 @@ export default function Template({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
-    // Give it a fast 600ms premium feel
+    // Give it a full 2000ms to allow video initialization
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 600);
+    }, 2000);
     return () => clearTimeout(timer);
   }, [pathname]);
 

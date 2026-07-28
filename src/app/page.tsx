@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent, useSpring } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent, useSpring, animate } from "framer-motion";
 import {
   ChevronRight,
   ChevronLeft,
@@ -23,6 +23,7 @@ import { ProductivityChart, OperationTrendsChart } from "@/components/ui/Charts"
 
 export default function Home() {
   const [viewMode, setViewMode] = useState<"website" | "presentation">("website");
+  const isIntroComplete = useRef(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [heroVideo] = useState("TRUXOEQ1.mp4"); // Permanent default
 
@@ -42,7 +43,7 @@ export default function Home() {
 
   // Scroll-Scrubbing Logic
   useMotionValueEvent(smoothProgress, "change", (latest) => {
-    if (viewMode === "website" && scrollVideoRef.current && scrollVideoRef.current.readyState >= 2) {
+    if (isIntroComplete.current && viewMode === "website" && scrollVideoRef.current && scrollVideoRef.current.readyState >= 2) {
       const duration = scrollVideoRef.current.duration;
       if (!isNaN(duration) && duration > 0) {
         scrollVideoRef.current.currentTime = duration * latest;
@@ -58,6 +59,43 @@ export default function Home() {
       }).catch(() => {});
     }
   }, [viewMode, heroVideo]);
+
+  // Intro Scrub Animation (Mid to Start)
+  useEffect(() => {
+    const video = scrollVideoRef.current;
+    if (!video) return;
+
+    const startIntro = () => {
+      if (isIntroComplete.current) return;
+      
+      const duration = video.duration;
+      if (!isNaN(duration) && duration > 0) {
+        video.currentTime = duration * 0.5; // Start at 50%
+        document.body.style.overflow = "hidden"; // Lock scroll
+        
+        setTimeout(() => {
+          animate(duration * 0.5, 0, {
+            duration: 3.0,
+            ease: "easeOut",
+            onUpdate: (latest) => {
+              if (scrollVideoRef.current) scrollVideoRef.current.currentTime = latest;
+            },
+            onComplete: () => {
+              isIntroComplete.current = true;
+              document.body.style.overflow = ""; // Unlock scroll
+            }
+          });
+        }, 1800);
+      }
+    };
+
+    if (video.readyState >= 1) {
+      startIntro();
+    } else {
+      video.addEventListener("loadedmetadata", startIntro);
+      return () => video.removeEventListener("loadedmetadata", startIntro);
+    }
+  }, []);
 
   const heroTextOpacity = useTransform(trackProgress, [0, 0.2], [1, 0]);
   const heroTextY = useTransform(trackProgress, [0, 0.2], [0, 50]);
@@ -207,7 +245,6 @@ export default function Home() {
                           muted
                           playsInline
                           preload="auto"
-                          poster="/images/company_excavator.jpg"
                           className="w-full h-full object-cover filter brightness-[0.95]"
                         >
                           <source src={`/${heroVideo}`} type="video/mp4" />
@@ -503,7 +540,7 @@ export default function Home() {
 
           {/* SECTION 1: Hero Track */}
           <div ref={scrollContainerRef} className="relative w-full h-[400vh]">
-            <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2 }} className="sticky top-0 w-full h-screen flex items-center overflow-hidden border-b border-white/5 z-0 bg-[#050505]">
+            <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 0.4 }} className="sticky top-0 w-full h-screen flex items-center overflow-hidden border-b border-white/5 z-0 bg-[#050505]">
               {/* Background Video */}
               <div className="absolute inset-0 z-0">
                 <video
@@ -512,11 +549,7 @@ export default function Home() {
                   muted
                   playsInline
                   preload="auto"
-                  poster="/images/company_excavator.jpg"
                   className="w-full h-full object-cover filter brightness-[0.85]"
-                  onLoadedMetadata={(e) => {
-                    e.currentTarget.currentTime = 0;
-                  }}
                 >
                   <source
                     src={`/${heroVideo}`}
@@ -531,8 +564,9 @@ export default function Home() {
               <motion.div style={{ opacity: heroTextOpacity, y: heroTextY }} className="relative z-10 max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div className="space-y-6 md:space-y-8 text-white max-w-2xl mt-12 md:mt-0">
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 2.0, ease: [0.16, 1, 0.3, 1] }}
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#111113]/50 border border-white/10 w-fit font-black uppercase text-xs tracking-[0.2em] text-[#FF7C00] backdrop-blur-md shadow-lg"
                 >
                   <MapPin className="w-4 h-4" />
@@ -542,14 +576,14 @@ export default function Home() {
                 <motion.h1
                   initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 2.2 }}
                   className="text-[2.5rem] sm:text-2xl md:text-4xl lg:text-5xl lg:text-6xl lg:text-[5.5rem] font-black font-orbitron tracking-tight text-white uppercase leading-[1.05]"
                 >
                   TRUXO HEAVY <br />
                   <motion.span
                     initial={{ opacity: 0, x: -30, filter: "blur(10px)" }}
                     animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
+                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 2.4 }}
                     className="text-transparent bg-clip-text bg-gradient-to-r from-[#DFBA73] to-[#C5A059] drop-shadow-[0_0_15px_rgba(197,160,89,0.3)] sm:whitespace-nowrap block sm:inline mt-1 sm:mt-0"
                   >
                     EQUIPMENT RENTAL
@@ -559,7 +593,7 @@ export default function Home() {
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.8 }}
+                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 2.6 }}
                   className="text-base sm:text-lg md:text-xl text-gray-300 font-medium leading-relaxed max-w-xl"
                 >
                   Reliable heavy equipment solutions for construction, industrial, and infrastructure projects across the UAE.
@@ -568,7 +602,7 @@ export default function Home() {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
+                  transition={{ duration: 0.8, delay: 2.9, ease: [0.16, 1, 0.3, 1] }}
                   className="flex flex-col sm:flex-row flex-wrap gap-4 md:gap-5 pt-4 w-full sm:w-auto"
                 >
                   <Link href="/fleet" className="w-full sm:w-auto">
@@ -662,9 +696,10 @@ export default function Home() {
 
             <div className="flex flex-col lg:flex-row h-[80vh] w-full px-6 gap-4">
               {columnsData.map((col, idx) => (
-                <div
+                <Link
+                  href="/fleet"
                   key={idx}
-                  className="group relative flex-1 hover:flex-[3] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden rounded-3xl border border-white/10 cursor-pointer min-h-[100px] lg:min-h-full"
+                  className="group relative flex-1 hover:flex-[3] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden rounded-3xl border border-white/10 cursor-pointer min-h-[100px] lg:min-h-full block"
                 >
                   <Image
                     src={col.img}
@@ -688,12 +723,12 @@ export default function Home() {
                       <p className="text-gray-200 font-medium mb-8 max-w-md leading-relaxed line-clamp-3">
                         {col.desc}
                       </p>
-                      <Link href="/fleet" className="inline-block px-8 py-4 rounded-full bg-[#C5A059] text-[#111113] font-bold text-xs uppercase tracking-widest hover:bg-white transition-colors">
+                      <span className="inline-block px-8 py-4 rounded-full bg-[#C5A059] text-[#111113] font-bold text-xs uppercase tracking-widest group-hover:bg-white transition-colors">
                         View Inventory
-                      </Link>
+                      </span>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </section>
