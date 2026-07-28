@@ -547,13 +547,22 @@ export default function Home() {
                   muted
                   playsInline
                   preload="auto"
-                  className="w-full h-full object-cover filter brightness-[0.85]"
+                  className="w-full h-full object-cover filter brightness-[0.85] hidden md:block"
                 >
                   <source
                     src={`/${heroVideo}`}
                     type="video/mp4"
                   />
                 </video>
+                <div className="absolute inset-0 md:hidden">
+                  <Image
+                    src="/images/hero_loader.jpg"
+                    alt="TRUXO Heavy Equipment"
+                    fill
+                    priority
+                    className="object-cover filter brightness-[0.85]"
+                  />
+                </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/10 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-r from-[#050505]/80 via-[#050505]/25 to-transparent" />
               </div>
