@@ -537,7 +537,7 @@ export default function Home() {
         <div className="bg-[#050505]">
 
           {/* SECTION 1: Hero Track */}
-          <div ref={scrollContainerRef} className="relative w-full h-[400vh]">
+          <div ref={scrollContainerRef} className="relative w-full h-screen md:h-[400vh]">
             <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 0.4 }} className="sticky top-0 w-full h-screen flex items-center overflow-hidden border-b border-white/5 z-0 bg-[#050505]">
               {/* Background Video */}
               <div className="absolute inset-0 z-0">
