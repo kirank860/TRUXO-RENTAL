@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Montserrat, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import BottomTabNavigation from "@/components/layout/BottomTabNavigation";
-import FAB from "@/components/layout/FAB";
-import SmoothScroller from "@/components/layout/SmoothScroller";
 import Script from "next/script";
+import ConditionalLayout from "@/components/layout/ConditionalLayout";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -85,13 +81,9 @@ export default function RootLayout({
             })
           }}
         />
-        <SmoothScroller>
-          <Navbar />
+        <ConditionalLayout>
           {children}
-          <FAB />
-          <BottomTabNavigation />
-          <Footer />
-        </SmoothScroller>
+        </ConditionalLayout>
       </body>
     </html>
   );

@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent, useSpring } from "framer-motion";
 import {
   ChevronRight,
   ChevronLeft,
@@ -24,9 +24,43 @@ import { ProductivityChart, OperationTrendsChart } from "@/components/ui/Charts"
 export default function Home() {
   const [viewMode, setViewMode] = useState<"website" | "presentation">("website");
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [heroVideo] = useState("TRUXOEQ1.mp4"); // Permanent default
 
   const { scrollY } = useScroll();
   const heroVideoY = useTransform(scrollY, [0, 1000], ["0%", "30%"]);
+
+  // Scroll Scrubbing Logic
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const scrollVideoRef = useRef<HTMLVideoElement>(null);
+  
+  const { scrollYProgress: trackProgress } = useScroll({
+    target: scrollContainerRef,
+    offset: ["start start", "end end"]
+  });
+
+  const smoothProgress = useSpring(trackProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+
+  // Scroll-Scrubbing Logic
+  useMotionValueEvent(smoothProgress, "change", (latest) => {
+    if (viewMode === "website" && scrollVideoRef.current && scrollVideoRef.current.readyState >= 2) {
+      const duration = scrollVideoRef.current.duration;
+      if (!isNaN(duration) && duration > 0) {
+        scrollVideoRef.current.currentTime = duration * latest;
+      }
+    }
+  });
+
+  // Prime the video for iOS/Safari scrubbing
+  useEffect(() => {
+    if (viewMode === "website" && scrollVideoRef.current) {
+      scrollVideoRef.current.play().then(() => {
+        if (scrollVideoRef.current) scrollVideoRef.current.pause();
+      }).catch(() => {});
+    }
+  }, [viewMode, heroVideo]);
+
+  const heroTextOpacity = useTransform(trackProgress, [0, 0.2], [1, 0]);
+  const heroTextY = useTransform(trackProgress, [0, 0.2], [0, 50]);
 
   const totalSlides = 12;
 
@@ -106,7 +140,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#F5F2EB] text-[#111113] overflow-hidden pt-24">
+    <main className="min-h-screen bg-[#F5F2EB] text-[#111113] pt-24">
 
 
       {viewMode === "presentation" ? (
@@ -167,15 +201,16 @@ export default function Home() {
                       </div>
                       <div className="h-full min-h-[250px] relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
                         <video
+                          key={heroVideo}
                           autoPlay
                           loop
                           muted
                           playsInline
                           preload="auto"
                           poster="/images/company_excavator.jpg"
-                          className="w-full h-full object-cover filter brightness-[0.7]"
+                          className="w-full h-full object-cover filter brightness-[0.95]"
                         >
-                          <source src="/truck.mp4" type="video/mp4" />
+                          <source src={`/${heroVideo}`} type="video/mp4" />
                         </video>
                       </div>
                     </div>
@@ -466,30 +501,34 @@ export default function Home() {
         /* ========================================================================= */
         <div className="bg-[#050505]">
 
-          {/* SECTION 1: Hero */}
-          <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2 }} className="sticky top-0 relative w-full h-[100vh] flex items-center overflow-hidden border-b border-white/5 z-0">
-            {/* Background Video Parallax */}
-            <motion.div className="absolute inset-0 z-0" style={{ y: heroVideoY }}>
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="auto"
-                poster="/images/company_excavator.jpg"
-                className="w-full h-full object-cover filter brightness-[0.35]"
-              >
-                <source
-                  src="/truck.mp4"
-                  type="video/mp4"
-                />
-              </video>
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/40 to-transparent" />
-            </motion.div>
-
-            {/* Hero Content */}
-            <div className="relative z-10 max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* SECTION 1: Hero Track */}
+          <div ref={scrollContainerRef} className="relative w-full h-[400vh]">
+            <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2 }} className="sticky top-0 w-full h-screen flex items-center overflow-hidden border-b border-white/5 z-0 bg-[#050505]">
+              {/* Background Video */}
+              <div className="absolute inset-0 z-0">
+                <video
+                  ref={scrollVideoRef}
+                  key={heroVideo}
+                  muted
+                  playsInline
+                  preload="auto"
+                  poster="/images/company_excavator.jpg"
+                  className="w-full h-full object-cover filter brightness-[0.85]"
+                  onLoadedMetadata={(e) => {
+                    e.currentTarget.currentTime = 0;
+                  }}
+                >
+                  <source
+                    src={`/${heroVideo}`}
+                    type="video/mp4"
+                  />
+                </video>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/10 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#050505]/80 via-[#050505]/25 to-transparent" />
+              </div>
+              
+              {/* Hero Content */}
+              <motion.div style={{ opacity: heroTextOpacity, y: heroTextY }} className="relative z-10 max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div className="space-y-6 md:space-y-8 text-white max-w-2xl mt-12 md:mt-0">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -543,21 +582,24 @@ export default function Home() {
                     </motion.div>
                   </Link>
                 </motion.div>
-              </div>
-            </div>
-          </motion.section>
+               </div>
+              </motion.div>
+            </motion.section>
+          </div>
 
           {/* SECTION 2 & 3: Company DNA (Sticky Parallax Editorial) */}
-          <section className="sticky top-0 w-full min-h-screen bg-[#050505] text-white z-[10] border-t border-white/5">
+          <section className="relative w-full min-h-screen bg-[#050505] text-white z-[10] border-t border-white/5">
             <div className="grid grid-cols-1 lg:grid-cols-2">
 
               {/* Left Side: Sticky Media */}
-              <div className="h-[50vh] lg:h-screen sticky top-0 lg:top-0 overflow-hidden border-b-4 lg:border-b-0 lg:border-r-4 border-white/10 z-10">
-                <Image
-                  src="/images/company_excavator.jpg"
-                  alt="Company DNA"
-                  width={1920} height={1080}
-                  className="w-full h-full object-cover filter brightness-[0.6] sepia-[0.3]"
+              <div className="h-[50vh] lg:h-screen sticky top-0 lg:top-0 overflow-hidden border-b-4 lg:border-b-0 lg:border-r-4 border-white/10 z-10 bg-[#12131A]">
+                <video
+                  src="/TRUXOEQ3.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-700 opacity-80 hover:opacity-100"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#111113] to-transparent opacity-90" />
                 <div className="absolute bottom-12 left-12">
@@ -609,8 +651,8 @@ export default function Home() {
             </div>
           </section>
 
-          {/* SECTION 4 & 5: Interactive Hover Expansion Gallery */}
-          <section className="sticky top-0 w-full min-h-screen bg-[#050505] py-32 overflow-hidden z-[20] border-t border-white/5">
+          {/* SECTION 4: Interactive Fleet Showcase */}
+          <section className="relative w-full min-h-screen bg-[#050505] py-32 overflow-hidden z-[20] border-t border-white/5">
             <div className="max-w-7xl mx-auto px-6 mb-16">
               <h2 className="text-xs font-black uppercase tracking-widest text-[#C5A059] mb-4 text-center">Equipment Arsenal</h2>
               <h3 className="text-2xl md:text-4xl lg:text-5xl lg:text-7xl font-black font-orbitron uppercase text-white tracking-tight text-center">
@@ -656,8 +698,8 @@ export default function Home() {
             </div>
           </section>
 
-          {/* --- NEW SECTION 6: Performance Telemetry Dashboard (Merges 6 & 7) --- */}
-          <section className="sticky top-0 w-full min-h-screen bg-[#050505] py-32 text-white overflow-hidden z-[30] border-t border-white/5">
+          {/* SECTION 5: Trust Metrics & CTA */}
+          <section className="relative w-full min-h-screen bg-[#050505] py-32 text-white overflow-hidden z-[30] border-t border-white/5">
             {/* Background Grid Pattern */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
             <div className="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">

@@ -44,29 +44,30 @@ export default function Navbar() {
       <nav className={`fixed w-full top-0 z-50 transition-all duration-300 ${scrolled ? "py-4" : "py-6"}`}>
         <div className="mx-auto px-6 max-w-7xl">
           <div className={`flex items-center justify-between transition-all duration-300 rounded-full px-6 py-3.5 ${scrolled ? "bg-[#111113]/90 backdrop-blur-md shadow-2xl border border-white/10" : "bg-white/80 backdrop-blur-sm border border-black/5 shadow-sm"}`}>
-            
+
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-white p-1">
-                <Image 
-                  src="/logo.jpeg" 
-                  alt="TRUXO Logo" 
-                  width={40}
-                  height={40}
-                  className="w-full h-full object-contain" 
+              <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white p-1 overflow-hidden">
+                <Image
+                  src="/logo.jpeg"
+                  alt="TRUXO Logo"
+                  width={48}
+                  height={48}
+                  className="w-full h-full object-contain"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.style.display = 'none';
-                    if (target.nextElementSibling) {
-                      (target.nextElementSibling as HTMLElement).style.display = 'block';
+                    const textFallback = document.getElementById('navbar-logo-text');
+                    if (textFallback) {
+                      textFallback.classList.remove('hidden');
+                      textFallback.classList.add('block');
                     }
-                  }} 
+                  }}
                 />
-                <Shield className="hidden w-6 h-6 text-[#A51A1A]" />
               </div>
-              <span className={`font-orbitron font-black text-lg tracking-tight ${scrolled ? "text-white" : "text-[#111113]"}`}>TRUXO</span>
+              <span id="navbar-logo-text" className={`hidden font-orbitron font-black text-xl tracking-tight ${scrolled ? "text-white" : "text-[#111113]"}`}>TRUXO</span>
             </Link>
-            
+
             {/* Desktop Links */}
             <div className="hidden lg:flex items-center gap-8 text-xs font-black uppercase tracking-widest">
               {links.map((link) => {
@@ -91,8 +92,8 @@ export default function Navbar() {
               <button onClick={triggerPresentation} className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider transition-all border ${scrolled ? "border-white/20 text-white hover:bg-white/10" : "border-black/10 text-[#111113] hover:bg-black/5"}`}>
                 <Play className="w-3.5 h-3.5" /> Presentation
               </button>
-              <Link 
-                href="/contact" 
+              <Link
+                href="/contact"
                 className="px-6 py-2.5 rounded-full btn-premium-gold text-xs tracking-wider"
               >
                 Get a Quote
@@ -100,7 +101,7 @@ export default function Navbar() {
             </div>
 
             {/* Mobile Hamburger */}
-            <button 
+            <button
               className={`lg:hidden p-2 rounded-full ${scrolled ? "text-white hover:bg-white/10" : "text-[#111113] hover:bg-black/5"}`}
               onClick={() => setIsOpen(!isOpen)}
             >
@@ -113,7 +114,7 @@ export default function Navbar() {
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -130,18 +131,18 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              
+
               <div className="w-full h-[1px] bg-white/10 my-2" />
-              
-              <button 
-                onClick={triggerPresentation} 
+
+              <button
+                onClick={triggerPresentation}
                 className="flex items-center gap-3 text-xl text-gray-300 hover:text-white transition-colors"
               >
                 <Play className="w-5 h-5 fill-current" /> Presentation Mode
               </button>
-              
-              <Link 
-                href="/contact" 
+
+              <Link
+                href="/contact"
                 onClick={() => setIsOpen(false)}
                 className="mt-6 px-6 py-4 rounded-full btn-premium-gold text-center text-sm tracking-widest shadow-lg"
               >

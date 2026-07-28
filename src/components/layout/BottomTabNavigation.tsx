@@ -20,8 +20,8 @@ export default function BottomTabNavigation() {
   ];
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 w-full z-50">
-      <div className="bg-[#111113]/95 backdrop-blur-xl border-t border-white/10 pt-3 pb-8 px-6 flex justify-around items-center shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+    <div className="md:hidden fixed bottom-0 left-0 w-full z-50 pb-[env(safe-area-inset-bottom)] bg-[#111113]/95 backdrop-blur-xl border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+      <div className="h-[72px] px-6 flex justify-around items-center">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = pathname === tab.href;
@@ -29,7 +29,7 @@ export default function BottomTabNavigation() {
             <Link
               key={tab.href}
               href={tab.href}
-              className="flex flex-col items-center gap-1.5 group"
+              className="flex flex-col items-center justify-center gap-1.5 h-full group w-full"
             >
               <Icon 
                 className={`w-5 h-5 transition-all ${
