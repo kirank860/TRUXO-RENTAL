@@ -71,7 +71,6 @@ export default function Home() {
       const duration = video.duration;
       if (!isNaN(duration) && duration > 0) {
         video.currentTime = duration * 0.5; // Start at 50%
-        document.body.style.overflow = "hidden"; // Lock scroll
         
         setTimeout(() => {
           animate(duration * 0.5, 0, {
@@ -82,7 +81,6 @@ export default function Home() {
             },
             onComplete: () => {
               isIntroComplete.current = true;
-              document.body.style.overflow = ""; // Unlock scroll
             }
           });
         }, 1800);
