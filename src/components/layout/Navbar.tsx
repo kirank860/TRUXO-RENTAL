@@ -53,6 +53,7 @@ export default function Navbar() {
                   alt="TRUXO Logo"
                   width={40}
                   height={40}
+                  priority
                   className="w-full h-full object-contain"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
