@@ -41,18 +41,18 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className={`fixed w-full top-0 z-50 transition-all duration-300 ${scrolled ? "py-4" : "py-6"}`}>
-        <div className="mx-auto px-6 max-w-7xl">
-          <div className={`flex items-center justify-between transition-all duration-300 rounded-full px-6 py-3.5 ${scrolled ? "bg-[#111113]/90 backdrop-blur-md shadow-2xl border border-white/10" : "bg-white/80 backdrop-blur-sm border border-black/5 shadow-sm"}`}>
+      <nav className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "py-2 lg:py-4" : "py-4 lg:py-6"}`}>
+        <div className="mx-auto px-4 lg:px-6 max-w-7xl">
+          <div className={`flex items-center justify-between transition-all duration-300 rounded-full px-4 lg:px-6 py-2.5 lg:py-3.5 ${scrolled ? "bg-[#111113]/90 backdrop-blur-md shadow-2xl border border-white/10" : "bg-white/90 lg:bg-white/80 backdrop-blur-md border border-black/5 shadow-sm"}`}>
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3">
-              <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white p-1 overflow-hidden">
+            <Link href="/" className="flex items-center gap-2 lg:gap-3">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 flex items-center justify-center rounded-full bg-white p-0.5 lg:p-1 overflow-hidden">
                 <Image
                   src="/logo.jpeg"
                   alt="TRUXO Logo"
-                  width={48}
-                  height={48}
+                  width={40}
+                  height={40}
                   className="w-full h-full object-contain"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
@@ -65,7 +65,7 @@ export default function Navbar() {
                   }}
                 />
               </div>
-              <span id="navbar-logo-text" className={`hidden font-orbitron font-black text-xl tracking-tight ${scrolled ? "text-white" : "text-[#111113]"}`}>TRUXO</span>
+              <span id="navbar-logo-text" className={`font-orbitron font-black text-lg lg:text-xl tracking-tight ${scrolled ? "text-white" : "text-[#111113]"}`}>TRUXO</span>
             </Link>
 
             {/* Desktop Links */}
