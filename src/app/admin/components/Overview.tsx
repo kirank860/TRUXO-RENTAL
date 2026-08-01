@@ -12,6 +12,8 @@ type ContactRequest = {
   first_name: string;
   last_name: string;
   email: string;
+  phone?: string;
+  address?: string;
   equipment_required: string;
   created_at: string;
   status?: string;
@@ -86,12 +88,11 @@ function AnimatedNumber({ value, prefix = "", suffix = "" }: { value: number; pr
 }
 
 interface OverviewProps {
-  onNavigate: (tab: string) => void;
-  onApprove: (id: number) => void;
-  onReject: (id: number) => void;
+  onNavigate: (tab: string, filter?: string) => void;
+  onViewRequest: (request: ContactRequest) => void;
 }
 
-export default function Overview({ onNavigate, onApprove, onReject }: OverviewProps) {
+export default function Overview({ onNavigate, onViewRequest }: OverviewProps) {
   const [requests, setRequests] = useState<ContactRequest[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
   const [fleet, setFleet] = useState<FleetAsset[]>([]);
@@ -107,7 +108,17 @@ export default function Overview({ onNavigate, onApprove, onReject }: OverviewPr
         fetch("/api/admin/clients",  { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) }),
         fetch("/api/admin/fleet",    { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) }),
       ]);
-      if (resReq.ok)     { const d = await resReq.json();     setRequests(d.requests || []); }
+      if (resReq.ok) { 
+        const d = await resReq.json();     
+        const parsedRequests = (d.requests || []).map((req: any) => {
+          const match = req.equipment_required?.match(/^\[Phone: (.*?)\] \[Address: (.*?)\]\n\n([\s\S]*)$/);
+          if (match) {
+            return { ...req, phone: match[1], address: match[2], equipment_required: match[3] };
+          }
+          return req;
+        });
+        setRequests(parsedRequests); 
+      }
       if (resClients.ok) { const d = await resClients.json(); setClients(d.clients || []); }
       if (resFleet.ok)   { const d = await resFleet.json();   setFleet(d.fleet || []); }
     } catch (e) { console.error(e); }
@@ -126,9 +137,9 @@ export default function Overview({ onNavigate, onApprove, onReject }: OverviewPr
   const maxRevenue = topClients[0] ? parseAED(topClients[0].total_spent) : 1;
 
   const kpis = [
-    { label: "Total Fleet", value: fleet.length, icon: Truck, color: "#C5A059", bg: "#C5A059", sub: "Assets registered", action: () => onNavigate("fleet") },
-    { label: "Active Deployments", value: deployed, icon: Activity, color: "#25D366", bg: "#25D366", sub: `${fleet.length > 0 ? Math.round((deployed / fleet.length) * 100) : 0}% utilization`, action: () => onNavigate("fleet") },
-    { label: "Pending Requests", value: pending, icon: Inbox, color: "#DFBA73", bg: "#DFBA73", sub: "Needs review", action: () => onNavigate("dispatch") },
+    { label: "Total Fleet", value: fleet.length, icon: Truck, color: "#C5A059", bg: "#C5A059", sub: "Assets registered", action: () => onNavigate("fleet", "All") },
+    { label: "Active Deployments", value: deployed, icon: Activity, color: "#25D366", bg: "#25D366", sub: `${fleet.length > 0 ? Math.round((deployed / fleet.length) * 100) : 0}% utilization`, action: () => onNavigate("fleet", "Deployed") },
+    { label: "Pending Requests", value: pending, icon: Inbox, color: "#DFBA73", bg: "#DFBA73", sub: "Needs review", action: () => onNavigate("dispatch", "Pending") },
     { label: "Total Clients", value: clients.length, icon: Users, color: "#7C83FD", bg: "#7C83FD", sub: formatAED(totalRevenue) + " lifetime", action: () => onNavigate("clients") },
   ];
 
@@ -303,8 +314,9 @@ export default function Overview({ onNavigate, onApprove, onReject }: OverviewPr
               return (
                 <motion.div
                   key={req.id}
+                  onClick={() => onViewRequest(req)}
                   initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.55 + i * 0.05 }}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-white/3 border border-white/5 hover:border-white/10 transition-colors group"
+                  className="flex items-center gap-3 p-3 rounded-xl bg-white/3 border border-white/5 hover:border-white/10 hover:bg-white/5 cursor-pointer transition-all group"
                 >
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${isPending ? "bg-[#DFBA73]/10" : isApproved ? "bg-[#25D366]/10" : "bg-[#A51A1A]/10"}`}>
                     {isPending ? <Clock className="w-4 h-4 text-[#DFBA73]" /> : isApproved ? <CheckCircle2 className="w-4 h-4 text-[#25D366]" /> : <AlertTriangle className="w-4 h-4 text-[#A51A1A]" />}
@@ -315,14 +327,6 @@ export default function Overview({ onNavigate, onApprove, onReject }: OverviewPr
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <span className="text-[10px] text-gray-600">{timeAgo(req.created_at)}</span>
-                    {isPending && (
-                      <button
-                        onClick={() => onApprove(req.id)}
-                        className="text-[10px] font-black text-[#25D366] border border-[#25D366]/20 px-2 py-1 rounded-md hover:bg-[#25D366]/10 transition-colors opacity-0 group-hover:opacity-100"
-                      >
-                        Approve
-                      </button>
-                    )}
                   </div>
                 </motion.div>
               );

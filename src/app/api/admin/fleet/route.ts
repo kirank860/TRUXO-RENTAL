@@ -37,7 +37,7 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   try {
-    const { password, asset_id, client_id, location, new_status } = await request.json();
+    const { password, action, old_asset_id, asset_id, type, model, image, daily_rent, hourly_rate, client_id, location, new_status } = await request.json();
     const adminPassword = process.env.ADMIN_PASSWORD;
 
     if (!adminPassword || password !== adminPassword) {
@@ -52,6 +52,24 @@ export async function PATCH(request: Request) {
     }
 
     const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
+
+    // ── CASE 0: Edit asset details ──────────────────────────────────────────
+    if (action === 'edit_details') {
+      const { error: updateError } = await supabaseAdmin
+        .from('fleet')
+        .update({
+          asset_id,
+          type,
+          model,
+          image,
+          daily_rent: parseInt(daily_rent) || 1200,
+          hourly_rate: parseInt(hourly_rate) || 350
+        })
+        .eq('asset_id', old_asset_id);
+      
+      if (updateError) throw updateError;
+      return NextResponse.json({ success: true });
+    }
 
     // ── CASE 1: Simple status change (Available ↔ Maintenance) ──────────────
     if (new_status && new_status !== 'Deployed') {
@@ -152,7 +170,7 @@ export async function PATCH(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    const { password, asset_id, type, model, location, hours } = await request.json();
+    const { password, asset_id, type, model, image, location, hours, daily_rent, hourly_rate } = await request.json();
     const adminPassword = process.env.ADMIN_PASSWORD;
 
     if (!adminPassword || password !== adminPassword) {
@@ -174,9 +192,12 @@ export async function PUT(request: Request) {
         asset_id,
         type,
         model,
+        image,
         location: location || 'Main Depot',
         hours: parseInt(hours) || 0,
-        status: 'Available'
+        status: 'Available',
+        daily_rent: parseInt(daily_rent) || 1200,
+        hourly_rate: parseInt(hourly_rate) || 350
       });
 
     if (insertError) throw insertError;

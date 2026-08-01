@@ -33,7 +33,7 @@ export default function Home() {
   // Scroll Scrubbing Logic
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const scrollVideoRef = useRef<HTMLVideoElement>(null);
-  
+
   const { scrollYProgress: trackProgress } = useScroll({
     target: scrollContainerRef,
     offset: ["start start", "end end"]
@@ -56,7 +56,7 @@ export default function Home() {
     if (viewMode === "website" && scrollVideoRef.current) {
       scrollVideoRef.current.play().then(() => {
         if (scrollVideoRef.current) scrollVideoRef.current.pause();
-      }).catch(() => {});
+      }).catch(() => { });
     }
   }, [viewMode, heroVideo]);
 
@@ -67,11 +67,11 @@ export default function Home() {
 
     const startIntro = () => {
       if (isIntroComplete.current) return;
-      
+
       const duration = video.duration;
       if (!isNaN(duration) && duration > 0) {
         video.currentTime = duration * 0.5; // Start at 50%
-        
+
         setTimeout(() => {
           animate(duration * 0.5, 0, {
             duration: 3.0,
@@ -559,7 +559,6 @@ export default function Home() {
                     src="/images/hero_loader.jpg"
                     alt="TRUXO Heavy Equipment"
                     fill
-                    sizes="100vw"
                     priority
                     className="object-cover filter brightness-[0.85]"
                   />
@@ -567,64 +566,64 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/10 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-r from-[#050505]/80 via-[#050505]/25 to-transparent" />
               </div>
-              
+
               {/* Hero Content */}
               <motion.div style={{ opacity: heroTextOpacity, y: heroTextY }} className="relative z-10 max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <div className="space-y-6 md:space-y-8 text-white max-w-2xl mt-12 md:mt-0">
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 2.0, ease: [0.16, 1, 0.3, 1] }}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#111113]/50 border border-white/10 w-fit font-black uppercase text-xs tracking-[0.2em] text-[#FF7C00] backdrop-blur-md shadow-lg"
-                >
-                  <MapPin className="w-4 h-4" />
-                  <span>United Arab Emirates</span>
-                </motion.div>
-
-                <motion.h1
-                  initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 2.2 }}
-                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl lg:text-[5.5rem] font-black font-orbitron tracking-tight text-white uppercase leading-[1.05]"
-                >
-                  TRUXO HEAVY <br />
-                  <motion.span
-                    initial={{ opacity: 0, x: -30, filter: "blur(10px)" }}
-                    animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 2.4 }}
-                    className="text-transparent bg-clip-text bg-gradient-to-r from-[#DFBA73] to-[#C5A059] drop-shadow-[0_0_15px_rgba(197,160,89,0.3)] sm:whitespace-nowrap block sm:inline mt-1 sm:mt-0"
+                <div className="space-y-6 md:space-y-8 text-white max-w-2xl mt-12 md:mt-0">
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 2.0, ease: [0.16, 1, 0.3, 1] }}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#111113]/50 border border-white/10 w-fit font-black uppercase text-xs tracking-[0.2em] text-[#FF7C00] backdrop-blur-md shadow-lg"
                   >
-                    EQUIPMENT RENTAL
-                  </motion.span>
-                </motion.h1>
+                    <MapPin className="w-4 h-4" />
+                    <span>United Arab Emirates</span>
+                  </motion.div>
 
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 2.6 }}
-                  className="text-base sm:text-lg md:text-xl text-gray-300 font-medium leading-relaxed max-w-xl"
-                >
-                  Reliable heavy equipment solutions for construction, industrial, and infrastructure projects across the UAE.
-                </motion.p>
+                  <motion.h1
+                    initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 2.2 }}
+                    className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl lg:text-[5.5rem] font-black font-orbitron tracking-tight text-white uppercase leading-[1.05]"
+                  >
+                    TRUXO HEAVY <br />
+                    <motion.span
+                      initial={{ opacity: 0, x: -30, filter: "blur(10px)" }}
+                      animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 2.4 }}
+                      className="text-transparent bg-clip-text bg-gradient-to-r from-[#DFBA73] to-[#C5A059] drop-shadow-[0_0_15px_rgba(197,160,89,0.3)] sm:whitespace-nowrap block sm:inline mt-1 sm:mt-0"
+                    >
+                      EQUIPMENT RENTAL
+                    </motion.span>
+                  </motion.h1>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 2.9, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex flex-col sm:flex-row flex-wrap gap-4 md:gap-5 pt-4 w-full sm:w-auto"
-                >
-                  <Link href="/fleet" className="w-full sm:w-auto">
-                    <motion.div whileTap={{ scale: 0.95 }} className="btn-kampr-accent px-6 py-4 md:px-8 md:py-4 text-sm md:text-base shadow-[0_0_20px_rgba(197,160,89,0.3)] w-full flex justify-center items-center">
-                      Explore Fleet <ChevronRight className="w-5 h-5 ml-1 inline" />
-                    </motion.div>
-                  </Link>
-                  <Link href="/contact" className="w-full sm:w-auto">
-                    <motion.div whileTap={{ scale: 0.95 }} className="px-6 py-4 md:px-8 md:py-4 rounded-full font-black border-2 border-white/20 text-white hover:bg-white hover:text-[#050505] transition-all duration-300 text-xs md:text-sm uppercase tracking-widest backdrop-blur-md w-full flex justify-center items-center">
-                      Request Quote
-                    </motion.div>
-                  </Link>
-                </motion.div>
-               </div>
+                  <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 2.6 }}
+                    className="text-base sm:text-lg md:text-xl text-gray-300 font-medium leading-relaxed max-w-xl"
+                  >
+                    Reliable heavy equipment solutions for construction, industrial, and infrastructure projects across the UAE.
+                  </motion.p>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 2.9, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex flex-col sm:flex-row flex-wrap gap-4 md:gap-5 pt-4 w-full sm:w-auto"
+                  >
+                    <Link href="/fleet" className="w-full sm:w-auto">
+                      <motion.div whileTap={{ scale: 0.95 }} className="btn-kampr-accent px-6 py-4 md:px-8 md:py-4 text-sm md:text-base shadow-[0_0_20px_rgba(197,160,89,0.3)] w-full flex justify-center items-center">
+                        Explore Fleet <ChevronRight className="w-5 h-5 ml-1 inline" />
+                      </motion.div>
+                    </Link>
+                    <Link href="/contact" className="w-full sm:w-auto">
+                      <motion.div whileTap={{ scale: 0.95 }} className="px-6 py-4 md:px-8 md:py-4 rounded-full font-black border-2 border-white/20 text-white hover:bg-white hover:text-[#050505] transition-all duration-300 text-xs md:text-sm uppercase tracking-widest backdrop-blur-md w-full flex justify-center items-center">
+                        Request Quote
+                      </motion.div>
+                    </Link>
+                  </motion.div>
+                </div>
               </motion.div>
             </motion.section>
           </div>

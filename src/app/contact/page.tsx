@@ -12,6 +12,8 @@ export default function ContactPage() {
     firstName: "",
     lastName: "",
     email: "",
+    phone: "",
+    address: "",
     equipmentRequired: ""
   });
 
@@ -27,12 +29,20 @@ export default function ContactPage() {
             first_name: formData.firstName, 
             last_name: formData.lastName, 
             email: formData.email, 
-            equipment_required: formData.equipmentRequired 
+            equipment_required: `[Phone: ${formData.phone}] [Address: ${formData.address}]\n\n${formData.equipmentRequired}` 
           }
         ]);
         
       if (error) throw error;
       setFormStatus("success");
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        address: "",
+        equipmentRequired: ""
+      });
     } catch (error) {
       console.error('Error submitting form:', error);
       setFormStatus("error");
@@ -169,6 +179,16 @@ export default function ContactPage() {
                   <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">Email Address</label>
                   <input required disabled={formStatus === "loading" || formStatus === "success"} value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} type="email" placeholder="john@construction.com" className="w-full bg-[#050505]/50 border border-white/10 rounded-xl px-5 py-4 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-[#C5A059]/50 focus:border-[#C5A059] focus:bg-[#050505] transition-all placeholder:text-gray-700 disabled:opacity-50" />
                 </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">Phone (WhatsApp)</label>
+                    <input required disabled={formStatus === "loading" || formStatus === "success"} value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} type="tel" placeholder="+971 50 123 4567" className="w-full bg-[#050505]/50 border border-white/10 rounded-xl px-5 py-4 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-[#C5A059]/50 focus:border-[#C5A059] focus:bg-[#050505] transition-all placeholder:text-gray-700 disabled:opacity-50" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">Address / Site Location</label>
+                    <input required disabled={formStatus === "loading" || formStatus === "success"} value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} type="text" placeholder="Dubai Industrial City..." className="w-full bg-[#050505]/50 border border-white/10 rounded-xl px-5 py-4 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-[#C5A059]/50 focus:border-[#C5A059] focus:bg-[#050505] transition-all placeholder:text-gray-700 disabled:opacity-50" />
+                  </div>
+                </div>
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">Equipment Required & Timeline</label>
                   <textarea required disabled={formStatus === "loading" || formStatus === "success"} value={formData.equipmentRequired} onChange={e => setFormData({...formData, equipmentRequired: e.target.value})} rows={5} placeholder="e.g. Need 2x 20-ton Excavators for 3 months starting next week..." className="w-full bg-[#050505]/50 border border-white/10 rounded-xl px-5 py-4 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-[#C5A059]/50 focus:border-[#C5A059] focus:bg-[#050505] transition-all placeholder:text-gray-700 resize-none disabled:opacity-50" />
@@ -182,7 +202,7 @@ export default function ContactPage() {
                       animate={{ opacity: 1, scale: 1 }}
                       className="w-full py-5 rounded-xl bg-[#25D366]/20 border border-[#25D366]/50 text-[#25D366] font-black text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3"
                     >
-                      <CheckCircle2 className="w-5 h-5" /> Request Received
+                      <CheckCircle2 className="w-5 h-5" /> Request Has Been Sent
                     </motion.div>
                   ) : formStatus === "error" ? (
                     <motion.div
@@ -209,7 +229,7 @@ export default function ContactPage() {
                       type="submit" 
                       className="w-full mt-4 py-5 rounded-xl bg-gradient-to-r from-[#DFBA73] to-[#C5A059] text-[#12131A] font-black text-sm uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(197,160,89,0.3)] hover:shadow-[0_0_40px_rgba(197,160,89,0.5)] transition-all flex items-center justify-center disabled:opacity-70"
                     >
-                      {formStatus === "loading" ? <Loader2 className="w-5 h-5 animate-spin" /> : "Submit Request"}
+                      {formStatus === "loading" ? <><Loader2 className="w-5 h-5 animate-spin mr-2" /> Sending Request...</> : "Submit Request"}
                     </motion.button>
                   )}
                 </AnimatePresence>

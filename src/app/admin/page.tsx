@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -8,7 +8,7 @@ import {
   Inbox, LayoutDashboard, Truck, Settings, Bell, Filter,
   MoreVertical, CheckCircle2, TrendingUp, Users, Activity, Clock,
   Trash2, Home, X, BarChart3, DollarSign, ChevronRight,
-  AlertTriangle, Receipt, Package, Zap, ArrowRight
+  AlertTriangle, Receipt, Package, Zap, ArrowRight, Eye, Phone, MapPin
 } from "lucide-react";
 import FleetTracking from "./components/FleetTracking";
 import ClientDirectory from "./components/ClientDirectory";
@@ -24,6 +24,8 @@ type ContactRequest = {
   first_name: string;
   last_name: string;
   email: string;
+  phone?: string;
+  address?: string;
   equipment_required: string;
   created_at: string;
   status?: string;
@@ -35,6 +37,16 @@ type Toast = {
   message: string;
 };
 
+function timeAgo(dateStr: string): string {
+  const now = new Date();
+  const date = new Date(dateStr);
+  const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
+  if (diff < 60) return `${diff}s ago`;
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
+}
+
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
@@ -43,10 +55,33 @@ export default function AdminDashboard() {
 
   const [requests, setRequests] = useState<ContactRequest[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showNotifications, setShowNotifications] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<ActiveTab>("overview");
   const [fleetAssetId, setFleetAssetId] = useState<string | null>(null);
+  const [initialFleetFilter, setInitialFleetFilter] = useState("All");
   const [dispatchFilter, setDispatchFilter] = useState<"All" | "Pending" | "Approved" | "Rejected">("All");
+  const [selectedRequest, setSelectedRequest] = useState<ContactRequest | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
+  const [lastReadPendingCount, setLastReadPendingCount] = useState(0);
+
+  const notificationsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleNavigate = (tab: ActiveTab, filter?: string) => {
+    setActiveTab(tab);
+    if (tab === "fleet") setInitialFleetFilter(filter || "All");
+    if (tab === "dispatch") setDispatchFilter((filter as any) || "All");
+  };
 
   // Toast system
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -124,6 +159,41 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleWhatsAppClient = (req: ContactRequest, type: 'Reply' | 'Approve' | 'Reject') => {
+    let msg = `Hi ${req.first_name},\n\n`;
+    
+    if (type === 'Approve') {
+      msg += `Good news from TRUXO! Your equipment request for:\n"${req.equipment_required}"\nhas been approved.\n\nOur team will be in touch shortly with the next steps.`;
+    } else if (type === 'Reject') {
+      msg += `Thank you for reaching out to TRUXO. Unfortunately, we are unable to fulfill your equipment request for:\n"${req.equipment_required}"\nat this time.\n\nPlease let us know if you have any other requirements.`;
+    } else {
+      msg += `This is the TRUXO Team regarding your equipment request for:\n"${req.equipment_required}"\n\n`;
+    }
+    
+    msg += `\n\nBest regards,\nThe TRUXO Team\n🌐 Visit us at: https://truxo.ae`;
+    window.open(`https://wa.me/${(req.phone || '').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(msg)}`, '_blank');
+  };
+
+  const handleEmailClient = (req: ContactRequest, type: 'Reply' | 'Approve' | 'Reject') => {
+    let subject = "Update on your TRUXO Equipment Request";
+    let body = `Hello ${req.first_name},\n\n`;
+    
+    if (type === 'Approve') {
+      subject = "TRUXO Request Approved!";
+      body += `Good news from TRUXO! Your equipment request for "${req.equipment_required}" has been approved.\n\nOur team will be in touch shortly with the next steps.`;
+    } else if (type === 'Reject') {
+      subject = "TRUXO Request Update";
+      body += `Thank you for reaching out to TRUXO. Unfortunately, we are unable to fulfill your equipment request for "${req.equipment_required}" at this time.\n\nPlease let us know if you have any other requirements.`;
+    } else {
+      body += `This is the TRUXO Team regarding your equipment request for "${req.equipment_required}":\n\n`;
+    }
+    
+    body += `\n\nBest regards,\nThe TRUXO Team\nadmin@truxo.ae\n🌐 Visit us at: https://truxo.ae`;
+    
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(req.email)}&cc=admin@truxo.ae&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(gmailUrl, '_blank');
+  };
+
   const fetchRequests = async (pass: string) => {
     setIsLoggingIn(true);
     setLoginError("");
@@ -135,7 +205,16 @@ export default function AdminDashboard() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Login failed");
-      setRequests(data.requests);
+      
+      const parsedRequests = (data.requests || []).map((req: any) => {
+        const match = req.equipment_required?.match(/^\[Phone: (.*?)\] \[Address: (.*?)\]\n\n([\s\S]*)$/);
+        if (match) {
+          return { ...req, phone: match[1], address: match[2], equipment_required: match[3] };
+        }
+        return req;
+      });
+      
+      setRequests(parsedRequests);
       setIsAuthenticated(true);
       sessionStorage.setItem("admin_token", pass);
     } catch (err: unknown) {
@@ -181,20 +260,16 @@ export default function AdminDashboard() {
   });
 
   const pendingCount = requests.filter(r => !r.status || r.status === "Pending").length;
+  const unreadCount = Math.max(0, pendingCount - lastReadPendingCount);
 
   // ── NAV ITEMS ─────────────────────────────────────────────────────────────
   const navGroups = [
     {
-      label: "Operations",
+      label: "Business",
       items: [
         { id: "overview",  label: "Overview",    icon: LayoutDashboard, badge: null },
         { id: "dispatch",  label: "Dispatch",     icon: Inbox,           badge: pendingCount > 0 ? pendingCount : null },
         { id: "fleet",     label: "Fleet",         icon: Truck,           badge: null },
-      ]
-    },
-    {
-      label: "Business",
-      items: [
         { id: "clients",   label: "Clients",       icon: Users,           badge: null },
         { id: "analytics", label: "Analytics",     icon: BarChart3,       badge: null },
         { id: "invoices",  label: "Invoices",       icon: Receipt,         badge: null },
@@ -213,54 +288,52 @@ export default function AdminDashboard() {
   // ──────────────────────────────────────────────────────────────────────────
   if (!isAuthenticated) {
     return (
-      <main className="min-h-screen bg-[#050505] flex items-center justify-center p-6">
+      <main className="min-h-screen bg-zinc-950 flex items-center justify-center p-6 font-sans">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-md bg-[#111113] p-8 rounded-3xl border border-white/10 shadow-[0_0_60px_rgba(0,0,0,0.9)] relative overflow-hidden"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="w-full max-w-md bg-zinc-900 p-8 rounded-2xl border border-zinc-800 shadow-xl"
         >
-          <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-[#DFBA73] to-[#C5A059]" />
-          <div className="absolute -right-20 -top-20 w-64 h-64 bg-[#C5A059]/5 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="w-16 h-16 rounded-2xl bg-[#1A1C23] flex items-center justify-center border border-[#C5A059]/20 mb-6 mx-auto shadow-inner">
-            <Lock className="w-7 h-7 text-[#C5A059]" />
+          <div className="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center border border-zinc-700 mb-6 mx-auto">
+            <Lock className="w-5 h-5 text-zinc-300" />
           </div>
 
-          <h1 className="text-2xl font-black text-white text-center font-orbitron uppercase tracking-widest mb-1">TRUXO OS</h1>
-          <p className="text-gray-500 text-xs text-center mb-8 uppercase tracking-widest font-bold">Enterprise Resource Platform · v2.0</p>
+          <h1 className="text-xl font-semibold text-zinc-100 text-center tracking-tight mb-1">TRUXO OS</h1>
+          <p className="text-zinc-400 text-sm text-center mb-8">Sign in to the ERP platform</p>
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-[10px] font-black uppercase tracking-widest text-gray-600 mb-2">Access Token</label>
+              <label className="block text-xs font-medium text-zinc-400 mb-2">Access Token</label>
               <input
                 type="password"
                 placeholder="••••••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-[#050505] border border-white/10 rounded-xl px-5 py-4 text-center text-white font-black tracking-widest focus:outline-none focus:border-[#C5A059]/50 transition-all placeholder:text-gray-700"
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-100 text-sm focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059]/50 transition-all placeholder:text-zinc-600"
                 required
               />
             </div>
 
             {loginError && (
-              <div className="flex items-center gap-2 p-3 rounded-xl bg-[#A51A1A]/10 border border-[#A51A1A]/20">
-                <AlertTriangle className="w-4 h-4 text-[#A51A1A] flex-shrink-0" />
-                <p className="text-xs text-[#A51A1A] font-bold">{loginError}</p>
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+                <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                <p className="text-sm text-red-500 font-medium">{loginError}</p>
               </div>
             )}
 
             <button
               type="submit"
               disabled={isLoggingIn}
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-[#DFBA73] to-[#C5A059] text-[#111113] font-black uppercase tracking-widest shadow-[0_0_20px_rgba(197,160,89,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-2.5 mt-2 rounded-lg bg-zinc-100 text-zinc-950 hover:bg-white font-medium text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Authenticate <ArrowRight className="w-4 h-4" /></>}
+              {isLoggingIn ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Authenticate</>}
             </button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-white/5 flex items-center justify-center gap-2 text-xs text-gray-700">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#25D366]" />
-            <span className="font-bold uppercase tracking-widest">Secured by Supabase RLS</span>
+          <div className="mt-8 flex items-center justify-center gap-2 text-xs text-zinc-500">
+            <Lock className="w-3 h-3" />
+            <span>Secured by Supabase</span>
           </div>
         </motion.div>
       </main>
@@ -271,7 +344,7 @@ export default function AdminDashboard() {
   // MAIN ERP DASHBOARD
   // ──────────────────────────────────────────────────────────────────────────
   return (
-    <main className="min-h-screen bg-[#050505] text-[#F5F2EB] font-sans flex">
+    <main className="min-h-screen bg-zinc-950 text-zinc-100 font-sans flex">
 
       {/* ── TOAST SYSTEM ── */}
       <div className="fixed top-6 right-6 z-[200] space-y-2 pointer-events-none">
@@ -279,63 +352,64 @@ export default function AdminDashboard() {
           {toasts.map(toast => (
             <motion.div
               key={toast.id}
-              initial={{ opacity: 0, x: 60, scale: 0.95 }}
+              initial={{ opacity: 0, x: 20, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, x: 60, scale: 0.95 }}
-              transition={{ type: "spring", damping: 20, stiffness: 300 }}
-              className={`flex items-center gap-3 px-4 py-3 rounded-2xl border shadow-2xl pointer-events-auto min-w-[260px] max-w-xs ${
-                toast.type === "success" ? "bg-[#0A1F0A] border-[#25D366]/30 text-[#25D366]" :
-                toast.type === "error"   ? "bg-[#1F0A0A] border-[#A51A1A]/30 text-[#A51A1A]" :
-                                           "bg-[#111113] border-white/15 text-gray-300"
+              exit={{ opacity: 0, x: 20, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl border shadow-lg pointer-events-auto min-w-[260px] max-w-xs ${
+                toast.type === "success" ? "bg-emerald-950/50 border-emerald-900/50 text-emerald-400" :
+                toast.type === "error"   ? "bg-red-950/50 border-red-900/50 text-red-400" :
+                                           "bg-zinc-900 border-zinc-800 text-zinc-300"
               }`}
             >
               {toast.type === "success" && <CheckCircle2 className="w-4 h-4 flex-shrink-0" />}
               {toast.type === "error"   && <AlertTriangle className="w-4 h-4 flex-shrink-0" />}
-              {toast.type === "info"    && <Activity className="w-4 h-4 flex-shrink-0 text-[#C5A059]" />}
-              <p className="text-xs font-bold">{toast.message}</p>
+              {toast.type === "info"    && <Activity className="w-4 h-4 flex-shrink-0" />}
+              <p className="text-sm font-medium">{toast.message}</p>
             </motion.div>
           ))}
         </AnimatePresence>
       </div>
 
       {/* ── SIDEBAR ── */}
-      <aside className="hidden lg:flex w-60 bg-[#0A0A0C] border-r border-white/5 flex-col sticky top-0 h-screen z-30">
+      <aside className="hidden lg:flex w-64 bg-zinc-950 border-r border-zinc-800 flex-col sticky top-0 h-screen z-30">
         {/* Logo */}
-        <div className="p-5 border-b border-white/5">
+        <div className="px-6 py-5 border-b border-zinc-800/50">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#DFBA73] to-[#C5A059] flex items-center justify-center flex-shrink-0">
-              <Truck className="w-5 h-5 text-[#111113]" />
+            <div className="w-8 h-8 rounded-lg bg-zinc-100 flex items-center justify-center flex-shrink-0">
+              <Truck className="w-4 h-4 text-zinc-950" />
             </div>
             <div>
-              <h1 className="text-sm font-black text-white font-orbitron uppercase tracking-widest leading-tight">TRUXO<span className="text-[#C5A059]">OS</span></h1>
-              <p className="text-[9px] text-gray-600 font-bold uppercase tracking-widest">ERP Platform v2.0</p>
+              <h1 className="text-sm font-semibold tracking-tight text-zinc-100 leading-none">TRUXO OS</h1>
+              <p className="text-xs text-zinc-500 mt-1">Enterprise Platform</p>
             </div>
           </div>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 p-3 space-y-5 overflow-y-auto">
+        <nav className="flex-1 p-4 space-y-6 overflow-y-auto">
           {navGroups.map(group => (
             <div key={group.label}>
-              <p className="text-[9px] font-black uppercase tracking-widest text-gray-700 px-3 mb-1.5">{group.label}</p>
-              <div className="space-y-0.5">
+              <p className="text-xs font-semibold text-zinc-500 px-2 mb-2">{group.label}</p>
+              <div className="space-y-1">
                 {group.items.map(item => {
                   const isActive = activeTab === item.id;
                   return (
                     <button
                       key={item.id}
                       onClick={() => setActiveTab(item.id as ActiveTab)}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm transition-all relative ${
+                      className={`w-full flex items-center gap-3 px-2 py-2 rounded-md font-medium text-sm transition-colors ${
                         isActive
-                          ? "bg-[#C5A059]/10 text-[#C5A059] border border-[#C5A059]/20"
-                          : "text-gray-600 hover:text-gray-300 hover:bg-white/4"
+                          ? "bg-zinc-800/50 text-zinc-100"
+                          : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/30"
                       }`}
                     >
-                      {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-[#C5A059] rounded-r-full" />}
                       <item.icon className="w-4 h-4 flex-shrink-0" />
-                      <span className="flex-1 text-left text-xs">{item.label}</span>
+                      <span className="flex-1 text-left">{item.label}</span>
                       {item.badge && (
-                        <span className="text-[9px] font-black bg-[#DFBA73] text-[#111113] rounded-full w-4 h-4 flex items-center justify-center flex-shrink-0">{item.badge > 9 ? "9+" : item.badge}</span>
+                        <span className="text-xs font-medium bg-[#C5A059] text-white rounded-full px-2 py-0.5 flex-shrink-0">
+                          {item.badge > 9 ? "9+" : item.badge}
+                        </span>
                       )}
                     </button>
                   );
@@ -346,249 +420,396 @@ export default function AdminDashboard() {
         </nav>
 
         {/* User + Logout */}
-        <div className="p-3 border-t border-white/5 space-y-2">
-          <div className="flex items-center gap-3 px-3 py-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#DFBA73] to-[#C5A059] flex items-center justify-center text-[#111113] font-black text-xs flex-shrink-0">AD</div>
+        <div className="p-4 border-t border-zinc-800/50">
+          <div className="flex items-center gap-3 px-2 mb-4">
+            <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-300 font-medium text-sm flex-shrink-0">
+              AD
+            </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-black text-white truncate">Administrator</p>
-              <p className="text-[9px] text-gray-600 uppercase tracking-widest font-bold">Super Admin</p>
+              <p className="text-sm font-medium text-zinc-200 truncate">Administrator</p>
+              <p className="text-xs text-zinc-500">Super Admin</p>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-[#111113] border border-white/8 text-gray-500 hover:text-[#A51A1A] hover:border-[#A51A1A]/30 transition-all font-bold text-xs uppercase tracking-widest"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-md border border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 transition-colors font-medium text-sm"
           >
-            <LogOut className="w-3.5 h-3.5" /> Logout
+            <LogOut className="w-4 h-4" /> Sign Out
           </button>
         </div>
       </aside>
 
       {/* ── MAIN CONTENT ── */}
-      <div className="flex-1 flex flex-col min-w-0">
-
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top Bar */}
-        <header className="sticky top-0 lg:top-0 z-40 bg-[#050505]/90 backdrop-blur-xl border-b border-white/5 px-6 py-4 flex items-center justify-between">
-          {/* Tab title on desktop */}
+        <header className="sticky top-0 z-20 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800/50 px-8 py-4 flex items-center justify-between">
           <div className="hidden lg:flex items-center gap-3">
-            <span className="text-xs font-black text-gray-600 uppercase tracking-widest">
+            <span className="text-sm font-medium text-zinc-400">
               {navGroups.flatMap(g => g.items).find(i => i.id === activeTab)?.label}
             </span>
           </div>
-          {/* Search */}
-          <div className="relative flex-1 max-w-sm lg:max-w-xs ml-0 lg:ml-auto mr-4">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#111113] border border-white/8 rounded-full pl-10 pr-5 py-2 text-sm text-white focus:outline-none focus:border-[#C5A059]/40 transition-colors placeholder:text-gray-700"
-            />
-          </div>
-          <div className="flex items-center gap-3">
-            <button className="relative p-2 rounded-xl bg-[#111113] border border-white/8 hover:border-white/15 text-gray-500 hover:text-white transition-colors">
-              {pendingCount > 0 && <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#DFBA73] border border-[#050505]" />}
-              <Bell className="w-4 h-4" />
-            </button>
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#DFBA73] to-[#C5A059] flex items-center justify-center text-[#111113] font-black text-xs border border-[#C5A059]/30">AD</div>
+          <div className="flex items-center gap-3 ml-auto">
+            <div className="relative" ref={notificationsRef}>
+              <button 
+                onClick={() => {
+                  setShowNotifications(!showNotifications);
+                  if (!showNotifications) setLastReadPendingCount(pendingCount);
+                }}
+                className="relative z-20 p-2 rounded-md hover:bg-zinc-800/50 text-zinc-400 hover:text-zinc-200 transition-colors"
+              >
+                {unreadCount > 0 && (
+                  <span className="absolute top-0 right-0 w-4 h-4 rounded-full bg-[#C5A059] flex items-center justify-center text-[10px] font-bold text-[#111113]">
+                    {unreadCount}
+                  </span>
+                )}
+                <Bell className="w-5 h-5" />
+              </button>
+
+              <AnimatePresence>
+                {showNotifications && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute right-0 mt-2 w-80 bg-[#111113] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-30"
+                  >
+                    <div className="p-4 border-b border-white/5 bg-[#1A1C23]">
+                      <h3 className="text-white font-orbitron font-bold text-sm tracking-wide">Notifications</h3>
+                    </div>
+                    <div className="max-h-[300px] overflow-y-auto">
+                      {requests.filter(r => !r.status || r.status === "Pending").length > 0 ? (
+                        requests.filter(r => !r.status || r.status === "Pending").slice(0, 5).map(req => (
+                          <div 
+                            key={req.id} 
+                            onClick={() => { handleNavigate("dispatch", "Pending"); setShowNotifications(false); }}
+                            className="p-4 border-b border-white/5 hover:bg-white/5 cursor-pointer transition-colors"
+                          >
+                            <div className="flex justify-between items-start mb-1">
+                              <p className="text-white text-sm font-medium">{req.first_name} {req.last_name}</p>
+                              <span className="text-xs text-gray-500">{timeAgo(req.created_at)}</span>
+                            </div>
+                            <p className="text-gray-400 text-xs line-clamp-1">Requested: {req.equipment_required}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-6 text-center text-gray-500 text-sm">
+                          No new notifications
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-3 border-t border-white/5 bg-[#1A1C23]">
+                      <button 
+                        onClick={() => { handleNavigate("dispatch"); setShowNotifications(false); }}
+                        className="w-full text-center text-xs text-[#C5A059] hover:text-white font-bold uppercase tracking-widest transition-colors"
+                      >
+                        View All
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </header>
 
         {/* Page Content */}
-        <div className="flex-1 p-6 lg:p-8 max-w-7xl mx-auto w-full">
-          <AnimatePresence mode="wait">
+        <div className="flex-1 overflow-y-auto">
+          <div className="p-6 lg:p-8 max-w-7xl mx-auto w-full">
+            <AnimatePresence mode="wait">
 
-            {/* ── OVERVIEW ── */}
-            {activeTab === "overview" && (
-              <motion.div key="overview" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
-                <Overview
-                  onNavigate={(tab) => setActiveTab(tab as ActiveTab)}
-                  onApprove={handleApprove}
-                  onReject={handleReject}
-                />
-              </motion.div>
-            )}
+              {/* ── OVERVIEW ── */}
+              {activeTab === "overview" && (
+                <motion.div key="overview" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <Overview
+                    onNavigate={(tab, filter) => handleNavigate(tab as ActiveTab, filter)}
+                    onViewRequest={(req) => {
+                      setSelectedRequest(req);
+                      handleNavigate("dispatch");
+                    }}
+                  />
+                </motion.div>
+              )}
 
-            {/* ── DISPATCH ── */}
-            {activeTab === "dispatch" && (
-              <motion.div key="dispatch" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
-                <div className="mb-8">
-                  <h2 className="text-3xl font-black text-white font-orbitron uppercase tracking-tight mb-1">Dispatch Console</h2>
-                  <p className="text-gray-400 font-medium text-sm">Real-time management of incoming rental requests.</p>
-                </div>
+              {/* ── DISPATCH ── */}
+              {activeTab === "dispatch" && (
+                <motion.div key="dispatch" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+                  {activeDropdown !== null && (
+                    <div className="fixed inset-0 z-40" onClick={() => setActiveDropdown(null)} />
+                  )}
+                  <div className="mb-8">
+                    <h2 className="text-2xl font-semibold text-zinc-100 tracking-tight mb-1">Dispatch Console</h2>
+                    <p className="text-zinc-400 text-sm">Manage incoming rental requests and client onboarding.</p>
+                  </div>
 
-                {/* KPI Row */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                  {[
-                    { label: "Total Inquiries", value: requests.length, icon: Activity, color: "#C5A059", trend: "+12%" },
-                    { label: "Pending Review",  value: pendingCount,   icon: Clock,    color: "#DFBA73", trend: pendingCount > 0 ? "Action Needed" : "All Clear" },
-                    { label: "Approved",        value: requests.filter(r => r.status === "Approved").length, icon: CheckCircle2, color: "#25D366", trend: "Clients created" },
-                  ].map((kpi, i) => (
-                    <motion.div key={kpi.label} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
-                      className="bg-[#111113] border border-white/8 rounded-2xl p-5 relative overflow-hidden group hover:border-white/15 transition-all"
-                    >
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: `radial-gradient(ellipse at top right, ${kpi.color}10, transparent 70%)` }} />
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${kpi.color}15`, border: `1px solid ${kpi.color}30` }}>
-                          <kpi.icon className="w-5 h-5" style={{ color: kpi.color }} />
+                  {/* KPI Row */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    {[
+                      { label: "Total Inquiries", value: requests.length, icon: Activity, trend: "All time" },
+                      { label: "Pending Review",  value: pendingCount,   icon: Clock,    trend: "Requires action", highlight: pendingCount > 0 },
+                      { label: "Approved Clients",value: requests.filter(r => r.status === "Approved").length, icon: CheckCircle2, trend: "Accounts active" },
+                    ].map((kpi, i) => (
+                      <div key={kpi.label} className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+                        <div className="flex justify-between items-start mb-4">
+                          <div className={`p-2 rounded-lg ${kpi.highlight ? 'bg-[#C5A059]/10 text-[#C5A059]' : 'bg-zinc-800 text-zinc-400'}`}>
+                            <kpi.icon className="w-5 h-5" />
+                          </div>
+                          <span className="text-xs font-medium text-zinc-500">{kpi.trend}</span>
                         </div>
-                        <span className="text-[10px] font-black px-2.5 py-1 rounded-full" style={{ background: `${kpi.color}15`, color: kpi.color }}>{kpi.trend}</span>
+                        <p className="text-2xl font-semibold text-zinc-100 mb-1">{kpi.value}</p>
+                        <p className="text-sm font-medium text-zinc-400">{kpi.label}</p>
                       </div>
-                      <p className="text-3xl font-black text-white font-orbitron mb-0.5">{kpi.value}</p>
-                      <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">{kpi.label}</p>
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Filter Tabs + Table */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    {(["All", "Pending", "Approved", "Rejected"] as const).map(f => (
-                      <button key={f} onClick={() => setDispatchFilter(f)}
-                        className={`px-3.5 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${dispatchFilter === f ? "bg-[#C5A059] text-[#111113]" : "bg-[#111113] border border-white/10 text-gray-500 hover:text-white"}`}
-                      >
-                        {f}
-                        {f === "Pending" && pendingCount > 0 && <span className="ml-1.5 bg-[#111113] text-[#DFBA73] px-1.5 py-0.5 rounded-full">{pendingCount}</span>}
-                      </button>
                     ))}
                   </div>
-                  <button className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#111113] border border-white/10 text-gray-500 hover:text-white transition-colors text-xs font-bold uppercase tracking-wider">
-                    <Filter className="w-3.5 h-3.5" /> Filter
-                  </button>
-                </div>
 
-                <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
-                  className="bg-[#111113] border border-white/8 rounded-2xl overflow-hidden"
-                >
-                  <div className="overflow-x-auto min-h-[320px]">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="bg-[#0A0A0C] border-b border-white/8">
-                          {["Date", "Client", "Contact", "Equipment", "Status", ""].map(h => (
-                            <th key={h} className="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-gray-600 whitespace-nowrap">{h}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <AnimatePresence>
-                          {filteredRequests.length === 0 ? (
-                            <motion.tr initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                              <td colSpan={6} className="px-5 py-20 text-center">
-                                <Inbox className="w-10 h-10 text-gray-700 mx-auto mb-3" />
-                                <p className="text-gray-500 font-bold">No requests found</p>
-                                <p className="text-gray-700 text-sm mt-1">Try adjusting your filter or search query.</p>
-                              </td>
-                            </motion.tr>
-                          ) : filteredRequests.map((req, index) => (
-                            <motion.tr key={req.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.04 }}
-                              className="border-b border-white/5 hover:bg-white/3 transition-colors group cursor-pointer"
-                            >
-                              <td className="px-5 py-4 whitespace-nowrap text-xs text-gray-500">
-                                {new Date(req.created_at).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}
-                              </td>
-                              <td className="px-5 py-4 whitespace-nowrap">
-                                <p className="font-bold text-white text-sm">{req.first_name} {req.last_name}</p>
-                              </td>
-                              <td className="px-5 py-4 whitespace-nowrap">
-                                <p className="text-xs text-gray-400">{req.email}</p>
-                              </td>
-                              <td className="px-5 py-4 text-xs text-gray-400 max-w-[180px] truncate">{req.equipment_required}</td>
-                              <td className="px-5 py-4 whitespace-nowrap">
-                                <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border w-fit ${
-                                  req.status === "Approved"  ? "bg-[#25D366]/10 border-[#25D366]/25" :
-                                  req.status === "Rejected"  ? "bg-[#A51A1A]/10 border-[#A51A1A]/25" :
-                                                               "bg-[#DFBA73]/10 border-[#DFBA73]/25"
-                                }`}>
-                                  <span className={`w-1.5 h-1.5 rounded-full ${
-                                    req.status === "Approved"  ? "bg-[#25D366]" :
-                                    req.status === "Rejected"  ? "bg-[#A51A1A]" :
-                                                                 "bg-[#DFBA73] animate-pulse"
-                                  }`} />
-                                  <span className={`text-[10px] font-black uppercase tracking-widest ${
-                                    req.status === "Approved"  ? "text-[#25D366]" :
-                                    req.status === "Rejected"  ? "text-[#A51A1A]" :
-                                                                 "text-[#DFBA73]"
-                                  }`}>{req.status || "Pending"}</span>
-                                </div>
-                              </td>
-                              <td className="px-5 py-4 whitespace-nowrap text-right relative">
-                                <button onClick={() => setActiveDropdown(activeDropdown === req.id ? null : req.id)}
-                                  className="p-2 rounded-lg text-gray-600 hover:bg-white/8 hover:text-white transition-colors"
-                                >
-                                  <MoreVertical className="w-4 h-4" />
-                                </button>
-                                <AnimatePresence>
-                                  {activeDropdown === req.id && (
-                                    <motion.div initial={{ opacity: 0, scale: 0.95, y: -8 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: -8 }}
-                                      className="absolute right-10 top-10 bg-[#111113] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50 min-w-[150px]"
-                                    >
-                                      {req.status !== "Approved" && req.status !== "Rejected" && (
-                                        <>
-                                          <button onClick={() => handleApprove(req.id)}
-                                            className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-[#25D366] hover:bg-[#25D366]/10 transition-colors border-b border-white/5"
-                                          >
-                                            <CheckCircle2 className="w-4 h-4" /> Approve
-                                          </button>
-                                          <button onClick={() => handleReject(req.id)}
-                                            className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-[#FF8C00] hover:bg-[#FF8C00]/10 transition-colors border-b border-white/5"
-                                          >
-                                            <X className="w-4 h-4" /> Reject
-                                          </button>
-                                        </>
-                                      )}
-                                      <button onClick={() => handleDelete(req.id)}
-                                        className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-[#A51A1A] hover:bg-[#A51A1A]/10 transition-colors"
-                                      >
-                                        <Trash2 className="w-4 h-4" /> Delete
-                                      </button>
-                                    </motion.div>
-                                  )}
-                                </AnimatePresence>
-                              </td>
-                            </motion.tr>
-                          ))}
-                        </AnimatePresence>
-                      </tbody>
-                    </table>
+                  {/* Filter Tabs + Table */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center p-1 bg-zinc-900 border border-zinc-800 rounded-lg">
+                      {(["All", "Pending", "Approved", "Rejected"] as const).map(f => (
+                        <button key={f} onClick={() => setDispatchFilter(f)}
+                          className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                            dispatchFilter === f 
+                              ? "bg-zinc-800 text-zinc-100 shadow-sm" 
+                              : "text-zinc-500 hover:text-zinc-300"
+                          }`}
+                        >
+                          {f}
+                          {f === "Pending" && pendingCount > 0 && <span className="ml-2 text-xs bg-zinc-700 px-1.5 py-0.5 rounded-md">{pendingCount}</span>}
+                        </button>
+                      ))}
+                    </div>
+                    <button className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 transition-colors text-sm font-medium">
+                      <Filter className="w-4 h-4" /> Filter
+                    </button>
                   </div>
+
+                  <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+                    <div className="overflow-x-auto min-h-[320px]">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-zinc-800 bg-zinc-900/50">
+                            {["Date", "Client Name", "Contact Email", "Equipment Request", "Status", ""].map(h => (
+                              <th key={h} className="px-6 py-3 text-xs font-medium text-zinc-500 whitespace-nowrap">{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <AnimatePresence>
+                            {filteredRequests.length === 0 ? (
+                              <motion.tr initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                                <td colSpan={6} className="px-6 py-24 text-center">
+                                  <Inbox className="w-8 h-8 text-zinc-600 mx-auto mb-3" />
+                                  <p className="text-zinc-300 font-medium">No requests found</p>
+                                  <p className="text-zinc-500 text-sm mt-1">Try adjusting your filters or search terms.</p>
+                                </td>
+                              </motion.tr>
+                            ) : filteredRequests.map((req, index) => (
+                              <motion.tr key={req.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}
+                                onClick={() => setSelectedRequest(req)}
+                                className="border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors cursor-pointer"
+                              >
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-400">
+                                  {new Date(req.created_at).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <p className="font-medium text-zinc-200 text-sm">{req.first_name} {req.last_name}</p>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <p className="text-sm text-zinc-400">{req.email}</p>
+                                </td>
+                                <td className="px-6 py-4 text-sm text-zinc-400 max-w-[200px] truncate">{req.equipment_required}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <div className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                                    req.status === "Approved"  ? "bg-emerald-500/10 text-emerald-400" :
+                                    req.status === "Rejected"  ? "bg-red-500/10 text-red-400" :
+                                                                 "bg-amber-500/10 text-amber-400"
+                                  }`}>
+                                    {req.status || "Pending Review"}
+                                  </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-right relative">
+                                  <button onClick={(e) => { e.stopPropagation(); setActiveDropdown(activeDropdown === req.id ? null : req.id); }}
+                                    className="p-1.5 rounded-md text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300 transition-colors"
+                                  >
+                                    <MoreVertical className="w-4 h-4" />
+                                  </button>
+                                  <AnimatePresence>
+                                    {activeDropdown === req.id && (
+                                      <motion.div initial={{ opacity: 0, scale: 0.95, y: -8 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: -8 }} transition={{ duration: 0.15 }}
+                                        className="absolute right-12 top-8 bg-zinc-900 border border-zinc-800 rounded-lg shadow-xl overflow-hidden z-50 min-w-[140px] py-1"
+                                      >
+                                        <button onClick={(e) => { e.stopPropagation(); setSelectedRequest(req); setActiveDropdown(null); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 transition-colors">
+                                          <Eye className="w-4 h-4" /> View Details
+                                        </button>
+                                        <button onClick={(e) => { e.stopPropagation(); setDeleteConfirmId(req.id); setActiveDropdown(null); }}
+                                          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-zinc-800 transition-colors"
+                                        >
+                                          <Trash2 className="w-4 h-4" /> Delete
+                                        </button>
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
+                                </td>
+                              </motion.tr>
+                            ))}
+                          </AnimatePresence>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* ── REQUEST DETAILS MODAL ── */}
+                  <AnimatePresence>
+                    {selectedRequest && (
+                      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                          onClick={() => setSelectedRequest(null)} className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm"
+                        />
+                        <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                          className="relative w-full max-w-lg bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl"
+                        >
+                          <div className="p-6 border-b border-zinc-800 flex justify-between items-start">
+                            <div>
+                              <p className="text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-1">Request #{selectedRequest.id}</p>
+                              <h3 className="text-xl font-bold text-zinc-100">{selectedRequest.first_name} {selectedRequest.last_name}</h3>
+                            </div>
+                            <button onClick={() => setSelectedRequest(null)} className="p-2 rounded-xl hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 transition-colors">
+                              <X className="w-5 h-5" />
+                            </button>
+                          </div>
+                          <div className="p-6 space-y-6">
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <p className="text-xs font-medium text-zinc-500 mb-1">Email Address</p>
+                                <p className="text-sm font-medium text-zinc-200">{selectedRequest.email}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs font-medium text-zinc-500 mb-1">Phone (WhatsApp)</p>
+                                <p className="text-sm font-medium text-zinc-200">{selectedRequest.phone || "Not provided"}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs font-medium text-zinc-500 mb-1">Address / Site Location</p>
+                                <p className="text-sm font-medium text-zinc-200">{selectedRequest.address || "Not provided"}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs font-medium text-zinc-500 mb-1">Date Submitted</p>
+                                <p className="text-sm font-medium text-zinc-200">{new Date(selectedRequest.created_at).toLocaleString()}</p>
+                              </div>
+                              <div className="col-span-2">
+                                <p className="text-xs font-medium text-zinc-500 mb-1">Status</p>
+                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium ${
+                                        selectedRequest.status === "Approved"  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
+                                        selectedRequest.status === "Rejected"  ? "bg-red-500/10 text-red-400 border border-red-500/20" :
+                                                                     "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                                      }`}>
+                                  {selectedRequest.status || "Pending Review"}
+                                </span>
+                              </div>
+                            </div>
+                            
+                            <div>
+                              <p className="text-xs font-medium text-zinc-500 mb-2">Equipment Required / Message</p>
+                              <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-sm text-zinc-300 whitespace-pre-wrap">
+                                {selectedRequest.equipment_required}
+                              </div>
+                            </div>
+
+                            <div className="flex flex-col gap-3 pt-4 border-t border-zinc-800">
+                              <button onClick={() => {
+                                const msg = `Hi ${selectedRequest.first_name},\n\nThis is the TRUXO Team. We received your dispatch request for:\n"${selectedRequest.equipment_required}"\n\nOur team is reviewing your requirements and will get back to you shortly.\n\nBest regards,\nThe TRUXO Team\n🌐 Visit us at: https://truxo.ae`;
+                                window.open(`https://wa.me/${(selectedRequest.phone || '').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(msg)}`, '_blank');
+                              }} className="w-full py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-xs uppercase tracking-widest hover:bg-emerald-500/20 transition-colors flex items-center justify-center gap-2">
+                                <Phone className="w-4 h-4" /> Message on WhatsApp
+                              </button>
+                              <button onClick={() => handleEmailClient(selectedRequest, 'Reply')} className="w-full py-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 font-bold text-xs uppercase tracking-widest hover:bg-blue-500/20 transition-colors flex items-center justify-center gap-2">
+                                <Mail className="w-4 h-4" /> Reply to Client (CC Admin)
+                              </button>
+                              
+                              {selectedRequest.status !== "Approved" && selectedRequest.status !== "Rejected" && (
+                                <div className="grid grid-cols-2 gap-3 mt-2">
+                                  <button onClick={() => { handleApprove(selectedRequest.id); handleEmailClient(selectedRequest, 'Approve'); setSelectedRequest(null); }} className="py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-[10px] uppercase tracking-widest hover:bg-emerald-500/20 transition-colors flex items-center justify-center gap-2">
+                                    <Mail className="w-3 h-3" /> Approve (Email)
+                                  </button>
+                                  <button onClick={() => { handleApprove(selectedRequest.id); handleWhatsAppClient(selectedRequest, 'Approve'); setSelectedRequest(null); }} className="py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-[10px] uppercase tracking-widest hover:bg-emerald-500/20 transition-colors flex items-center justify-center gap-2">
+                                    <Phone className="w-3 h-3" /> Approve (WA)
+                                  </button>
+                                  
+                                  <button onClick={() => { handleReject(selectedRequest.id); handleEmailClient(selectedRequest, 'Reject'); setSelectedRequest(null); }} className="py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 font-bold text-[10px] uppercase tracking-widest hover:bg-amber-500/20 transition-colors flex items-center justify-center gap-2">
+                                    <Mail className="w-3 h-3" /> Reject (Email)
+                                  </button>
+                                  <button onClick={() => { handleReject(selectedRequest.id); handleWhatsAppClient(selectedRequest, 'Reject'); setSelectedRequest(null); }} className="py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 font-bold text-[10px] uppercase tracking-widest hover:bg-amber-500/20 transition-colors flex items-center justify-center gap-2">
+                                    <Phone className="w-3 h-3" /> Reject (WA)
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </motion.div>
+                      </div>
+                    )}
+                  </AnimatePresence>
+                  
+                  <AnimatePresence>
+                    {deleteConfirmId !== null && (
+                      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setDeleteConfirmId(null)} className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+                        <motion.div initial={{ scale: 0.95, opacity: 0, y: 10 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: -10 }} transition={{ type: "spring", damping: 25, stiffness: 300 }} className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative z-10">
+                          <div className="flex flex-col items-center text-center">
+                            <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mb-4">
+                              <Trash2 className="w-6 h-6 text-red-400" />
+                            </div>
+                            <h3 className="text-lg font-bold text-white mb-2">Delete Request?</h3>
+                            <p className="text-sm text-zinc-400 mb-6">
+                              Are you sure you want to delete this request? This action cannot be undone and it will be permanently removed from the system.
+                            </p>
+                            <div className="flex gap-3 w-full">
+                              <button onClick={() => setDeleteConfirmId(null)} className="flex-1 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-xs uppercase tracking-widest transition-colors">
+                                Cancel
+                              </button>
+                              <button onClick={() => { handleDelete(deleteConfirmId); setDeleteConfirmId(null); }} className="flex-1 py-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 font-bold text-xs uppercase tracking-widest transition-colors">
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        </motion.div>
+                      </div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
-              </motion.div>
-            )}
+              )}
 
-            {/* ── OTHER TABS ── */}
-            {activeTab === "fleet" && (
-              <motion.div key="fleet" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
-                <FleetTracking activeAssetId={fleetAssetId} setActiveAssetId={setFleetAssetId} />
-              </motion.div>
-            )}
-            {activeTab === "clients" && (
-              <motion.div key="clients" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
-                <ClientDirectory onTrackAsset={handleTrackAsset} />
-              </motion.div>
-            )}
-            {activeTab === "analytics" && (
-              <motion.div key="analytics" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
-                <Analytics />
-              </motion.div>
-            )}
-            {activeTab === "invoices" && (
-              <motion.div key="invoices" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
-                <Invoices />
-              </motion.div>
-            )}
-            {activeTab === "settings" && (
-              <motion.div key="settings" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
-                <SystemSettings onLogout={handleLogout} />
-              </motion.div>
-            )}
+              {/* ── OTHER TABS ── */}
+              {activeTab === "fleet" && (
+                <motion.div key="fleet" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <FleetTracking activeAssetId={fleetAssetId} setActiveAssetId={setFleetAssetId} initialFilter={initialFleetFilter} />
+                </motion.div>
+              )}
+              {activeTab === "clients" && (
+                <motion.div key="clients" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <ClientDirectory onTrackAsset={handleTrackAsset} />
+                </motion.div>
+              )}
+              {activeTab === "analytics" && (
+                <motion.div key="analytics" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <Analytics />
+                </motion.div>
+              )}
+              {activeTab === "invoices" && (
+                <motion.div key="invoices" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <Invoices />
+                </motion.div>
+              )}
+              {activeTab === "settings" && (
+                <motion.div key="settings" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <SystemSettings onLogout={handleLogout} />
+                </motion.div>
+              )}
 
-          </AnimatePresence>
+            </AnimatePresence>
+          </div>
         </div>
       </div>
 
       {/* ── MOBILE BOTTOM NAV ── */}
       <div className="lg:hidden fixed bottom-0 left-0 w-full z-50">
-        <div className="bg-[#0A0A0C]/97 backdrop-blur-xl border-t border-white/8 pt-3 pb-8 px-6 flex justify-around items-center">
+        <div className="bg-zinc-950/90 backdrop-blur-md border-t border-zinc-800 pt-3 pb-8 px-6 flex justify-around items-center">
           {[
             { id: "overview",  icon: LayoutDashboard, label: "Home" },
             { id: "dispatch",  icon: Inbox,           label: "Dispatch", badge: pendingCount },
@@ -600,12 +821,12 @@ export default function AdminDashboard() {
             return (
               <button key={item.id} onClick={() => setActiveTab(item.id as ActiveTab)} className="flex flex-col items-center gap-1 relative">
                 {item.badge && item.badge > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#DFBA73] text-[#111113] text-[8px] font-black flex items-center justify-center">
+                  <span className="absolute -top-1 -right-2 w-4 h-4 rounded-full bg-[#C5A059] text-white text-[9px] font-medium flex items-center justify-center">
                     {item.badge > 9 ? "9+" : item.badge}
                   </span>
                 )}
-                <item.icon className={`w-5 h-5 transition-all ${isActive ? "text-[#C5A059] scale-110" : "text-gray-600"}`} />
-                <span className={`text-[9px] font-black uppercase tracking-wider ${isActive ? "text-[#C5A059]" : "text-gray-600"}`}>{item.label}</span>
+                <item.icon className={`w-5 h-5 transition-colors ${isActive ? "text-zinc-100" : "text-zinc-500"}`} />
+                <span className={`text-[10px] font-medium ${isActive ? "text-zinc-100" : "text-zinc-500"}`}>{item.label}</span>
               </button>
             );
           })}

@@ -6,6 +6,8 @@ import {
   CheckCircle2, Clock, AlertCircle, X, Building2, Calendar,
   TrendingUp, Receipt, AlertTriangle, Loader2
 } from "lucide-react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 type InvoiceStatus = "Paid" | "Pending" | "Overdue" | "Draft";
 
@@ -26,6 +28,15 @@ type Client = {
   name: string;
 };
 
+type FleetAsset = {
+  asset_id: string;
+  type: string;
+  model: string;
+  status: string;
+  client_id: string | null;
+  location: string;
+};
+
 const statusConfig: Record<InvoiceStatus, { color: string; bg: string; icon: React.ElementType }> = {
   Paid:    { color: "#25D366", bg: "#25D366", icon: CheckCircle2 },
   Pending: { color: "#DFBA73", bg: "#DFBA73", icon: Clock },
@@ -40,6 +51,7 @@ export default function Invoices() {
   
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
+  const [fleet, setFleet] = useState<FleetAsset[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // New Invoice Modal
@@ -51,12 +63,14 @@ export default function Invoices() {
   const fetchData = async () => {
     try {
       const password = sessionStorage.getItem("admin_token");
-      const [resInv, resCli] = await Promise.all([
+      const [resInv, resCli, resFleet] = await Promise.all([
         fetch("/api/admin/invoices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) }),
-        fetch("/api/admin/clients", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) })
+        fetch("/api/admin/clients", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) }),
+        fetch("/api/admin/fleet", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) })
       ]);
       if (resInv.ok) { const d = await resInv.json(); setInvoices(d.invoices || []); }
       if (resCli.ok) { const d = await resCli.json(); setClients(d.clients || []); }
+      if (resFleet.ok) { const d = await resFleet.json(); setFleet(d.fleet || []); }
     } catch (e) {
       console.error(e);
     } finally {
@@ -137,6 +151,55 @@ export default function Invoices() {
     } catch (e) {
       console.error(e);
     }
+  };
+
+  const handleExportPDF = (invoice: Invoice) => {
+    const doc = new jsPDF();
+    
+    // Header
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
+    doc.setTextColor(197, 160, 89); // #C5A059
+    doc.text("TRUXO OS", 14, 20);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text("INVOICE", 14, 26);
+    
+    // Invoice Info
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Invoice #: ${invoice.id}`, 140, 20);
+    doc.text(`Issued: ${new Date(invoice.issued).toLocaleDateString("en-AE")}`, 140, 26);
+    doc.text(`Due: ${new Date(invoice.due).toLocaleDateString("en-AE")}`, 140, 32);
+    doc.text(`Status: ${invoice.status}`, 140, 38);
+    
+    // Client Info
+    doc.setFont("helvetica", "bold");
+    doc.text("Billed To:", 14, 45);
+    doc.setFont("helvetica", "normal");
+    doc.text(invoice.client, 14, 51);
+    doc.text(`ID: ${invoice.client_id}`, 14, 57);
+    
+    const tableData = (invoice.items || []).map(item => [
+      item.desc,
+      item.qty.toString(),
+      item.rate,
+      item.total
+    ]);
+    
+    autoTable(doc, {
+      startY: 70,
+      head: [['Description', 'Qty', 'Rate', 'Total']],
+      body: tableData,
+      theme: 'grid',
+      headStyles: { fillColor: [197, 160, 89] },
+      styles: { fontSize: 10, cellPadding: 5 },
+      foot: [['', '', 'Total', invoice.amount]],
+      footStyles: { fillColor: [245, 242, 235], textColor: [0, 0, 0], fontStyle: 'bold' },
+    });
+    
+    doc.save(`${invoice.id}.pdf`);
   };
 
   const filtered = invoices.filter(inv => {
@@ -318,12 +381,18 @@ export default function Invoices() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1.5">Equipment / Description *</label>
-                  <input
-                    type="text" placeholder="e.g. DEVELON DX190WA Rental (30 days)"
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1.5">Equipment / Asset *</label>
+                  <select
                     value={addForm.equipment} onChange={(e) => setAddForm({ ...addForm, equipment: e.target.value })}
                     required className="w-full bg-[#0A0A0C] border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#C5A059]/50 transition-colors"
-                  />
+                  >
+                    <option value="" disabled>Choose an asset</option>
+                    {fleet.map(f => (
+                      <option key={f.asset_id} value={`${f.type} ${f.model} (${f.asset_id})`}>
+                        {f.type} {f.model} - {f.asset_id} {f.client_id ? `(Assigned to ${f.client_id})` : '(Available)'}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -436,7 +505,7 @@ export default function Invoices() {
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  <button className="flex-1 py-2.5 rounded-xl bg-[#111113] border border-[#C5A059]/30 text-[#C5A059] font-black text-xs uppercase tracking-widest hover:bg-[#C5A059]/10 transition-colors flex items-center justify-center gap-2">
+                  <button onClick={() => handleExportPDF(selectedInvoice)} className="flex-1 py-2.5 rounded-xl bg-[#111113] border border-[#C5A059]/30 text-[#C5A059] font-black text-xs uppercase tracking-widest hover:bg-[#C5A059]/10 transition-colors flex items-center justify-center gap-2">
                     <Download className="w-4 h-4" /> Export PDF
                   </button>
                   {selectedInvoice.status === "Pending" && (
