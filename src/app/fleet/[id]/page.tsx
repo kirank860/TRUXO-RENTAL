@@ -2,34 +2,9 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { fleetInventory } from "@/data";
+import { createClient } from "@supabase/supabase-js";
 import VehicleViewer from "@/components/ui/VehicleViewer";
-import { ChevronRight, Calendar, MapPin, Tag, Palette, CheckCircle2, ArrowLeft, ArrowRight, ShieldCheck, Factory } from "lucide-react";
-
-// Image mapping helper based on category
-const getVehicleImage = (category: string, type: string) => {
-  const c = category.toLowerCase();
-  const t = type.toLowerCase();
-
-  if (c.includes("forklift")) return "/images/Forklift.webp";
-  if (t.includes("wheel excavator") || c.includes("develon")) return "/images/Revealing The Profitability Of Used Wheel Excavators.jpeg";
-  if (c.includes("jcb")) return "/images/JCB 520X Hydraulic Excavator.jpeg";
-  if (c.includes("hyundai") || t.includes("truck")) return "/images/_.jpeg";
-  if (t.includes("excavator")) return "/images/company_excavator.jpg";
-  return "/images/Trucks.jpeg"; // Default fallback
-};
-
-// Description mapping helper based on category
-const getVehicleDescription = (category: string, type: string) => {
-  const c = category.toLowerCase();
-  const t = type.toLowerCase();
-
-  if (c.includes("forklift")) return "Ideal for warehouses, logistics centers, and industrial facilities, our forklifts offer exceptional maneuverability for lifting, stacking, and transporting heavy pallets and materials with precision and safety.";
-  if (t.includes("wheel excavator") || c.includes("develon")) return "Designed for mobility and power, wheel excavators are perfect for road construction, utility work, and urban environments where driving between tasks without damaging pavement is essential.";
-  if (c.includes("jcb") || t.includes("excavator")) return "A powerhouse for earthmoving, this excavator delivers maximum breakout force and stability. Perfect for deep trenching, heavy lifting, and large-scale site preparation across demanding terrains.";
-  if (c.includes("hyundai") || t.includes("truck")) return "Built for heavy-duty hauling, these transport trucks ensure reliable delivery of aggregates, soil, and debris. They form the critical backbone of site logistics, keeping your project moving on schedule.";
-  return "A versatile and robust piece of heavy machinery, engineered to deliver consistent performance, durability, and efficiency across a wide range of demanding construction and industrial applications.";
-};
+import { ChevronRight, Calendar, MapPin, ActivitySquare, CheckCircle2, ArrowLeft, ArrowRight, ShieldCheck, Factory, Banknote, Clock } from "lucide-react";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -37,34 +12,80 @@ type Props = {
 
 import type { Metadata } from "next";
 
+// Helper to get supabase client
+const getSupabase = () => {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !serviceRoleKey) return null;
+  return createClient(supabaseUrl, serviceRoleKey);
+};
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const vehicleId = parseInt(id, 10);
-  const vehicle = fleetInventory.find((v) => v.id === vehicleId);
+  const supabase = getSupabase();
+  if (!supabase) return { title: "Error" };
+
+  const { data: vehicle } = await supabase.from('fleet').select('*').eq('asset_id', id).single();
   
   if (!vehicle) return { title: "Equipment Not Found" };
   
+  let parsedBrand = vehicle.type;
+  let parsedName = "Unknown Model";
+  try {
+    const json = JSON.parse(vehicle.model);
+    if (json.name) parsedName = json.name;
+    if (json.brand) parsedBrand = json.brand;
+  } catch(e) {
+    if (vehicle.model?.includes("||")) {
+      const parts = vehicle.model.split("||");
+      parsedBrand = parts[0];
+      parsedName = parts[1];
+    } else {
+      parsedName = vehicle.model;
+    }
+  }
+  
   return {
-    title: `${vehicle.brand} ${vehicle.type}`,
-    description: `Rent the ${vehicle.year} ${vehicle.brand} ${vehicle.type}. ${getVehicleDescription(vehicle.category, vehicle.type)} Available in ${vehicle.location}.`,
+    title: `${parsedBrand} ${parsedName}`,
+    description: `Rent the ${parsedBrand} ${parsedName}. Available in ${vehicle.location}.`,
   };
 }
 
 export default async function FleetSpecPage({ params }: Props) {
   const { id } = await params;
+  const supabase = getSupabase();
+  
+  if (!supabase) {
+    return <div>Database connection error</div>;
+  }
 
-  const vehicleId = parseInt(id, 10);
-  const vehicle = fleetInventory.find((v) => v.id === vehicleId);
+  const { data: vehicle, error } = await supabase.from('fleet').select('*').eq('asset_id', id).single();
 
-  if (!vehicle) {
+  if (error || !vehicle) {
     notFound();
   }
 
-  const imageSrc = getVehicleImage(vehicle.category, vehicle.type);
-  const vehicleDesc = getVehicleDescription(vehicle.category, vehicle.type);
+  let parsedBrand = vehicle.type || "Unknown Brand";
+  let parsedName = "Unknown Model";
+  
+  try {
+    const json = JSON.parse(vehicle.model);
+    if (json.name) parsedName = json.name;
+    if (json.brand) parsedBrand = json.brand;
+  } catch(e) {
+    if (vehicle.model?.includes("||")) {
+      const parts = vehicle.model.split("||");
+      parsedBrand = parts[0];
+      parsedName = parts[1];
+    } else {
+      parsedName = vehicle.model;
+    }
+  }
 
-  // Get other fleet recommendations (excluding current)
-  const recommendations = fleetInventory.filter((v) => v.id !== vehicleId).slice(0, 3);
+  const imageSrc = vehicle.image || "/images/company_excavator.jpg";
+
+  // Fetch 3 other random vehicles for recommendations
+  const { data: recommendations } = await supabase.from('fleet').select('*').neq('asset_id', id).limit(3);
 
   return (
     <main className="min-h-screen bg-[#050505] text-[#F5F2EB] font-sans pb-24 md:pb-0 selection:bg-[#C5A059] selection:text-[#12131A]">
@@ -74,8 +95,9 @@ export default async function FleetSpecPage({ params }: Props) {
         <div className="absolute inset-0 z-0">
           <Image 
             src={imageSrc} 
-            alt={vehicle.brand} 
+            alt={parsedName} 
             fill 
+            sizes="100vw"
             priority
             className="object-cover filter brightness-[0.25]" 
           />
@@ -88,23 +110,23 @@ export default async function FleetSpecPage({ params }: Props) {
               <ArrowLeft className="w-4 h-4" /> Back to Fleet
             </Link>
             <span className="text-gray-600">/</span>
-            <span className="text-[#C5A059]">{vehicle.brand}</span>
+            <span className="text-[#C5A059]">{parsedBrand}</span>
           </div>
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <span className="px-4 py-1.5 rounded-full bg-[#111113]/80 backdrop-blur-md border border-[#C5A059]/30 text-[#C5A059] text-[10px] font-black tracking-widest uppercase shadow-[0_0_20px_rgba(197,160,89,0.2)]">
-                  {vehicle.category}
+                  {parsedBrand}
                 </span>
                 <span className="px-4 py-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-white text-[10px] font-black tracking-widest uppercase">
-                  ID: {vehicle.id}
+                  ID: {vehicle.asset_id}
                 </span>
               </div>
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-orbitron font-black uppercase text-white tracking-tight drop-shadow-2xl">
-                {vehicle.brand}
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-orbitron font-black uppercase text-white tracking-tight drop-shadow-2xl">
+                {parsedName}
               </h1>
-              <p className="text-xl md:text-2xl text-gray-400 font-bold mt-2 uppercase tracking-wide">{vehicle.type}</p>
+              <p className="text-xl md:text-2xl text-gray-400 font-bold mt-2 uppercase tracking-wide">{parsedBrand}</p>
             </div>
           </div>
         </div>
@@ -113,8 +135,8 @@ export default async function FleetSpecPage({ params }: Props) {
       <div className="max-w-7xl mx-auto px-6 -mt-8 relative z-20">
         
         {/* 360 / Interactive Viewer */}
-        <div className="mb-24 shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-3xl border border-white/5">
-          <VehicleViewer imageSrc={imageSrc} title={vehicle.brand} />
+        <div className="mb-24 shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-3xl border border-white/5 bg-[#111113]">
+          <VehicleViewer imageSrc={imageSrc} title={parsedName} />
         </div>
 
         {/* Specifications & Sticky Sidebar Grid */}
@@ -126,7 +148,7 @@ export default async function FleetSpecPage({ params }: Props) {
             <section className="bg-[#111113]/40 backdrop-blur-xl border border-white/5 p-8 md:p-10 rounded-[2rem] shadow-xl">
               <h2 className="text-xl font-black text-white uppercase font-orbitron mb-4">Equipment Overview</h2>
               <p className="text-gray-300 font-medium leading-relaxed text-sm md:text-base">
-                {vehicleDesc}
+                A versatile and robust piece of heavy machinery, engineered to deliver consistent performance, durability, and efficiency across a wide range of demanding construction and industrial applications. Designed for safety and precision, this equipment meets all modern site requirements.
               </p>
             </section>
 
@@ -139,34 +161,34 @@ export default async function FleetSpecPage({ params }: Props) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-[#111113]/60 backdrop-blur-xl border border-white/5 p-8 rounded-3xl flex flex-col gap-3 hover:bg-[#111113] transition-colors group">
                   <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-[#C5A059] mb-4 group-hover:scale-110 transition-transform">
-                    <Calendar className="w-6 h-6" />
-                  </div>
-                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Model Year</span>
-                  <span className="text-3xl font-black text-white font-orbitron tracking-tight">{vehicle.year}</span>
-                </div>
-
-                <div className="bg-[#111113]/60 backdrop-blur-xl border border-white/5 p-8 rounded-3xl flex flex-col gap-3 hover:bg-[#111113] transition-colors group">
-                  <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-[#C5A059] mb-4 group-hover:scale-110 transition-transform">
                     <MapPin className="w-6 h-6" />
                   </div>
                   <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Current Location</span>
-                  <span className="text-3xl font-black text-white font-orbitron tracking-tight">{vehicle.location}</span>
+                  <span className="text-3xl font-black text-white font-orbitron tracking-tight">{vehicle.location || 'Dubai'}</span>
                 </div>
 
                 <div className="bg-[#111113]/60 backdrop-blur-xl border border-white/5 p-8 rounded-3xl flex flex-col gap-3 hover:bg-[#111113] transition-colors group">
                   <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-[#C5A059] mb-4 group-hover:scale-110 transition-transform">
-                    <Tag className="w-6 h-6" />
+                    <ActivitySquare className="w-6 h-6" />
                   </div>
-                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Registration Plate</span>
-                  <span className="text-3xl font-black text-white font-orbitron tracking-tight font-mono">{vehicle.plate}</span>
+                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Status</span>
+                  <span className="text-3xl font-black text-white font-orbitron tracking-tight">{vehicle.status}</span>
                 </div>
 
                 <div className="bg-[#111113]/60 backdrop-blur-xl border border-white/5 p-8 rounded-3xl flex flex-col gap-3 hover:bg-[#111113] transition-colors group">
                   <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-[#C5A059] mb-4 group-hover:scale-110 transition-transform">
-                    <Palette className="w-6 h-6" />
+                    <Banknote className="w-6 h-6" />
                   </div>
-                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Standard Color</span>
-                  <span className="text-3xl font-black text-white font-orbitron tracking-tight">{vehicle.color}</span>
+                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Daily Rent</span>
+                  <span className="text-3xl font-black text-white font-orbitron tracking-tight font-mono">AED {vehicle.daily_rent || '1,200'}</span>
+                </div>
+
+                <div className="bg-[#111113]/60 backdrop-blur-xl border border-white/5 p-8 rounded-3xl flex flex-col gap-3 hover:bg-[#111113] transition-colors group">
+                  <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-[#C5A059] mb-4 group-hover:scale-110 transition-transform">
+                    <Clock className="w-6 h-6" />
+                  </div>
+                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Hourly Rate</span>
+                  <span className="text-3xl font-black text-white font-orbitron tracking-tight">AED {vehicle.hourly_rate || '350'}</span>
                 </div>
               </div>
             </section>
@@ -178,99 +200,119 @@ export default async function FleetSpecPage({ params }: Props) {
                 <ShieldCheck className="w-8 h-8 text-[#C5A059]" />
                 Equipment Certification
               </h3>
-              
-              <ul className="space-y-6 font-bold text-gray-400">
-                <li className="flex items-start gap-4">
-                  <CheckCircle2 className="w-6 h-6 text-[#C5A059] shrink-0" /> 
-                  <span className="leading-relaxed">Full preventative maintenance completed under UAE heavy equipment compliance guidelines.</span>
-                </li>
-                <li className="flex items-start gap-4">
-                  <CheckCircle2 className="w-6 h-6 text-[#C5A059] shrink-0" /> 
-                  <span className="leading-relaxed">Available for immediate deployment to any site with our rapid transport team.</span>
-                </li>
-                <li className="flex items-start gap-4">
-                  <CheckCircle2 className="w-6 h-6 text-[#C5A059] shrink-0" /> 
-                  <span className="leading-relaxed">Includes 24/7 dedicated on-call mechanical support and troubleshooting.</span>
-                </li>
-              </ul>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12 relative z-10">
+                {[
+                  "Municipality Approved",
+                  "Third-Party Inspected",
+                  "Emissions Compliant",
+                  "Safety Certified",
+                  "Fully Insured",
+                  "GPS Tracked"
+                ].map((cert) => (
+                  <div key={cert} className="flex items-center gap-4">
+                    <div className="w-6 h-6 rounded-full bg-[#C5A059]/20 flex items-center justify-center flex-shrink-0">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#C5A059]" />
+                    </div>
+                    <span className="text-sm font-medium text-gray-300">{cert}</span>
+                  </div>
+                ))}
+              </div>
             </section>
           </div>
 
-          {/* High-End Sticky Ecommerce CTA Sidebar */}
+          {/* Sticky Inquiry Form Column */}
           <div className="lg:col-span-4 xl:col-span-4">
-            <div className="bg-[#111113]/80 backdrop-blur-2xl rounded-[2.5rem] p-10 border border-[#C5A059]/20 shadow-[0_0_50px_rgba(197,160,89,0.05)] sticky top-32">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#DFBA73] to-[#C5A059] flex items-center justify-center text-[#12131A] mb-8 shadow-[0_0_30px_rgba(197,160,89,0.3)]">
-                <Factory className="w-8 h-8" />
+            <div className="sticky top-8 bg-[#111113]/80 backdrop-blur-2xl border border-white/10 p-8 rounded-[2rem] shadow-2xl flex flex-col gap-6 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#C5A059] to-transparent" />
+              
+              <div>
+                <h3 className="text-2xl font-orbitron font-black uppercase text-white mb-2">Request Quote</h3>
+                <p className="text-xs text-gray-400">Our dispatch team will review your request and respond shortly.</p>
               </div>
+
+              <Link 
+                href="/contact"
+                className="w-full bg-[#C5A059] hover:bg-[#D4AF37] text-[#12131A] font-black text-sm uppercase tracking-widest py-4 rounded-xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                Inquire Now
+              </Link>
               
-              <h3 className="text-2xl font-orbitron font-black uppercase text-white mb-4 tracking-tight">Deploy this Asset</h3>
-              <p className="text-gray-400 font-medium text-sm mb-10 leading-relaxed">
-                Skip the waitlist. Contact our specialized procurement team to lock in daily, weekly, or monthly rates for the {vehicle.brand}.
-              </p>
-              
-              <div className="space-y-4">
-                <Link href="/contact" className="group flex items-center justify-between w-full p-5 rounded-2xl bg-gradient-to-r from-[#DFBA73] to-[#C5A059] text-[#12131A] font-black text-xs uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(197,160,89,0.2)] hover:shadow-[0_0_40px_rgba(197,160,89,0.4)] active:scale-[0.98] transition-all">
-                  Get Pricing Quote
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                
-                <a href="https://wa.me/971501234567" target="_blank" rel="noreferrer" className="group flex items-center justify-between w-full p-5 rounded-2xl bg-transparent border border-white/10 text-white hover:border-[#25D366]/50 hover:bg-[#25D366]/10 font-black text-xs uppercase tracking-[0.2em] active:scale-[0.98] transition-all">
-                  WhatsApp Sales
-                  <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-[#25D366] transition-colors" />
-                </a>
-              </div>
-              
-              <div className="mt-8 pt-8 border-t border-white/5 text-center">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Fast Approval Process</span>
+              <div className="pt-6 border-t border-white/5 space-y-4">
+                <div className="flex items-center gap-3 text-sm text-gray-400">
+                  <Factory className="w-4 h-4 text-[#C5A059]" />
+                  <span>Maintained by OEM standards</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-gray-400">
+                  <ActivitySquare className="w-4 h-4 text-[#C5A059]" />
+                  <span>24/7 Support Available</span>
+                </div>
               </div>
             </div>
           </div>
 
         </div>
 
-        {/* Other Fleet Options - Upgraded to match new /fleet design */}
-        <div className="pt-16 border-t border-white/5">
-          <div className="flex items-center justify-between mb-12">
-            <h2 className="text-2xl md:text-4xl font-orbitron font-black uppercase text-white tracking-tight">
-              Other <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DFBA73] to-[#C5A059]">Options</span>
-            </h2>
-            <Link href="/fleet" className="text-xs font-black tracking-widest uppercase text-gray-500 hover:text-white flex items-center gap-2 transition-colors">
-              View Fleet <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {recommendations.map((rec) => (
-              <Link
-                key={rec.id}
-                href={`/fleet/${rec.id}`}
-                className="group rounded-[2rem] bg-[#111113]/80 backdrop-blur-xl border border-white/5 shadow-xl hover:shadow-[0_0_30px_rgba(197,160,89,0.15)] hover:border-[#C5A059]/30 hover:-translate-y-1 active:scale-95 transition-all duration-500 flex flex-col justify-between overflow-hidden"
-              >
-                <div className="relative h-48 w-full overflow-hidden">
-                  <Image 
-                    src={getVehicleImage(rec.category, rec.type)} 
-                    alt={rec.brand} 
-                    fill 
-                    className="object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-[0.7] group-hover:brightness-100" 
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#111113] via-[#111113]/20 to-transparent" />
-                  
-                  <div className="absolute bottom-4 left-6 pr-6">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-[#C5A059] block mb-1 font-orbitron">{rec.type}</span>
-                    <h3 className="text-2xl font-black text-white tracking-tight uppercase font-orbitron drop-shadow-md leading-none">{rec.brand}</h3>
-                  </div>
-                </div>
-
-                <div className="p-6">
-                  <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 group-hover:text-[#C5A059] transition-colors">
-                    View Specifications <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
-                  </div>
-                </div>
+        {/* Similar Equipment Strip */}
+        {recommendations && recommendations.length > 0 && (
+          <section className="border-t border-white/5 pt-20 mb-12">
+            <div className="flex items-center justify-between mb-12">
+              <h2 className="text-2xl md:text-3xl font-orbitron font-black text-white uppercase tracking-wider">
+                Explore More
+              </h2>
+              <Link href="/fleet" className="text-sm font-black text-[#C5A059] uppercase tracking-widest hover:text-white flex items-center gap-2 transition-colors">
+                View All <ArrowRight className="w-4 h-4" />
               </Link>
-            ))}
-          </div>
-        </div>
+            </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {recommendations.map(rec => {
+                let recName = "Unknown Model";
+                let recBrand = rec.type;
+                
+                try {
+                  const json = JSON.parse(rec.model);
+                  if (json.name) recName = json.name;
+                  if (json.brand) recBrand = json.brand;
+                } catch(e) {
+                  if (rec.model?.includes("||")) {
+                    const parts = rec.model.split("||");
+                    recBrand = parts[0];
+                    recName = parts[1];
+                  } else {
+                    recName = rec.model;
+                  }
+                }
+                
+                return (
+                  <Link 
+                    key={rec.asset_id}
+                    href={`/fleet/${rec.asset_id}`}
+                    className="group relative h-[300px] rounded-3xl overflow-hidden border border-white/5 bg-[#111113] block"
+                  >
+                    <Image 
+                      src={rec.image || "/images/company_excavator.jpg"} 
+                      alt={recName} 
+                      fill 
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105 filter brightness-[0.5] group-hover:brightness-[0.7]" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+                    <div className="absolute bottom-0 left-0 w-full p-8 flex flex-col items-start gap-2">
+                      <span className="px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-[#C5A059]">
+                        {recBrand}
+                      </span>
+                      <h4 className="text-lg font-black text-white uppercase tracking-tight">{recName}</h4>
+                      <div className="w-8 h-8 rounded-full bg-[#C5A059] flex items-center justify-center opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all absolute right-8 bottom-8">
+                        <ArrowRight className="w-4 h-4 text-[#12131A]" />
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        )}
       </div>
     </main>
   );

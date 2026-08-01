@@ -559,6 +559,7 @@ export default function Home() {
                     src="/images/hero_loader.jpg"
                     alt="TRUXO Heavy Equipment"
                     fill
+                    sizes="100vw"
                     priority
                     className="object-cover filter brightness-[0.85]"
                   />
