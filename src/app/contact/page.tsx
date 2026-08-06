@@ -89,7 +89,7 @@ export default function ContactPage() {
 
             {/* Phone Node */}
             <motion.a 
-              href="tel:+971506758759"
+              href="tel:+971543058358"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="block p-6 md:p-8 rounded-3xl bg-[#111113]/80 backdrop-blur-md border border-white/5 hover:border-[#C5A059]/40 shadow-xl transition-colors group cursor-pointer"
