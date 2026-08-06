@@ -175,21 +175,6 @@ export default async function FleetSpecPage({ params }: Props) {
                   <span className="text-3xl font-black text-white font-orbitron tracking-tight">{vehicle.status}</span>
                 </div>
 
-                <div className="bg-[#111113]/60 backdrop-blur-xl border border-white/5 p-8 rounded-3xl flex flex-col gap-3 hover:bg-[#111113] transition-colors group">
-                  <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-[#C5A059] mb-4 group-hover:scale-110 transition-transform">
-                    <Banknote className="w-6 h-6" />
-                  </div>
-                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Daily Rent</span>
-                  <span className="text-3xl font-black text-white font-orbitron tracking-tight font-mono">AED {vehicle.daily_rent || '1,200'}</span>
-                </div>
-
-                <div className="bg-[#111113]/60 backdrop-blur-xl border border-white/5 p-8 rounded-3xl flex flex-col gap-3 hover:bg-[#111113] transition-colors group">
-                  <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-[#C5A059] mb-4 group-hover:scale-110 transition-transform">
-                    <Clock className="w-6 h-6" />
-                  </div>
-                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Hourly Rate</span>
-                  <span className="text-3xl font-black text-white font-orbitron tracking-tight">AED {vehicle.hourly_rate || '350'}</span>
-                </div>
               </div>
             </section>
 
@@ -235,7 +220,7 @@ export default async function FleetSpecPage({ params }: Props) {
                 href="/contact"
                 className="w-full bg-[#C5A059] hover:bg-[#D4AF37] text-[#12131A] font-black text-sm uppercase tracking-widest py-4 rounded-xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
-                Inquire Now
+                Enquire Now
               </Link>
               
               <div className="pt-6 border-t border-white/5 space-y-4">

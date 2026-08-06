@@ -11,18 +11,18 @@ export default function Footer() {
             <Image src="/logo.jpeg" alt="Truxo Logo" width={40} height={40} className="w-10 h-10 object-contain rounded-full border border-white/10" />
             <span className="font-orbitron font-black text-2xl tracking-widest text-white uppercase">truxo</span>
           </Link>
-          <p className="text-gray-400 text-sm leading-relaxed lowercase font-medium">
-            your trusted partner for reliable heavy equipment and material handling solutions across the uae.
+          <p className="text-gray-400 text-sm leading-relaxed font-medium">
+            Your Trusted Partner For Reliable Heavy Equipment And Material Handling Solutions Across The UAE.
           </p>
         </div>
 
         <div className="space-y-6">
           <h4 className="text-[#C5A059] font-orbitron font-bold text-sm uppercase tracking-wider">quick links</h4>
-          <ul className="space-y-3 text-sm text-gray-400 font-bold lowercase">
-            <li><Link href="/fleet" className="hover:text-[#C5A059] transition-colors">our fleet</Link></li>
-            <li><Link href="/services" className="hover:text-[#C5A059] transition-colors">services</Link></li>
-            <li><Link href="/industries" className="hover:text-[#C5A059] transition-colors">industries</Link></li>
-            <li><Link href="/contact" className="hover:text-[#C5A059] transition-colors">contact us</Link></li>
+          <ul className="space-y-3 text-sm text-gray-400 font-bold capitalize">
+            <li><Link href="/fleet" className="hover:text-[#C5A059] transition-colors">Our Fleet</Link></li>
+            <li><Link href="/services" className="hover:text-[#C5A059] transition-colors">Services</Link></li>
+            <li><Link href="/industries" className="hover:text-[#C5A059] transition-colors">Industries</Link></li>
+            <li><Link href="/contact" className="hover:text-[#C5A059] transition-colors">Contact Us</Link></li>
           </ul>
         </div>
 
