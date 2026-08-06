@@ -596,6 +596,7 @@ export default function Home() {
                     >
                       EQUIPMENT RENTAL
                     </motion.span>
+                    {" Dubai"}
                   </motion.h1>
 
                   <motion.p
