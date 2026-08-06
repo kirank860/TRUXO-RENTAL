@@ -387,11 +387,18 @@ export default function Invoices() {
                     required className="w-full bg-[#0A0A0C] border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#C5A059]/50 transition-colors"
                   >
                     <option value="" disabled>Choose an asset</option>
-                    {fleet.map(f => (
-                      <option key={f.asset_id} value={`${f.type} ${f.model} (${f.asset_id})`}>
-                        {f.type} {f.model} - {f.asset_id} {f.client_id ? `(Assigned to ${f.client_id})` : '(Available)'}
-                      </option>
-                    ))}
+                    {fleet.map(f => {
+                      const typeParts = (f.type || '').split('||');
+                      const displayName = typeParts[0] || f.type;
+                      const category = typeParts[1] ? ` - ${typeParts[1]}` : '';
+                      const modelStr = f.model ? ` - ${f.model}` : '';
+                      
+                      return (
+                        <option key={f.asset_id} value={`${displayName} ${f.model || ''} (${f.asset_id})`.trim()}>
+                          {displayName}{category}{modelStr} {f.client_id ? `(Assigned)` : '(Available)'}
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
