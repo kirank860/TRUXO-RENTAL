@@ -36,17 +36,17 @@ export default function Footer() {
 
             <li className="flex items-center gap-2">
               <Mail className="w-4 h-4 text-[#A51A1A]" />
-              <span className="lowercase">alghazi478@gmail.com</span>
+              <span className="">admin@truxo.ae</span>
             </li>
           </ul>
         </div>
 
         <div className="space-y-6">
           <h4 className="text-[#C5A059] font-orbitron font-bold text-sm uppercase tracking-wider">location</h4>
-          <p className="text-sm text-gray-400 leading-relaxed font-bold lowercase flex items-start gap-2">
+          <p className="text-sm text-gray-400 leading-relaxed font-bold flex items-start gap-2">
             <MapPin className="w-5 h-5 text-[#A51A1A] shrink-0" />
             <span>
-              DUBAI, UAE
+              Dubai, UAE
             </span>
           </p>
         </div>

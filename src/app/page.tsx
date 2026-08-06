@@ -470,11 +470,11 @@ export default function Home() {
                         <div className="p-6 rounded-2xl bg-[#1A1A1D]/80 backdrop-blur-xl text-white border border-white/10 shadow-2xl space-y-4">
                           <div className="flex items-center gap-3 font-medium text-sm text-gray-300 hover:text-white transition-colors">
                             <Mail className="w-5 h-5 text-[#C5A059]" />
-                            <span>alghazi478@gmail.com</span>
+                            <span>admin@truxo.ae</span>
                           </div>
                           <div className="flex items-center gap-3 font-medium text-sm text-gray-300 hover:text-white transition-colors">
                             <Globe className="w-5 h-5 text-[#C5A059]" />
-                            <span>www.truxorental.com</span>
+                            <span>www.truxo.ae</span>
                           </div>
                           <div className="flex items-center gap-3 font-medium text-sm text-gray-300 hover:text-white transition-colors">
                             <Phone className="w-5 h-5 text-[#C5A059]" />
@@ -902,8 +902,8 @@ export default function Home() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
                 {[
-                  { icon: <Mail className="w-5 h-5" />, text: "alghazi478@gmail.com" },
-                  { icon: <Globe className="w-5 h-5" />, text: "truxorental.com" },
+                  { icon: <Mail className="w-5 h-5" />, text: "admin@truxo.ae" },
+                  { icon: <Globe className="w-5 h-5" />, text: "truxo.ae" },
                   { icon: <Phone className="w-5 h-5" />, text: "+971 54 305 8358" },
                   { icon: <MapPin className="w-5 h-5" />, text: "Dubai, UAE" },
                 ].map((info, idx) => (

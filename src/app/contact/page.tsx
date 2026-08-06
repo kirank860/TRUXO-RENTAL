@@ -108,7 +108,7 @@ export default function ContactPage() {
 
             {/* Email Node */}
             <motion.a 
-              href="mailto:alghazi478@gmail.com"
+              href="mailto:admin@truxo.ae"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="block p-6 md:p-8 rounded-3xl bg-[#111113]/80 backdrop-blur-md border border-white/5 hover:border-[#C5A059]/40 shadow-xl transition-colors group cursor-pointer"
@@ -119,7 +119,7 @@ export default function ContactPage() {
                 </div>
                 <div className="min-w-0">
                   <p className="text-[10px] text-gray-500 mb-1 uppercase tracking-widest font-black">Email Us</p>
-                  <p className="text-lg md:text-xl font-black text-white font-orbitron truncate block">alghazi478@gmail.com</p>
+                  <p className="text-lg md:text-xl font-black text-white font-orbitron truncate block">admin@truxo.ae</p>
                   <p className="text-gray-400 text-xs font-bold mt-2 flex items-center gap-2">
                     <ArrowRight className="w-3 h-3" /> Quick response guaranteed
                   </p>
