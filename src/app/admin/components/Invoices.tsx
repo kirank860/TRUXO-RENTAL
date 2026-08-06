@@ -389,13 +389,24 @@ export default function Invoices() {
                     <option value="" disabled>Choose an asset</option>
                     {fleet.map(f => {
                       const typeParts = (f.type || '').split('||');
-                      const displayName = typeParts[0] || f.type;
-                      const category = typeParts[1] ? ` - ${typeParts[1]}` : '';
-                      const modelStr = f.model ? ` - ${f.model}` : '';
+                      const modelParts = (f.model || '').split('||');
+                      
+                      const cleanType = typeParts[0] || '';
+                      const cleanModel = modelParts[0] || '';
+                      
+                      let displayName = cleanType;
+                      if (cleanModel && cleanModel !== cleanType) {
+                        displayName = displayName ? `${displayName} ${cleanModel}` : cleanModel;
+                      }
+                      
+                      const category = modelParts[1] || typeParts[1];
+                      const categoryStr = category ? ` - ${category}` : '';
+                      
+                      const cleanValue = `${displayName}${categoryStr} (${f.asset_id})`.trim();
                       
                       return (
-                        <option key={f.asset_id} value={`${displayName} ${f.model || ''} (${f.asset_id})`.trim()}>
-                          {displayName}{category}{modelStr} {f.client_id ? `(Assigned)` : '(Available)'}
+                        <option key={f.asset_id} value={cleanValue}>
+                          {displayName}{categoryStr} {f.client_id ? `(Assigned)` : '(Available)'}
                         </option>
                       );
                     })}
