@@ -3,6 +3,7 @@
 import { motion, useScroll, useTransform, AnimatePresence, LayoutGroup } from "framer-motion";
 import { ArrowRight, Calendar, User, TrendingUp } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRef, useState } from "react";
 import { insightsData } from "@/data/insights";
 
@@ -116,18 +117,19 @@ export default function InsightsPage() {
                   {activePost.excerpt}
                 </motion.p>
                 
-                <motion.button 
-                  whileHover={{ x: 10, scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={springConfig}
-                  onClick={() => alert("Full article content:\n\n" + activePost.content)}
-                  className="self-start flex items-center gap-4 text-white text-sm font-black uppercase tracking-widest group-hover:text-[#C5A059] transition-colors"
-                >
-                  Read Full Story 
-                  <span className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-[#C5A059]/20 transition-all shadow-lg">
-                    <ArrowRight className="w-4 h-4" />
-                  </span>
-                </motion.button>
+                <Link href={`/insights/${activePost.slug}`}>
+                  <motion.div 
+                    whileHover={{ x: 10, scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={springConfig}
+                    className="self-start flex items-center gap-4 text-white text-sm font-black uppercase tracking-widest group-hover:text-[#C5A059] transition-colors cursor-pointer"
+                  >
+                    Read Full Story 
+                    <span className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-[#C5A059]/20 transition-all shadow-lg">
+                      <ArrowRight className="w-4 h-4" />
+                    </span>
+                  </motion.div>
+                </Link>
               </div>
             </motion.div>
           </AnimatePresence>
